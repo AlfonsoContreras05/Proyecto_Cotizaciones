@@ -67,6 +67,7 @@ const LoginVendedor = () => {
                     placeholder="Ingresa tu usuario"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
+                    required
                     value={usuario}
                     onChange={(e) => setUsuario(e.target.value)}
                   />
@@ -83,6 +84,7 @@ const LoginVendedor = () => {
                     className="form-control bg-dark-x border-0 mb-2 text-bg-dark"
                     placeholder="Ingresa tu contraseña"
                     id="exampleInputPassword1"
+                    required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
