@@ -3,7 +3,9 @@
     --dark-x: #1e2126;
     --ligth: #ffffff;
 }
-
+html{
+  background-color: #000000;
+}
 body{
     font-family: 'League Spartan', sans-serif;
     font-weight: 300;
@@ -15,7 +17,6 @@ body{
 .form-control, .btn{
     min-height: 3.125rem;
     line-height: initial;
-    
 }
 .button {
   -moz-appearance: none;
