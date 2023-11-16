@@ -12,6 +12,9 @@ const LoginVendedor = () => {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
 
+  const [errorMensaje, setErrorMensaje] = useState("");
+  const [exitoMensaje, setExitoMensaje] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -25,14 +28,30 @@ const LoginVendedor = () => {
       });
 
       if (response.ok) {
-        console.log("Inicio de sesión exitoso");
-        navigate("/menu-usuario"); // Utiliza 'navigate' en lugar de 'history.push'
+        localStorage.setItem("userSession", usuario); // Almacenar información de la sesión
+        setExitoMensaje("Inicio de sesión exitoso. Redirigiendo...");
+        // Redirigir al usuario
+        setTimeout(() => {
+          navigate("/menu-usuario");
+        }, 3000); // Redirige después de 3 segundos
       } else {
-        console.log("Error en inicio de sesión");
-        // Manejar errores de inicio de sesión
+        setExitoMensaje("");
+        setErrorMensaje(
+          "Error en el inicio de sesión. Por favor, intenta de nuevo."
+        );
+        setTimeout(() => {
+          setErrorMensaje("");
+        }, 3000); // Oculta el mensaje después de 3 segundos
       }
     } catch (error) {
       console.error("Hubo un error al enviar la solicitud", error);
+      setExitoMensaje("");
+      setErrorMensaje(
+        "Error en el inicio de sesión. Por favor, intenta de nuevo."
+      );
+      setTimeout(() => {
+        setErrorMensaje("");
+      }, 3000); // Oculta el mensaje después de 3 segundos
     }
   };
 
@@ -45,12 +64,22 @@ const LoginVendedor = () => {
       <section>
         <div className="row g-0">
           <div className="col-lg-7 d-none d-lg-block">
-            {/* Carousel o imágenes aquí */}
+            <div
+              id="carouselExampleSlidesOnly"
+              class="carousel slide"
+              data-bs-ride="carousel"
+            >
+              <div class="carousel-inner">
+                <div class="carousel-item img-1 min-vh-100 active"></div>
+                <div class="carousel-item img-2 min-vh-100 "></div>
+              </div>
+            </div>
           </div>
           <div className="col-lg-5 min-vh-100">
             <div className="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto">
               <img src={image} className="img-fluid" alt="Imagen descriptiva" />
             </div>
+
             <div className="px-lg-5 py-lg-4 p-4 w-100 align-self-center">
               <h1 className="form-label font-weight-bold mb-4">Bienvenido</h1>
               <form className="mb-5" onSubmit={handleSubmit}>
@@ -93,6 +122,12 @@ const LoginVendedor = () => {
                   Iniciar sesión
                 </button>
               </form>
+              {errorMensaje && (
+                <div className="alert alert-danger">{errorMensaje}</div>
+              )}
+              {exitoMensaje && (
+                <div className="alert alert-success">{exitoMensaje}</div>
+              )}
               <p className="form-label font-weight-bold text-center">
                 O inicia sesión como administrador
               </p>

@@ -1,0 +1,26 @@
+:root{
+    --dark: #16191c;
+    --dark-x: #1e2126;
+    --ligth: #ffffff;
+}
+
+body{
+    font-family: 'League Spartan', sans-serif;
+    font-weight: 300;
+    color: var(--ligth);
+}
+.bg-dark{ background-color: var(--dark) !important;}
+.bg-dark-x{background-color: var(--dark-x);}
+
+.form-control, .btn{
+    min-height: 3.125rem;
+    line-height: initial;
+}
+
+body{
+    background-image: url(/img/wallpaperflare.com_wallpaper.jpg);
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

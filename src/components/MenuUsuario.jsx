@@ -44,7 +44,7 @@ const MenuUsuario = () => {
                   </Link>
                 </li>
                 <li className="nav-item p-3 py-md-1">
-                  <Link to="/" className="nav-link">
+                  <Link to="/FormularioCoti" className="nav-link">
                     CREAR COTIZACION{" "}
                     <img src={imageM} alt="mas" width="15" height="15" />{" "}
                   </Link>
