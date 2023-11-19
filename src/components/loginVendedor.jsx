@@ -17,7 +17,7 @@ const LoginVendedor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await fetch("http://localhost:5000/login", {
         method: "POST",
@@ -26,34 +26,31 @@ const LoginVendedor = () => {
         },
         body: JSON.stringify({ usuario, password }),
       });
-
+  
       if (response.ok) {
-        localStorage.setItem("userSession", usuario); // Almacenar información de la sesión
+        const data = await response.json(); // Obtener datos de la respuesta, incluyendo el ID del vendedor
+  
+        // Almacenar información de la sesión y del vendedor
+        localStorage.setItem("userSession", usuario);
+        localStorage.setItem("idVendedor", data.vendedor.ID_Vendedor); // Almacena el ID del vendedor
+  
         setExitoMensaje("Inicio de sesión exitoso. Redirigiendo...");
-        // Redirigir al usuario
+  
+        // Redirigir al usuario después de un breve retraso
         setTimeout(() => {
           navigate("/menu-usuario");
-        }, 3000); // Redirige después de 3 segundos
+        }, 3000);
       } else {
-        setExitoMensaje("");
-        setErrorMensaje(
-          "Error en el inicio de sesión. Por favor, intenta de nuevo."
-        );
-        setTimeout(() => {
-          setErrorMensaje("");
-        }, 3000); // Oculta el mensaje después de 3 segundos
+        setErrorMensaje("Error en el inicio de sesión. Por favor, intenta de nuevo.");
+        setTimeout(() => setErrorMensaje(""), 3000); // Ocultar mensaje después de 3 segundos
       }
     } catch (error) {
       console.error("Hubo un error al enviar la solicitud", error);
-      setExitoMensaje("");
-      setErrorMensaje(
-        "Error en el inicio de sesión. Por favor, intenta de nuevo."
-      );
-      setTimeout(() => {
-        setErrorMensaje("");
-      }, 3000); // Oculta el mensaje después de 3 segundos
+      setErrorMensaje("Error en el inicio de sesión. Por favor, intenta de nuevo.");
+      setTimeout(() => setErrorMensaje(""), 3000); // Ocultar mensaje después de 3 segundos
     }
   };
+  
 
   return (
     <div className="bg-dark-x">
