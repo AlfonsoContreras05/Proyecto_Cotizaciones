@@ -56,16 +56,16 @@ app.post("/login", (req, res) => {
 
 // Nuevo endpoint para obtener todos los productos
 app.get("/api/productos", (req, res) => {
-  const query = "SELECT * FROM producto";
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error al obtener productos:", err);
-      return res.status(500).send("Error en el servidor");
-    }
-    res.json(results);
+    const query = "SELECT ID_Producto, Nombre, Descripcion, Precio, ID_Categoria, Stock FROM producto";
+    db.query(query, (err, results) => {
+      if (err) {
+        console.error("Error al obtener productos:", err);
+        return res.status(500).send("Error en el servidor");
+      }
+      res.json(results);
+    });
   });
-});
-
+  
 // Endpoint para guardar cotización
 app.post("/api/guardar-cotizacion", async (req, res) => {
     const { cliente, productos, ID_Vendedor } = req.body;

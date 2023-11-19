@@ -68,17 +68,16 @@ const FormularioCotizacion = () => {
   };
 
   return (
-    <div className="bg-black">
-      <NavbarComponent />
-      <div className="container">
-        <form className="row g-3 mt-4" onSubmit={handleSubmit}>
+<div className="bg-black">
+    <NavbarComponent />
+    <div className="container">
+      <form className="row g-3 mt-4" onSubmit={handleSubmit}>
           <h1 className="mt-5">Datos del Cliente</h1>
           <ClientDetailsForm cliente={cliente} onChange={handleClientChange} />
 
+
           <h1 className="mt-5">Selecciona Tus Componentes</h1>
-          <ProductSelector
-            onComponenteSeleccionado={handleComponenteSeleccionado}
-          />
+        <ProductSelector onComponenteSeleccionado={handleComponenteSeleccionado} />
 
           <h2>Componentes Seleccionados</h2>
           <table className="table table-dark table-striped">
