@@ -5,6 +5,8 @@ import MenuUsuario from './components/MenuUsuario';
 import FormularioCoti from './components/FormularioCoti.jsx'
 import NavbarComponent from './components/NavbarComponent.jsx';
 import ComponenteProductos  from './components/ComponenteProductos.jsx';
+import HistorialVentas from './components/HistorialCotizaciones.jsx';
+import Inicio from './components/ComponenteInicio.jsx';
 function App() {
   return (
     <Router>
@@ -15,6 +17,8 @@ function App() {
           <Route path="/FormularioCoti" element={<FormularioCoti/>} />
           <Route path="/NavbarComponent" element={<NavbarComponent/>} />
           <Route path="/ComponenteProductos" element={<ComponenteProductos/>} />
+          <Route path="/HistorialVentas" element={<HistorialVentas/>} />
+          <Route path="/Inicio" element={<Inicio/>} />
 
 
           {/* Puedes agregar más rutas aquí */}

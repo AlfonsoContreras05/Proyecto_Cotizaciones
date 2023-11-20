@@ -39,7 +39,7 @@ const MenuUsuario = () => {
             <div className="offcanvas-body d-flex flex-column justify-content-between px-0 bg-dark">
               <ul className="navbar-nav fs-6 justify-content-evenly">
                 <li className="nav-item p-3 py-md-1">
-                  <Link to="/" className="nav-link">
+                  <Link to="/Inicio" className="nav-link">
                     INICIO
                   </Link>
                 </li>
@@ -50,7 +50,7 @@ const MenuUsuario = () => {
                   </Link>
                 </li>
                 <li className="nav-item p-3 py-md-1">
-                  <Link to="/" className="nav-link">
+                  <Link to="/HistorialVenta" className="nav-link">
                     HISTORIAL
                   </Link>
                 </li>

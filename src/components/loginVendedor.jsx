@@ -63,12 +63,12 @@ const LoginVendedor = () => {
           <div className="col-lg-7 d-none d-lg-block">
             <div
               id="carouselExampleSlidesOnly"
-              class="carousel slide"
+              className="carousel slide"
               data-bs-ride="carousel"
             >
-              <div class="carousel-inner">
-                <div class="carousel-item img-1 min-vh-100 active"></div>
-                <div class="carousel-item img-2 min-vh-100 "></div>
+              <div className="carousel-inner">
+                <div className="carousel-item img-1 min-vh-100 active"></div>
+                <div className="carousel-item img-2 min-vh-100 "></div>
               </div>
             </div>
           </div>

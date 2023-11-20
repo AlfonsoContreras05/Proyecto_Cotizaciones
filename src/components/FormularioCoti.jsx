@@ -19,23 +19,50 @@ const FormularioCotizacion = () => {
     setCliente({ ...cliente, [e.target.name]: e.target.value });
   };
 
-  const handleComponenteSeleccionado = useCallback((nuevoComponente) => {
-    // Evitar duplicados
-    if (!componentesSeleccionados.find(c => c.ID_Producto === nuevoComponente.ID_Producto)) {
-      setComponentesSeleccionados((prev) => [...prev, nuevoComponente]);
-    }
-  }, [componentesSeleccionados]);
-
-  const totalPrecio = componentesSeleccionados.reduce(
-    (total, componente) => total + parseFloat(componente.Precio),
-    0
+  const handleComponenteSeleccionado = useCallback(
+    (nuevoComponente) => {
+      // Evitar duplicados
+      if (
+        !componentesSeleccionados.find(
+          (c) => c.ID_Producto === nuevoComponente.ID_Producto
+        )
+      ) {
+        setComponentesSeleccionados((prev) => [...prev, nuevoComponente]);
+      }
+    },
+    [componentesSeleccionados]
   );
+
+  const totalPrecio = componentesSeleccionados.reduce((total, componente) => {
+    return total + componente.Precio * (componente.Cantidad || 1);
+  }, 0);
+
+  const handleEliminarComponente = (idProducto) => {
+    setComponentesSeleccionados(
+      componentesSeleccionados.filter(
+        (componente) => componente.ID_Producto !== idProducto
+      )
+    );
+  };
+
+  const handleCambiarCantidad = (idProducto, nuevaCantidad) => {
+    setComponentesSeleccionados(
+      componentesSeleccionados.map((componente) => {
+        if (componente.ID_Producto === idProducto) {
+          return {
+            ...componente,
+            Cantidad: Math.max(0, Math.min(nuevaCantidad, componente.Stock)),
+          };
+        }
+        return componente;
+      })
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const idVendedor = localStorage.getItem('idVendedor');
-
+      const idVendedor = localStorage.getItem("idVendedor");
 
       if (!idVendedor) {
         console.error("ID del vendedor no está disponible");
@@ -54,8 +81,7 @@ const FormularioCotizacion = () => {
               Cantidad: 1,
               Precio: producto.Precio,
             })),
-            ID_Vendedor: Number(idVendedor)
-
+            ID_Vendedor: Number(idVendedor),
           }),
         }
       );
@@ -68,32 +94,71 @@ const FormularioCotizacion = () => {
   };
 
   return (
-<div className="bg-black">
-    <NavbarComponent />
-    <div className="container">
-      <form className="row g-3 mt-4" onSubmit={handleSubmit}>
+    <div className="bg-black">
+      <NavbarComponent />
+      <div className="container">
+        <form className="row g-3 mt-4" onSubmit={handleSubmit}>
           <h1 className="mt-5">Datos del Cliente</h1>
           <ClientDetailsForm cliente={cliente} onChange={handleClientChange} />
 
-
           <h1 className="mt-5">Selecciona Tus Componentes</h1>
-        <ProductSelector onComponenteSeleccionado={handleComponenteSeleccionado} />
+          <ProductSelector
+            onComponenteSeleccionado={handleComponenteSeleccionado}
+          />
 
           <h2>Componentes Seleccionados</h2>
           <table className="table table-dark table-striped">
             <thead>
               <tr>
                 <th>Nombre</th>
+                <th>Cantiad</th>
                 <th>Precio</th>
                 <th>Descripción</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               {componentesSeleccionados.map((componente, index) => (
                 <tr key={`componente-${componente.ID_Producto}-${index}`}>
                   <td>{componente.Nombre}</td>
+                  <td>
+                    <input
+                      type="number"
+                      value={componente.Cantidad || 1}
+                      onChange={(e) =>
+                        handleCambiarCantidad(
+                          componente.ID_Producto,
+                          parseInt(e.target.value)
+                        )
+                      }
+                      min="1"
+                      max={componente.Stock}
+                    />
+                  </td>
                   <td>$ {componente.Precio.toFixed(2)}</td>
                   <td>{componente.Descripcion}</td>
+                  <td>
+                    <button
+                      onClick={() =>
+                        handleEliminarComponente(componente.ID_Producto)
+                      }
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "50%",
+                        width: "30px",
+                        height: "30px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "20px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      &times;
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

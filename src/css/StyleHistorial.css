@@ -1,0 +1,22 @@
+.historial-container {
+    padding-top: 80px; /* Ajustar según la altura de tu NavbarComponent */
+    
+}
+
+.historial-content {
+    margin-top: 20px;
+
+}
+
+.cat1{
+    color: #000;
+}
+
+
+.grafico-ventas-container {
+    margin: 5% auto; /* Centra el gráfico */
+    padding: 25px; /* Espacio alrededor del gráfico */
+    max-width: 50%;
+    border: 5px solid black; /* Borde opcional para el gráfico */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Sombra ligera para el gráfico */
+}

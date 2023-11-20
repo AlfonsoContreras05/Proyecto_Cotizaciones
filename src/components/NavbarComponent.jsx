@@ -48,24 +48,28 @@ const NavbarComponent = () => {
               onClick={toggleNav}
             ></button>
           </div>
+
           <div className="offcanvas-body d-flex flex-column justify-content-between px-0 bg-dark">
             <ul className="navbar-nav fs-6 justify-content-evenly">
               <li className="nav-item p-3 py-md-1">
-                <Link to="/" className="nav-link">
+                <Link to="/Inicio" className="nav-link">
                   INICIO
                 </Link>
               </li>
+
               <li className="nav-item p-3 py-md-1">
                 <Link to="/FormularioCoti" className="nav-link">
                   CREAR COTIZACION{" "}
                   <img src={imageM} alt="mas" width="15" height="15" />{" "}
                 </Link>
               </li>
+
               <li className="nav-item p-3 py-md-1">
-                <Link to="/" className="nav-link">
+                <Link to="/HistorialVentas" className="nav-link">
                   HISTORIAL
                 </Link>
               </li>
+              
               <li className="nav-item p-3 py-md-1">
                 <Link to="/" className="nav-link">
                   TOTALIZADO

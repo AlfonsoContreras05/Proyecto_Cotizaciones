@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+
 const ProductSelector = ({ onComponenteSeleccionado }) => {
     const [productos, setProductos] = useState([]);
     const [categorias, setCategorias] = useState([]);
@@ -11,7 +12,7 @@ const ProductSelector = ({ onComponenteSeleccionado }) => {
                 if (!respuesta.ok) throw new Error('Error al cargar productos');
                 const data = await respuesta.json();
                 setProductos(data);
-                const categoriasUnicas = [...new Set(data.map(p => p.ID_Categoria))];
+                const categoriasUnicas = [...new Set(data.map(p => p.NombreCategoria))];
                 setCategorias(categoriasUnicas);
             } catch (error) {
                 console.error('Error al cargar los productos:', error);
@@ -20,8 +21,8 @@ const ProductSelector = ({ onComponenteSeleccionado }) => {
         cargarProductos();
     }, []);
 
-    const handleProductoSeleccionado = (productoId, categoria) => {
-        const productoSeleccionado = productos.find(p => p.ID_Producto === parseInt(productoId) && p.ID_Categoria === categoria);
+    const handleProductoSeleccionado = (productoId, nombreCategoria) => {
+        const productoSeleccionado = productos.find(p => p.ID_Producto === parseInt(productoId) && p.NombreCategoria === nombreCategoria);
         if (productoSeleccionado) {
             onComponenteSeleccionado(productoSeleccionado);
         }
@@ -29,16 +30,16 @@ const ProductSelector = ({ onComponenteSeleccionado }) => {
 
     return (
         <>
-            {categorias.map(categoria => (
-                <div key={categoria} className="col-md-6">
-                    <label htmlFor={`select${categoria}`} className="form-label">Categoría {categoria}</label>
+            {categorias.map((nombreCategoria, index) => (
+                <div key={index} className="col-md-6">
+                    <label htmlFor={`select${nombreCategoria}`} className="form-label">{nombreCategoria}</label>
                     <select
                         className="form-control bg-dark-x border-0 text-bg-dark"
-                        id={`select${categoria}`}
-                        onChange={(e) => handleProductoSeleccionado(e.target.value, categoria)}
+                        id={`select${nombreCategoria}`}
+                        onChange={(e) => handleProductoSeleccionado(e.target.value, nombreCategoria)}
                     >
                         <option value="">Seleccione un producto...</option>
-                        {productos.filter(p => p.ID_Categoria === categoria).map(producto => (
+                        {productos.filter(p => p.NombreCategoria === nombreCategoria).map(producto => (
                             <option key={producto.ID_Producto} value={producto.ID_Producto}>
                                 {producto.Nombre}
                             </option>
