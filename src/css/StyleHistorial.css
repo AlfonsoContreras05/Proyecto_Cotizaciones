@@ -1,22 +1,87 @@
+:root {
+    --dark: #16191c;
+    --dark-x: #1e2126;
+    --light: #ffffff;
+}
+
+.bg-dark {
+    background-color: var(--dark) !important;
+}
+
+.bg-dark-x {
+    background-color: var(--dark-x);
+}
+
 .historial-container {
+    background-color: var(--dark);
     padding-top: 80px; /* Ajustar según la altura de tu NavbarComponent */
-    
 }
 
 .historial-content {
     margin-top: 20px;
-
 }
-
-.cat1{
-    color: #000;
-}
-
 
 .grafico-ventas-container {
     margin: 5% auto; /* Centra el gráfico */
     padding: 25px; /* Espacio alrededor del gráfico */
     max-width: 50%;
-    border: 5px solid black; /* Borde opcional para el gráfico */
+    border: 5px solid var(--dark); /* Borde opcional para el gráfico */
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Sombra ligera para el gráfico */
+}
+
+/* Estilos específicos para DataTable */
+.dataTable-container {
+    background-color: var(--dark-x); /* Fondo oscuro para la tabla */
+    color: var(--light); /* Texto blanco */
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.dataTable-input {
+    width: 50%; /* Reduce el ancho del input */
+    padding: 10px;
+    margin-bottom: 20px;
+    margin-left: 0; /* Alinear a la izquierda */
+    border-radius: 4px;
+    border: 1px solid #333;
+    background-color: var(--dark);
+    color: var(--light);
+    float: left; /* Alineación a la izquierda */
+}
+
+/* Limpia flotantes después de elementos flotantes */
+.dataTable-container::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+.dataTable-header {
+    color: var(--light); /* Encabezado de la tabla */
+    font-weight: bold;
+}
+
+.dataTable-row {
+    background-color: var(--dark); /* Fila de la tabla */
+    border-bottom: 1px solid var(--dark-x); /* Borde entre filas */
+}
+
+.dataTable-row:hover {
+    background-color: var(--dark-x); /* Fondo al pasar el mouse */
+}
+
+button {
+    margin-right: 5px;
+    background-color: #3498db; /* Color de botón */
+    color: var(--light); /* Color de texto en botón */
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9; /* Color de botón al pasar el mouse */
 }

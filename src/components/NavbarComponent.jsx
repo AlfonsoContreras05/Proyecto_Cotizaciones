@@ -69,10 +69,16 @@ const NavbarComponent = () => {
                   HISTORIAL
                 </Link>
               </li>
-              
+
               <li className="nav-item p-3 py-md-1">
                 <Link to="/" className="nav-link">
                   TOTALIZADO
+                </Link>
+              </li>
+
+              <li className="nav-item p-3 py-md-1">
+                <Link to="/" className="nav-link">
+                  VENTA
                 </Link>
               </li>
               <li className="nav-item p-3 py-md-1">

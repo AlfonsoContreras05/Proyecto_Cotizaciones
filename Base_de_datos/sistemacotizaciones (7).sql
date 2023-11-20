@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-11-2023 a las 21:23:36
+-- Tiempo de generación: 20-11-2023 a las 02:38:39
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -56,7 +56,9 @@ INSERT INTO `categoria_producto` (`ID_Categoria`, `Nombre`, `Descripcion`) VALUE
 (1, 'Placas Madre', 'Placas base para ensamblar componentes de computadora'),
 (2, 'Procesadores', 'Unidades centrales de procesamiento para computadoras'),
 (3, 'Tarjetas Gráficas', 'Componentes para procesamiento gráfico y rendimiento visual'),
-(4, 'Fuentes de Poder', 'Suministro de energía para componentes de computadora');
+(4, 'Fuentes de Poder', 'Suministro de energía para componentes de computadora'),
+(5, 'Prueba4', 'elementos'),
+(6, 'cajas', 'cajas chicas cajas grandes');
 
 -- --------------------------------------------------------
 
@@ -74,6 +76,16 @@ CREATE TABLE `cliente` (
   `Telefono` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `cliente`
+--
+
+INSERT INTO `cliente` (`ID_Cliente`, `Nombre`, `Apellido`, `rut`, `Direccion`, `Correo_Electronico`, `Telefono`) VALUES
+(24, 'alfonso', 'contreras', '18.329.423-7', 'batallon maipo 02877', 'alfonso.contreras.a3@gmail.com', '946317762'),
+(25, 'alfonso', 'contreras', '18.329.423-7', 'batallon maipo 02877', 'Adm@mail.com', '946317762'),
+(26, 'alfonso', 'contreras', '18.329.423-7', 'batallon maipo 02877', 'Adm@mail.com', '946317762'),
+(27, 'Felipe', 'Muñoz', '11.258.258-9', 'lejos por alla 2101', 'felipe@mail.com', '+569321321321');
+
 -- --------------------------------------------------------
 
 --
@@ -88,6 +100,16 @@ CREATE TABLE `cotizacion` (
   `Estado` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `cotizacion`
+--
+
+INSERT INTO `cotizacion` (`ID_Cotizacion`, `ID_Cliente`, `ID_Vendedor`, `Fecha_Cotizacion`, `Estado`) VALUES
+(22, 24, 1, '2023-11-19', 'Pendiente'),
+(23, 25, 1, '2023-11-19', 'Pendiente'),
+(24, 26, 1, '2023-11-19', 'Pendiente'),
+(25, 27, 1, '2023-11-19', 'Pendiente');
+
 -- --------------------------------------------------------
 
 --
@@ -99,11 +121,32 @@ CREATE TABLE `detalle_venta` (
   `ID_Transaccion` int(11) DEFAULT NULL,
   `ID_Producto` int(11) DEFAULT NULL,
   `Cantidad` int(11) DEFAULT NULL,
-  `Precio_Unitario` decimal(10,2) DEFAULT NULL,
+  `Precio_Unitario` int(10) DEFAULT NULL,
   `Descuento` decimal(10,2) DEFAULT NULL,
   `ID_Vendedor` int(11) DEFAULT NULL,
   `ID_Cotizacion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `detalle_venta`
+--
+
+INSERT INTO `detalle_venta` (`ID_DetalleVenta`, `ID_Transaccion`, `ID_Producto`, `Cantidad`, `Precio_Unitario`, `Descuento`, `ID_Vendedor`, `ID_Cotizacion`) VALUES
+(15, NULL, 1, 1, 120, NULL, NULL, 22),
+(16, NULL, 4, 1, 450, NULL, NULL, 22),
+(17, NULL, 7, 1, 700, NULL, NULL, 22),
+(18, NULL, 10, 1, 90, NULL, NULL, 22),
+(19, NULL, 2, 1, 100, NULL, NULL, 22),
+(20, NULL, 1, 1, 120, NULL, NULL, 23),
+(21, NULL, 4, 1, 450, NULL, NULL, 23),
+(22, NULL, 7, 1, 700, NULL, NULL, 23),
+(23, NULL, 10, 1, 90, NULL, NULL, 23),
+(24, NULL, 5, 1, 330, NULL, NULL, 24),
+(25, NULL, 11, 1, 60, NULL, NULL, 24),
+(26, NULL, 13, 1, 10000, NULL, NULL, 24),
+(27, NULL, 7, 1, 700, NULL, NULL, 25),
+(28, NULL, 10, 1, 90, NULL, NULL, 25),
+(29, NULL, 14, 1, 15000, NULL, NULL, 25);
 
 -- --------------------------------------------------------
 
@@ -221,7 +264,9 @@ INSERT INTO `producto` (`ID_Producto`, `Nombre`, `Descripcion`, `Precio`, `ID_Ca
 (9, 'NVIDIA GTX 1660', 'Tarjeta gráfica NVIDIA GTX 1660, 6GB GDDR5', 300, 3, 15),
 (10, 'Corsair 750W', 'Fuente de poder Corsair, 750W, certificación 80 Plus Gold', 90, 4, 20),
 (11, 'EVGA 600W', 'Fuente de poder EVGA, 600W, certificación 80 Plus Bronze', 60, 4, 25),
-(12, 'Thermaltake 500W', 'Fuente de poder Thermaltake, 500W, certificación 80 Plus White', 45, 4, 30);
+(12, 'Thermaltake 500W', 'Fuente de poder Thermaltake, 500W, certificación 80 Plus White', 45, 4, 30),
+(13, 'elemento1', 'elemento de prueba', 10000, 5, 15),
+(14, 'caja chica', 'linda caja', 15000, 6, 30);
 
 -- --------------------------------------------------------
 
@@ -334,8 +379,8 @@ ALTER TABLE `cliente`
 --
 ALTER TABLE `cotizacion`
   ADD PRIMARY KEY (`ID_Cotizacion`),
-  ADD KEY `ID_Cliente` (`ID_Cliente`),
-  ADD KEY `ID_Vendedor` (`ID_Vendedor`);
+  ADD KEY `ID_Vendedor` (`ID_Vendedor`),
+  ADD KEY `cotizacion_ibfk_1` (`ID_Cliente`);
 
 --
 -- Indices de la tabla `detalle_venta`
@@ -359,7 +404,7 @@ ALTER TABLE `fuentepoder`
 --
 ALTER TABLE `pedido`
   ADD PRIMARY KEY (`ID_Pedido`),
-  ADD KEY `ID_Cliente` (`ID_Cliente`);
+  ADD KEY `pedido_ibfk_1` (`ID_Cliente`);
 
 --
 -- Indices de la tabla `placamadre`
@@ -399,8 +444,8 @@ ALTER TABLE `tarjetagrafica`
 --
 ALTER TABLE `transaccion`
   ADD PRIMARY KEY (`ID_Transaccion`),
-  ADD KEY `ID_Cliente` (`ID_Cliente`),
-  ADD KEY `ID_Sucursal` (`ID_Sucursal`);
+  ADD KEY `ID_Sucursal` (`ID_Sucursal`),
+  ADD KEY `transaccion_ibfk_1` (`ID_Cliente`);
 
 --
 -- Indices de la tabla `vendedor`
@@ -417,13 +462,25 @@ ALTER TABLE `vendedor`
 -- AUTO_INCREMENT de la tabla `categoria_producto`
 --
 ALTER TABLE `categoria_producto`
-  MODIFY `ID_Categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID_Categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `cliente`
+--
+ALTER TABLE `cliente`
+  MODIFY `ID_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
-  MODIFY `ID_Cotizacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `ID_Cotizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- AUTO_INCREMENT de la tabla `detalle_venta`
+--
+ALTER TABLE `detalle_venta`
+  MODIFY `ID_DetalleVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `fuentepoder`
@@ -447,7 +504,7 @@ ALTER TABLE `procesador`
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `ID_Producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `ID_Producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `tarjetagrafica`
