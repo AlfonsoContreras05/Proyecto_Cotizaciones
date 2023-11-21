@@ -97,7 +97,7 @@ const FormularioCotizacion = () => {
     <div className="BD">
           <div className="bg-black">
       <NavbarComponent />
-      <div className="container">
+      <div className="container m-auto d-flex align-items-center justify-content-center">
         <form className="row g-3 mt-4" onSubmit={handleSubmit}>
           <h1 className="mt-5 text-center">Datos del Cliente</h1>
           <ClientDetailsForm cliente={cliente} onChange={handleClientChange} />
