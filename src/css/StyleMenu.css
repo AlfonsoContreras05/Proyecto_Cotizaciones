@@ -6,14 +6,25 @@
 html{
   background-color: #000000;
 }
-body{
+.BD{
     font-family: 'League Spartan', sans-serif;
     font-weight: 300;
     color: var(--ligth);
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
 }
 .bg-dark{ background-color: var(--dark) !important;}
 .bg-dark-x{background-color: var(--dark-x);}
 
+
+.container{
+  background-color: var(--dark-x) !important;
+  display: flexbox;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+}
 .form-control, .btn{
     min-height: 3.125rem;
     line-height: initial;

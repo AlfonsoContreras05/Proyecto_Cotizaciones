@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import NavbarComponent from "./NavbarComponent";
 import DataTable from "react-data-table-component";
 import "../css/StyleHistorial.css";
-//import "../css/StyleMenu.css";
+
 
 
 const HistorialCotizaciones = () => {
@@ -32,6 +32,14 @@ const HistorialCotizaciones = () => {
             }
         };
         cargarCotizaciones();
+
+        const headerElement = document.querySelector("header.sc-dIUfKc.goZmTm");
+
+        // Verifica si el elemento se encontró antes de intentar quitar la clase
+        if (headerElement) {
+          // Quita la clase "goZmTm"
+          headerElement.classList.remove("goZmTm");
+        }
     }, [idVendedor]);
 
     const columnas = [
@@ -43,7 +51,7 @@ const HistorialCotizaciones = () => {
       },
       { 
           name: "Total", 
-          selector: row => `$${row.total.toFixed(2)}`, 
+          selector: row => `$${row.total.toFixed(0)}`, 
           sortable: true 
       },
       {
@@ -106,6 +114,10 @@ const HistorialCotizaciones = () => {
                       headRow: {
                           style: {
                               backgroundColor: "#16191c", // Color de fondo de la cabecera
+                              color: "#fff", // Color de texto
+                              '&:hover': {
+                                  backgroundColor: "#2c3038", // Color de fondo al pasar el mouse
+                              },
                           },
                       },
                       rows: {

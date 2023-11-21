@@ -4,7 +4,7 @@
     --ligth: #ffffff;
 }
 
-body{
+BD{
     font-family: 'League Spartan', sans-serif;
     font-weight: 300;
     color: var(--ligth);
@@ -17,10 +17,4 @@ body{
     line-height: initial;
 }
 
-body{
-    background-image: url(../img/wallpaperflare.com_wallpaper.jpg);
-    height: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
+

@@ -94,7 +94,8 @@ const FormularioCotizacion = () => {
   };
 
   return (
-    <div className="bg-black">
+    <div className="BD">
+          <div className="bg-black">
       <NavbarComponent />
       <div className="container">
         <form className="row g-3 mt-4" onSubmit={handleSubmit}>
@@ -182,7 +183,9 @@ const FormularioCotizacion = () => {
         </form>
       </div>
     </div>
+    </div>
   );
+    
 };
 
 export default FormularioCotizacion;
