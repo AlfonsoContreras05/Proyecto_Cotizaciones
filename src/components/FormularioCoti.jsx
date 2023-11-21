@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import NavbarComponent from "./NavbarComponent";
 import ProductSelector from "./ProductSelector";
 import ClientDetailsForm from "./ClientDetailsForm";
-import "../css/StyleMenu.css";
+import "../css/StyleForm.css";
 
 const FormularioCotizacion = () => {
   const [cliente, setCliente] = useState({
@@ -99,10 +99,10 @@ const FormularioCotizacion = () => {
       <NavbarComponent />
       <div className="container">
         <form className="row g-3 mt-4" onSubmit={handleSubmit}>
-          <h1 className="mt-5">Datos del Cliente</h1>
+          <h1 className="mt-5 text-center">Datos del Cliente</h1>
           <ClientDetailsForm cliente={cliente} onChange={handleClientChange} />
 
-          <h1 className="mt-5">Selecciona Tus Componentes</h1>
+          <h1 className="mt-5 text-center">Selecciona Tus Componentes</h1>
           <ProductSelector
             onComponenteSeleccionado={handleComponenteSeleccionado}
           />
@@ -136,7 +136,7 @@ const FormularioCotizacion = () => {
                       max={componente.Stock}
                     />
                   </td>
-                  <td>$ {componente.Precio.toFixed(2)}</td>
+                  <td>$ {componente.Precio.toFixed(0)}</td>
                   <td>{componente.Descripcion}</td>
                   <td>
                     <button
@@ -164,8 +164,8 @@ const FormularioCotizacion = () => {
               ))}
             </tbody>
           </table>
+          <h2>Total: {totalPrecio.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</h2>
 
-          <h2>Total: ${totalPrecio.toFixed(2)}</h2>
           <div className="d-flex justify-content-center">
             <button type="submit" className="btn btn-outline-light mx-2 mb-5">
               Crear Cotización

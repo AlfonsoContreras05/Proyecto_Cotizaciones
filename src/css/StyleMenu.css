@@ -11,8 +11,9 @@ html{
     font-weight: 300;
     color: var(--ligth);
     justify-content: center;
+    
     align-items: center;
-    margin: 0 auto;
+    
 }
 .bg-dark{ background-color: var(--dark) !important;}
 .bg-dark-x{background-color: var(--dark-x);}
@@ -20,10 +21,10 @@ html{
 
 .container{
   background-color: var(--dark-x) !important;
-  display: flexbox;
+  display: flex;
   margin: 0 auto;
-  justify-content: center;
   align-items: center;
+
 }
 .form-control, .btn{
     min-height: 3.125rem;
