@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
 import NavbarComponent from './NavbarComponent';
 import '../css/StyleInicio.css';
+import * as XLSX from 'xlsx';
+
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -119,6 +121,18 @@ const GraficoVentasDiarias = () => {
         maintainAspectRatio: false
     };
 
+    const exportToExcel = () => {
+        const ws = XLSX.utils.json_to_sheet(ventasDiarias);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "VentasDiarias");
+      
+        // Escribe el archivo y desencadena la descarga
+        XLSX.writeFile(wb, "ventas_diarias.xlsx");
+      };
+      
+
+
+
     
 
     return (
@@ -142,6 +156,7 @@ const GraficoVentasDiarias = () => {
                 </div>
                 </div>
             </div>
+            <button onClick={exportToExcel}>Descargar Excel</button>
         </div>
     );
 };
