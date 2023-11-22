@@ -66,7 +66,7 @@ const GraficoVentasDiarias = () => {
         labels: productosMasVendidos.map(p => p.Nombre),
         datasets: [{
             label: 'Productos Más Vendidos',
-            data: productosMasVendidos.map(p => p.TotalVendido),
+            data: productosMasVendidos.map(p => parseFloat(p.TotalCotizado)),
             backgroundColor: 'rgba(75, 192, 192, 0.5)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1
@@ -130,35 +130,51 @@ const GraficoVentasDiarias = () => {
         XLSX.writeFile(wb, "ventas_diarias.xlsx");
       };
       
-
-
-
+      const descargarExcelProductos = () => {
+        // Crear un nuevo libro y hoja de trabajo
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(productosMasVendidos);
     
+        // Agregar la hoja al libro
+        XLSX.utils.book_append_sheet(wb, ws, "Productos Más Vendidos");
+    
+        // Escribir el libro y descargarlo
+        XLSX.writeFile(wb, "ProductosMasVendidos.xlsx");
+    };
 
     return (
         <div className='container-p'>
             <NavbarComponent />
             <div className="grid-container">
+                {/* Contenedor del primer gráfico y su botón de descarga */}
                 <div className="chart-container">
                     <h2>Ventas Diarias</h2>
                     <div style={{ height: '400px', maxWidth: '100%' }}>
                         <Bar data={datosDelGrafico} options={opcionesDelGrafico} />
                     </div>
+                    <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                        <button onClick={exportToExcel}>Descargar Excel Ventas Diarias</button>
+                    </div>
                 </div>
+    
+                {/* Contenedor del segundo gráfico y su botón de descarga */}
                 <div className="chart-container">
-                <h2>Productos Más Vendidos</h2>
-                <div style={{ height: '400px', maxWidth: '100%' }}>
-                    {productosMasVendidos.length > 0 ? (
-                        <Bar data={datosGraficoProductos} options={opcionesDelGrafico} />
-                    ) : (
-                        <p>Cargando datos...</p>
-                    )}
-                </div>
+                    <h2>Productos Más Vendidos</h2>
+                    <div style={{ height: '400px', maxWidth: '100%' }}>
+                        {productosMasVendidos.length > 0 ? (
+                            <Bar data={datosGraficoProductos} options={opcionesDelGrafico} />
+                        ) : (
+                            <p>Cargando datos...</p>
+                        )}
+                    </div>
+                    <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                        <button onClick={descargarExcelProductos}>Descargar Excel Productos Más Vendidos</button>
+                    </div>
                 </div>
             </div>
-            <button onClick={exportToExcel}>Descargar Excel</button>
         </div>
     );
+    
 };
 
 export default GraficoVentasDiarias;
