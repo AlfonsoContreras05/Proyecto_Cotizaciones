@@ -143,33 +143,51 @@ app.post("/api/guardar-cotizacion", async (req, res) => {
     const idVendedor = req.params.idVendedor;
 
     try {
-        // Consulta SQL para obtener las cotizaciones junto con sus detalles
         const query = `
-            SELECT c.ID_Cotizacion, c.Fecha_Cotizacion, c.Estado, 
-                   GROUP_CONCAT(d.ID_Producto) AS Productos,
-                   SUM(d.Precio_Unitario * d.Cantidad) AS Total
-            FROM cotizacion c
-            JOIN detalle_venta d ON c.ID_Cotizacion = d.ID_Cotizacion
-            WHERE c.ID_Vendedor = ?
-            GROUP BY c.ID_Cotizacion;
+            SELECT 
+                c.ID_Cotizacion, 
+                c.Fecha_Cotizacion, 
+                c.Estado,
+                GROUP_CONCAT(d.ID_Producto) AS Productos,
+                SUM(d.Precio_Unitario * d.Cantidad) AS Total,
+                TIMESTAMPDIFF(HOUR, c.Fecha_Cotizacion, NOW()) AS HorasTranscurridas
+            FROM 
+                cotizacion c
+            JOIN 
+                detalle_venta d ON c.ID_Cotizacion = d.ID_Cotizacion
+            WHERE 
+                c.ID_Vendedor = ?
+            GROUP BY 
+                c.ID_Cotizacion;
         `;
+
         const [cotizaciones] = await db.promise().query(query, [idVendedor]);
 
-        // Convertir los productos en un array y calcular el total de cada cotización
-        const cotizacionesConDetalle = cotizaciones.map(cot => {
+        const cotizacionesActualizadas = cotizaciones.map(cot => {
+            let estadoActualizado = cot.Estado;
+            if (cot.HorasTranscurridas > 48) {
+                estadoActualizado = 'Expirado';
+            } else if (cot.HorasTranscurridas < 48 && cot.HorasTranscurridas > 24) {
+                estadoActualizado = 'Caducará Pronto';
+            }else if (cot.HorasTranscurridas < 24){
+              estadoActualizado = 'Nueva';
+            }
+
             return {
                 ...cot,
                 productos: cot.Productos.split(',').map(Number),
-                total: parseFloat(cot.Total)
+                total: parseFloat(cot.Total),
+                Estado: estadoActualizado // Actualiza el estado
             };
         });
 
-        res.json(cotizacionesConDetalle);
+        res.json(cotizacionesActualizadas);
     } catch (error) {
         console.error("Error al obtener cotizaciones del vendedor:", error);
         res.status(500).send("Error en el servidor");
     }
 });
+
 app.get("/api/ventas-vendedor/:idVendedor", async (req, res) => {
   const idVendedor = req.params.idVendedor;
 
@@ -194,3 +212,89 @@ app.get("/api/ventas-vendedor/:idVendedor", async (req, res) => {
       res.status(500).send("Error en el servidor");
   }
 });
+
+// Endpoint para obtener detalles de una cotización específica
+app.get("/api/detalles-cotizacion/:idCotizacion", async (req, res) => {
+  const idCotizacion = req.params.idCotizacion;
+
+  try {
+    const query = `
+      SELECT 
+        c.ID_Cotizacion, c.Fecha_Cotizacion, c.Estado, 
+        v.Nombre as NombreVendedor, v.Apellido as ApellidoVendedor,
+        p.ID_Producto, p.Nombre as NombreProducto, p.Descripcion, 
+        d.Cantidad, d.Precio_Unitario
+      FROM 
+        cotizacion c
+      JOIN 
+        detalle_venta d ON c.ID_Cotizacion = d.ID_Cotizacion
+      JOIN 
+        producto p ON d.ID_Producto = p.ID_Producto
+      JOIN
+        vendedor v ON c.ID_Vendedor = v.ID_Vendedor
+      WHERE 
+        c.ID_Cotizacion = ?;
+    `;
+
+    const [detalles] = await db.promise().query(query, [idCotizacion]);
+
+    if (detalles.length > 0) {
+      // Formatear los detalles para la respuesta
+      const formattedDetails = detalles.map(item => ({
+        idProducto: item.ID_Producto,
+        nombreProducto: item.NombreProducto,
+        descripcion: item.Descripcion,
+        cantidad: item.Cantidad,
+        precioUnitario: item.Precio_Unitario,
+        total: item.Cantidad * item.Precio_Unitario
+      }));
+
+      // Datos adicionales de la cotización
+      const cotizacionInfo = {
+        idCotizacion: detalles[0].ID_Cotizacion,
+        fechaCotizacion: detalles[0].Fecha_Cotizacion,
+        estado: detalles[0].Estado,
+        nombreVendedor: `${detalles[0].NombreVendedor} ${detalles[0].ApellidoVendedor}`
+      };
+
+      res.json({ cotizacion: cotizacionInfo, productos: formattedDetails });
+    } else {
+      res.status(404).send("Cotización no encontrada");
+    }
+  } catch (error) {
+    console.error("Error al obtener detalles de la cotización:", error);
+    res.status(500).send("Error en el servidor");
+  }
+});
+
+app.get("/api/productos-mas-cotizados/:idVendedor", async (req, res) => {
+  const idVendedor = req.params.idVendedor;
+
+  try {
+      const query = `
+          SELECT 
+              p.Nombre, 
+              SUM(d.Cantidad) as TotalCotizado
+          FROM 
+              detalle_venta d
+          JOIN 
+              producto p ON d.ID_Producto = p.ID_Producto
+          JOIN 
+              cotizacion c ON d.ID_Cotizacion = c.ID_Cotizacion
+          WHERE 
+              c.ID_Vendedor = ?
+          GROUP BY 
+              p.ID_Producto
+          ORDER BY 
+              TotalCotizado DESC
+          LIMIT 5;
+      `;
+
+      const [productosMasCotizados] = await db.promise().query(query, [idVendedor]);
+      res.json(productosMasCotizados);
+  } catch (error) {
+      console.error("Error al obtener los productos más cotizados:", error);
+      res.status(500).send("Error en el servidor");
+  }
+});
+

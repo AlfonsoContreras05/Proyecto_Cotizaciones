@@ -13,22 +13,24 @@
 }
 
 .container{
-    margin: 5% 2px;
+        
     align-items: center;
     padding: auto;
     width: auto;
+
 }
 
 .container-p {
-    margin-top: 5%;
-    margin-right: 0%;
+    margin: 5% auto;
     background-color: var(--dark) !important;
+
 }
 
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Cambia el número de columnas según el ancho */
     gap: 20px; /* Espacio entre las columnas */
+    
 }
 
 .chart-container {
@@ -36,6 +38,7 @@
     padding: 10px;
     border-radius: 4px;
     color: var(--light);
+    
 }
 
 

@@ -70,17 +70,18 @@ const NavbarComponent = () => {
                 </Link>
               </li>
 
-              <li className="nav-item p-3 py-md-1">
+              {/* <li className="nav-item p-3 py-md-1">
                 <Link to="/" className="nav-link">
                   TOTALIZADO
                 </Link>
-              </li>
-
+              </li> */}
+{/* 
               <li className="nav-item p-3 py-md-1">
-                <Link to="/" className="nav-link">
+                <Link to="/Venta" className="nav-link">
                   VENTA
                 </Link>
-              </li>
+              </li> */}
+              
               <li className="nav-item p-3 py-md-1">
                 <a
                   href="/"

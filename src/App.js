@@ -7,6 +7,8 @@ import NavbarComponent from './components/NavbarComponent.jsx';
 import ComponenteProductos  from './components/ComponenteProductos.jsx';
 import HistorialVentas from './components/HistorialCotizaciones.jsx';
 import Inicio from './components/ComponenteInicio.jsx';
+import Venta from './components/ProcesarVenta.jsx';
+import ModalV from './components/ModalVenta.jsx'
 function App() {
   return (
     <Router>
@@ -19,6 +21,8 @@ function App() {
           <Route path="/ComponenteProductos" element={<ComponenteProductos/>} />
           <Route path="/HistorialVentas" element={<HistorialVentas/>} />
           <Route path="/Inicio" element={<Inicio/>} />
+          <Route path="/Venta" element={<Venta/>} />
+          <Route path='/ModalVenta' element={<ModalV/>} />
 
 
           {/* Puedes agregar más rutas aquí */}

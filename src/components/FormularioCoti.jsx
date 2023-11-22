@@ -115,8 +115,10 @@ const FormularioCotizacion = () => {
                 <th>Cantiad</th>
                 <th>Precio</th>
                 <th>Descripción</th>
+
                 <th></th>
               </tr>
+              
             </thead>
             <tbody>
               {componentesSeleccionados.map((componente, index) => (
@@ -138,7 +140,8 @@ const FormularioCotizacion = () => {
                   </td>
                   <td>$ {componente.Precio.toFixed(0)}</td>
                   <td>{componente.Descripcion}</td>
-                  <td>
+                  <td> 
+
                     <button
                       onClick={() =>
                         handleEliminarComponente(componente.ID_Producto)
