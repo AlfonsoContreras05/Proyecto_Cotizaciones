@@ -38,7 +38,7 @@ const LoginVendedor = () => {
   
         // Redirigir al usuario después de un breve retraso
         setTimeout(() => {
-          navigate("/menu-usuario");
+          navigate("/Inicio");
         }, 3000);
       } else {
         setErrorMensaje("Error en el inicio de sesión. Por favor, intenta de nuevo.");
@@ -129,7 +129,7 @@ const LoginVendedor = () => {
                 O inicia sesión como administrador
               </p>
               <div className="d-flex justify-content-around">
-                <Link to="/admin/login">
+                <Link to="/LoginAdmin">
                   <button type="button" className="btn btn-outline-light">
                     Soy administrador
                   </button>

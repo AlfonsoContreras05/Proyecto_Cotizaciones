@@ -29,30 +29,57 @@ app.listen(PORT, () => {
 });
 
 // Endpoint para el inicio de sesión
-app.post("/login", (req, res) => {
+app.post('/login', (req, res) => {
   const { usuario, password } = req.body;
+
+  // Consulta la base de datos para validar las credenciales del vendedor
   db.query(
-    "SELECT ID_Vendedor, Nombre FROM vendedor WHERE Nombre = ? AND pass = ?",
+    'SELECT ID_Vendedor, Nombre FROM vendedor WHERE Nombre = ? AND pass = ?',
     [usuario, password],
-    (err, results) => {
+    (err, vendedorResults) => {
       if (err) {
-        console.error("Error en el servidor:", err);
-        return res.status(500).send("Error en el servidor");
+        console.error('Error en el servidor:', err);
+        return res.status(500).send('Error en el servidor');
       }
-      if (results.length > 0) {
-        // Devuelve solo la información necesaria del vendedor
+
+      if (vendedorResults.length > 0) {
+        // Las credenciales son del vendedor
         const vendedorData = {
-          ID_Vendedor: results[0].ID_Vendedor,
-          Nombre: results[0].Nombre,
-          // Puedes añadir aquí otros campos que consideres necesarios
+          ID_Vendedor: vendedorResults[0].ID_Vendedor,
+          Nombre: vendedorResults[0].Nombre,
+          // Puedes añadir aquí otros campos que consideres necesarios para el vendedor
         };
         return res.status(200).json({ vendedor: vendedorData });
       } else {
-        return res.status(401).send("Credenciales incorrectas");
+        // Si las credenciales no son del vendedor, intenta con el administrador
+        db.query(
+          'SELECT ID_Administrador, Nombre FROM administrador WHERE Nombre = ? AND pass = ?',
+          [usuario, password],
+          (err, adminResults) => {
+            if (err) {
+              console.error('Error en el servidor:', err);
+              return res.status(500).send('Error en el servidor');
+            }
+
+            if (adminResults.length > 0) {
+              // Las credenciales son del administrador
+              const adminData = {
+                ID_Administrador: adminResults[0].ID_Administrador,
+                Nombre: adminResults[0].Nombre,
+                // Puedes añadir aquí otros campos que consideres necesarios para el administrador
+              };
+              return res.status(200).json({ administrador: adminData });
+            } else {
+              // Credenciales incorrectas para vendedor y administrador
+              return res.status(401).send('Credenciales incorrectas');
+            }
+          }
+        );
       }
     }
   );
 });
+
 
 // Nuevo endpoint para obtener todos los productos
 app.get("/api/productos", (req, res) => {

@@ -8,7 +8,11 @@ import ComponenteProductos  from './components/ComponenteProductos.jsx';
 import HistorialVentas from './components/HistorialCotizaciones.jsx';
 import Inicio from './components/ComponenteInicio.jsx';
 import Venta from './components/ProcesarVenta.jsx';
-import ModalV from './components/ModalVenta.jsx'
+import ModalV from './components/ModalVenta.jsx';
+import LoginAdministrador from './admin-components/adminlogin.jsx';
+import NavBarAdmin from './admin-components/navBarAmin.jsx';
+import InicioAdmin from './admin-components/InicioAdmin.jsx';
+import CResumen from './admin-components/CResumen.jsx'
 function App() {
   return (
     <Router>
@@ -23,6 +27,11 @@ function App() {
           <Route path="/Inicio" element={<Inicio/>} />
           <Route path="/Venta" element={<Venta/>} />
           <Route path='/ModalVenta' element={<ModalV/>} />
+          <Route path='/LoginAdmin' element={<LoginAdministrador/>} />
+          <Route path='/NavBarAdmin' element={<NavBarAdmin/>} />
+          <Route path='/InicioAdmin' element={<InicioAdmin/>} />
+          <Route path='/CResumen' element={<CResumen/>} />
+
 
 
           {/* Puedes agregar más rutas aquí */}
