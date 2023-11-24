@@ -13,7 +13,7 @@
 }
 
 .container{
-    max-width: 70%;
+    max-width: 100%;
     align-items: center;
     display: grid;
 }

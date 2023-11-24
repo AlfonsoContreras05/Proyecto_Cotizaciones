@@ -21,32 +21,32 @@ const DashboardCard = ({ title, value, icon }) => (
 );
 
 const Dashboard = () => (
-  <div style={{ background: '#222', padding: '20px' }}>
+  <div style={{ background: '#222', padding: '20px', margin: '4% 0 0 0'}}>
     <Row xs={1} md={2} lg={4} className="g-4">
       <Col>
         <DashboardCard
-          title="Today Sale"
+          title="Venta Diaria"
           value="$1234"
           icon={faChartLine}
         />
       </Col>
       <Col>
         <DashboardCard
-          title="Total Sale"
+          title="Venta Mensual"
           value="$1234"
           icon={faChartLine}
         />
       </Col>
       <Col>
         <DashboardCard
-          title="Today Revenue"
+          title="Venta Anual"
           value="$1234"
           icon={faChartPie}
         />
       </Col>
       <Col>
         <DashboardCard
-          title="Total Revenue"
+          title="Meta"
           value="$1234"
           icon={faChartPie}
         />

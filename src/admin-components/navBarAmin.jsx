@@ -4,7 +4,7 @@ import image from "../img/pngwing.com12.png";
 import image2 from '../img/klipartz.com.png';
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
       <div className="container-fluid">
         <a className="navbar-brand" href="/">
           <img
