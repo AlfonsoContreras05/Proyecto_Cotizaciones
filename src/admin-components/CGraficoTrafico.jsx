@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Row, Col, Card, Button, ButtonGroup, DropdownButton, Dropdown } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
 function TrafficChart() {
   return (
     <Container fluid>

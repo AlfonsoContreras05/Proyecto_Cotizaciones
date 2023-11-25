@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import CResumen from "./CResumen";
 import NavBarAdmin from "./navBarAmin";
 import GraficoBarra from "./CGraficoBarra";
+
 class MiComponente extends Component {
   constructor(props) {
     super(props);
@@ -37,5 +38,4 @@ class MiComponente extends Component {
     );
   }
 }
-
 export default MiComponente;

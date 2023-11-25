@@ -1,4 +1,10 @@
 /* DashboardCharts.css */
+
+:root{
+    --dark: #16191c;
+    --dark-x: #1e2126;
+    --ligth: #ffffff;
+}
 .bg-dark {
     background-color: #2d3748 !important;
 }

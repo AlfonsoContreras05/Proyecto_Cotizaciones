@@ -12,7 +12,7 @@ import ModalV from './components/ModalVenta.jsx';
 import LoginAdministrador from './admin-components/adminlogin.jsx';
 import NavBarAdmin from './admin-components/navBarAmin.jsx';
 import InicioAdmin from './admin-components/InicioAdmin.jsx';
-import CResumen from './admin-components/CResumen.jsx'
+import CResumen from './admin-components/CResumen.jsx';
 function App() {
   return (
     <Router>

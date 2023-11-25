@@ -7,7 +7,6 @@ function DashboardCharts() {
   return (
     <Container className="d-flex justify-content-center align-items-center max-width-xxl">
       <Row className="g-4">
-
         <Col md={4}>
           <Card className="text-white bg-dark h-100">
             <Card.Body>
@@ -58,10 +57,8 @@ function DashboardCharts() {
             </Card.Body>
           </Card>
         </Col>
-
       </Row>
     </Container>
   );
 }
-
 export default DashboardCharts;
