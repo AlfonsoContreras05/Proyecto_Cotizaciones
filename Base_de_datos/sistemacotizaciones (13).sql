@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-11-2023 a las 15:45:11
+-- Tiempo de generación: 27-11-2023 a las 20:46:19
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -33,8 +33,40 @@ CREATE TABLE `administrador` (
   `Apellido` varchar(255) DEFAULT NULL,
   `Correo_Electronico` varchar(255) DEFAULT NULL,
   `Telefono` varchar(50) DEFAULT NULL,
-  `Rol` varchar(50) DEFAULT NULL
+  `Rol` varchar(50) DEFAULT NULL,
+  `pass` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `administrador`
+--
+
+INSERT INTO `administrador` (`ID_Administrador`, `Nombre`, `Apellido`, `Correo_Electronico`, `Telefono`, `Rol`, `pass`) VALUES
+(1, 'Wizzard', 'Tech', 'WT@gmail.com', '+56 9 4631 7762', 'Admin', '123456');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `almacenamiento`
+--
+
+CREATE TABLE `almacenamiento` (
+  `ID_Almacenamiento` int(11) NOT NULL,
+  `ID_Producto` int(11) DEFAULT NULL,
+  `Nombre` varchar(255) DEFAULT NULL,
+  `Capacidad` varchar(20) DEFAULT NULL,
+  `Tipo` varchar(50) DEFAULT NULL,
+  `FactorForma` varchar(50) DEFAULT NULL,
+  `Interfaz` varchar(50) DEFAULT NULL,
+  `Fabricante` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `almacenamiento`
+--
+
+INSERT INTO `almacenamiento` (`ID_Almacenamiento`, `ID_Producto`, `Nombre`, `Capacidad`, `Tipo`, `FactorForma`, `Interfaz`, `Fabricante`) VALUES
+(1, NULL, 'Elemento 1', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -57,8 +89,10 @@ INSERT INTO `categoria_producto` (`ID_Categoria`, `Nombre`, `Descripcion`) VALUE
 (2, 'Procesadores', 'Unidades centrales de procesamiento para computadoras'),
 (3, 'Tarjetas Gráficas', 'Componentes para procesamiento gráfico y rendimiento visual'),
 (4, 'Fuentes de Poder', 'Suministro de energía para componentes de computadora'),
-(5, 'Prueba4', 'elementos'),
-(6, 'cajas', 'cajas chicas cajas grandes');
+(5, 'Almacenamiento', 'Componentes de almacenamiento de hadware'),
+(6, 'Cooler', 'Componentes de Enfriamiento'),
+(7, 'Memoria Ram', 'Componentes '),
+(8, 'Gabinete', 'Componente estructural');
 
 -- --------------------------------------------------------
 
@@ -81,12 +115,34 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`ID_Cliente`, `Nombre`, `Apellido`, `rut`, `Direccion`, `Correo_Electronico`, `Telefono`) VALUES
-(24, 'alfonso', 'contreras', '18.329.423-7', 'batallon maipo 02877', 'alfonso.contreras.a3@gmail.com', '946317762'),
-(25, 'alfonso', 'contreras', '18.329.423-7', 'batallon maipo 02877', 'Adm@mail.com', '946317762'),
-(26, 'alfonso', 'contreras', '18.329.423-7', 'batallon maipo 02877', 'Adm@mail.com', '946317762'),
-(27, 'Felipe', 'Muñoz', '11.258.258-9', 'lejos por alla 2101', 'felipe@mail.com', '+569321321321'),
-(28, 'alfonso', 'contreras', '18.329.423-7', 'batallon maipo 02877', 'Adm@mail.com', '946317762'),
-(29, 'pedro', 'luna', '20.321.123-8', 'batallon maipo 02877', 'Administrador@pene.com', '946317762');
+(36, 'alfonso', 'contreras', '18.329.423-7', 'batallon maipo 02877', 'Adm@mail.com', '946317762'),
+(37, 'laura', 'soto', '12.232.333-8', 'psj 9', 'hola@mail.com', '946317762'),
+(38, 'mario', 'bros', '22.333.666-7', 'psj19', 'mail@mail.cl', '946317762');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cooler`
+--
+
+CREATE TABLE `cooler` (
+  `ID_Cooler` int(11) NOT NULL,
+  `ID_Producto` int(11) DEFAULT NULL,
+  `Nombre` varchar(255) DEFAULT NULL,
+  `RPM` int(11) DEFAULT NULL,
+  `NivelRuido` decimal(10,2) DEFAULT NULL,
+  `TamañoRadiador` varchar(20) DEFAULT NULL,
+  `zocaloCpu` varchar(50) DEFAULT NULL,
+  `Fabricante` varchar(100) DEFAULT NULL,
+  `ImagenURL` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `cooler`
+--
+
+INSERT INTO `cooler` (`ID_Cooler`, `ID_Producto`, `Nombre`, `RPM`, `NivelRuido`, `TamañoRadiador`, `zocaloCpu`, `Fabricante`, `ImagenURL`) VALUES
+(1, NULL, 'Elemento 1', NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -107,12 +163,9 @@ CREATE TABLE `cotizacion` (
 --
 
 INSERT INTO `cotizacion` (`ID_Cotizacion`, `ID_Cliente`, `ID_Vendedor`, `Fecha_Cotizacion`, `Estado`) VALUES
-(22, 24, 1, '2023-11-19', 'Pendiente'),
-(23, 25, 1, '2023-11-19', 'Pendiente'),
-(24, 26, 1, '2023-11-19', 'Pendiente'),
-(25, 27, 1, '2023-11-19', 'Pendiente'),
-(26, 28, 1, '2023-11-20', 'Pendiente'),
-(27, 29, 1, '2023-11-21', 'Pendiente');
+(42, 36, 3, '2022-11-27', 'Pendiente'),
+(43, 37, 5, '2023-10-27', 'Pendiente'),
+(44, 38, 3, '2023-11-27', 'Pendiente');
 
 -- --------------------------------------------------------
 
@@ -136,37 +189,31 @@ CREATE TABLE `detalle_venta` (
 --
 
 INSERT INTO `detalle_venta` (`ID_DetalleVenta`, `ID_Transaccion`, `ID_Producto`, `Cantidad`, `Precio_Unitario`, `Descuento`, `ID_Vendedor`, `ID_Cotizacion`) VALUES
-(15, NULL, 1, 1, 120, NULL, NULL, 22),
-(16, NULL, 4, 1, 450, NULL, NULL, 22),
-(17, NULL, 7, 1, 700, NULL, NULL, 22),
-(18, NULL, 10, 1, 90, NULL, NULL, 22),
-(19, NULL, 2, 1, 100, NULL, NULL, 22),
-(20, NULL, 1, 1, 120, NULL, NULL, 23),
-(21, NULL, 4, 1, 450, NULL, NULL, 23),
-(22, NULL, 7, 1, 700, NULL, NULL, 23),
-(23, NULL, 10, 1, 90, NULL, NULL, 23),
-(24, NULL, 5, 1, 330, NULL, NULL, 24),
-(25, NULL, 11, 1, 60, NULL, NULL, 24),
-(26, NULL, 13, 1, 10000, NULL, NULL, 24),
-(27, NULL, 7, 1, 700, NULL, NULL, 25),
-(28, NULL, 10, 1, 90, NULL, NULL, 25),
-(29, NULL, 14, 1, 15000, NULL, NULL, 25),
-(30, NULL, 2, 1, 100, NULL, NULL, 26),
-(31, NULL, 5, 1, 330, NULL, NULL, 26),
-(32, NULL, 8, 1, 650, NULL, NULL, 26),
-(33, NULL, 11, 1, 60, NULL, NULL, 26),
-(34, NULL, 13, 1, 10000, NULL, NULL, 26),
-(35, NULL, 14, 1, 15000, NULL, NULL, 26),
-(36, NULL, 1, 1, 120, NULL, NULL, 27),
-(37, NULL, 2, 1, 100, NULL, NULL, 27),
-(38, NULL, 4, 1, 450, NULL, NULL, 27),
-(39, NULL, 5, 1, 330, NULL, NULL, 27),
-(40, NULL, 7, 1, 700, NULL, NULL, 27),
-(41, NULL, 8, 1, 650, NULL, NULL, 27),
-(42, NULL, 10, 1, 90, NULL, NULL, 27),
-(43, NULL, 11, 1, 60, NULL, NULL, 27),
-(44, NULL, 13, 1, 10000, NULL, NULL, 27),
-(45, NULL, 14, 1, 15000, NULL, NULL, 27);
+(77, NULL, 2, 1, 100, NULL, NULL, 42),
+(78, NULL, 5, 1, 330, NULL, NULL, 42),
+(79, NULL, 8, 1, 650, NULL, NULL, 42),
+(80, NULL, 10, 1, 90, NULL, NULL, 42),
+(81, NULL, 13, 1, 10000, NULL, NULL, 42),
+(82, NULL, 14, 1, 15000, NULL, NULL, 42),
+(83, NULL, 15, 1, 15000, NULL, NULL, 42),
+(84, NULL, 16, 1, 7500, NULL, NULL, 42),
+(85, NULL, 4, 1, 450, NULL, NULL, 43),
+(86, NULL, 7, 1, 700, NULL, NULL, 43),
+(87, NULL, 10, 1, 90, NULL, NULL, 43),
+(88, NULL, 13, 1, 10000, NULL, NULL, 43),
+(89, NULL, 14, 1, 15000, NULL, NULL, 43),
+(90, NULL, 15, 1, 15000, NULL, NULL, 43),
+(91, NULL, 16, 1, 7500, NULL, NULL, 43),
+(92, NULL, 1, 1, 120, NULL, NULL, 44),
+(93, NULL, 2, 1, 100, NULL, NULL, 44),
+(94, NULL, 4, 1, 450, NULL, NULL, 44),
+(95, NULL, 5, 1, 330, NULL, NULL, 44),
+(96, NULL, 7, 1, 700, NULL, NULL, 44),
+(97, NULL, 10, 1, 90, NULL, NULL, 44),
+(98, NULL, 13, 1, 10000, NULL, NULL, 44),
+(99, NULL, 14, 1, 15000, NULL, NULL, 44),
+(100, NULL, 15, 1, 15000, NULL, NULL, 44),
+(101, NULL, 16, 1, 7500, NULL, NULL, 44);
 
 -- --------------------------------------------------------
 
@@ -179,18 +226,56 @@ CREATE TABLE `fuentepoder` (
   `ID_Producto` int(11) DEFAULT NULL,
   `TipoFuente` varchar(15) DEFAULT NULL,
   `PotenciaW` varchar(10) DEFAULT NULL,
-  `Corriente` varchar(15) DEFAULT NULL,
-  `ImagenURL` varchar(255) DEFAULT NULL
+  `Tipo` varchar(30) DEFAULT NULL,
+  `Eficiencia` varchar(15) DEFAULT NULL,
+  `ImagenURL` varchar(255) DEFAULT NULL,
+  `Nombre` varchar(100) DEFAULT NULL,
+  `Fabricante` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `fuentepoder`
 --
 
-INSERT INTO `fuentepoder` (`ID_FuentePoder`, `ID_Producto`, `TipoFuente`, `PotenciaW`, `Corriente`, `ImagenURL`) VALUES
-(1, 10, 'Corsair', '750W', '80 Plus Gold', 'url_imagen_10'),
-(2, 11, 'EVGA', '600W', '80 Plus Bronze', 'url_imagen_11'),
-(3, 12, 'Thermaltake', '500W', '80 Plus White', 'url_imagen_12');
+INSERT INTO `fuentepoder` (`ID_FuentePoder`, `ID_Producto`, `TipoFuente`, `PotenciaW`, `Tipo`, `Eficiencia`, `ImagenURL`, `Nombre`, `Fabricante`) VALUES
+(1, 10, 'Corsair', '750W', NULL, '80 Plus Gold', 'url_imagen_10', NULL, NULL),
+(2, 11, 'EVGA', '600W', NULL, '80 Plus Bronze', 'url_imagen_11', NULL, NULL),
+(3, 12, 'Thermaltake', '500W', NULL, '80 Plus White', 'url_imagen_12', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `gabinete`
+--
+
+CREATE TABLE `gabinete` (
+  `ID_Gabinete` int(11) NOT NULL,
+  `ID_Producto` int(11) DEFAULT NULL,
+  `Nombre` varchar(255) DEFAULT NULL,
+  `Tipo` varchar(50) DEFAULT NULL,
+  `Color` varchar(50) DEFAULT NULL,
+  `Volumen` int(11) DEFAULT NULL,
+  `PanelLateral` varchar(50) DEFAULT NULL,
+  `Fabricante` varchar(100) DEFAULT NULL,
+  `ImagenURL` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `memoriaram`
+--
+
+CREATE TABLE `memoriaram` (
+  `ID_Ram` int(11) NOT NULL,
+  `ID_Producto` int(11) DEFAULT NULL,
+  `Nombre` varchar(255) DEFAULT NULL,
+  `Conector` varchar(50) DEFAULT NULL,
+  `Velocidad` varchar(20) DEFAULT NULL,
+  `Modulos` int(11) DEFAULT NULL,
+  `Fabricante` varchar(100) DEFAULT NULL,
+  `ImagenURL` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -216,19 +301,24 @@ CREATE TABLE `placamadre` (
   `ID_PlacaMadre` int(11) NOT NULL,
   `ID_Producto` int(11) DEFAULT NULL,
   `ArkPlaca` varchar(20) NOT NULL,
-  `TipoPlaca` varchar(20) NOT NULL,
+  `Zocalo/CPU` varchar(20) DEFAULT NULL,
+  `FactorForma` varchar(20) DEFAULT NULL,
+  `MaxMemoria` varchar(20) DEFAULT NULL,
+  `RanurasMemoria` int(11) DEFAULT NULL,
   `SoporteDDR` varchar(10) DEFAULT NULL,
-  `ImagenURL` varchar(255) DEFAULT NULL
+  `ImagenURL` varchar(255) DEFAULT NULL,
+  `Nombre` varchar(100) DEFAULT NULL,
+  `Fabricante` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `placamadre`
 --
 
-INSERT INTO `placamadre` (`ID_PlacaMadre`, `ID_Producto`, `ArkPlaca`, `TipoPlaca`, `SoporteDDR`, `ImagenURL`) VALUES
-(11, 1, 'Z490', 'Intel', 'DDR4', 'url_imagen_1'),
-(12, 2, 'B550', 'AMD', 'DDR4', 'url_imagen_2'),
-(13, 3, 'X570', 'AMD', 'DDR4', 'url_imagen_3');
+INSERT INTO `placamadre` (`ID_PlacaMadre`, `ID_Producto`, `ArkPlaca`, `Zocalo/CPU`, `FactorForma`, `MaxMemoria`, `RanurasMemoria`, `SoporteDDR`, `ImagenURL`, `Nombre`, `Fabricante`) VALUES
+(11, 1, 'Z490', NULL, NULL, NULL, NULL, 'DDR4', '/img-productos/imagen1.jpg', NULL, NULL),
+(12, 2, 'B550', NULL, NULL, NULL, NULL, 'DDR4', 'url_imagen_2', NULL, NULL),
+(13, 3, 'X570', NULL, NULL, NULL, NULL, 'DDR4', 'url_imagen_3', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -241,17 +331,22 @@ CREATE TABLE `procesador` (
   `ID_Producto` int(11) DEFAULT NULL,
   `ArkProcesador` varchar(20) DEFAULT NULL,
   `Frecuencia` varchar(15) NOT NULL,
-  `ImagenURL` varchar(255) DEFAULT NULL
+  `Nucleos` int(11) DEFAULT NULL,
+  `PotenciaW` varchar(10) DEFAULT NULL,
+  `Socket` varchar(20) DEFAULT NULL,
+  `ImagenURL` varchar(255) DEFAULT NULL,
+  `Nombre` varchar(100) DEFAULT NULL,
+  `Fabricante` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `procesador`
 --
 
-INSERT INTO `procesador` (`ID_Procesador`, `ID_Producto`, `ArkProcesador`, `Frecuencia`, `ImagenURL`) VALUES
-(1, 4, 'Intel Core i9', '3.7 GHz', 'url_imagen_4'),
-(2, 5, 'AMD Ryzen 7', '3.8 GHz', 'url_imagen_5'),
-(3, 6, 'Intel Core i5', '2.9 GHz', 'url_imagen_6');
+INSERT INTO `procesador` (`ID_Procesador`, `ID_Producto`, `ArkProcesador`, `Frecuencia`, `Nucleos`, `PotenciaW`, `Socket`, `ImagenURL`, `Nombre`, `Fabricante`) VALUES
+(1, 4, 'Intel Core i9', '3.7 GHz', NULL, NULL, NULL, 'url_imagen_4', NULL, NULL),
+(2, 5, 'AMD Ryzen 7', '3.8 GHz', NULL, NULL, NULL, 'url_imagen_5', NULL, NULL),
+(3, 6, 'Intel Core i5', '2.9 GHz', NULL, NULL, NULL, 'url_imagen_6', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -286,7 +381,9 @@ INSERT INTO `producto` (`ID_Producto`, `Nombre`, `Descripcion`, `Precio`, `ID_Ca
 (11, 'EVGA 600W', 'Fuente de poder EVGA, 600W, certificación 80 Plus Bronze', 60, 4, 25),
 (12, 'Thermaltake 500W', 'Fuente de poder Thermaltake, 500W, certificación 80 Plus White', 45, 4, 30),
 (13, 'elemento1', 'elemento de prueba', 10000, 5, 15),
-(14, 'caja chica', 'linda caja', 15000, 6, 30);
+(14, 'caja chica', 'linda caja', 15000, 6, 30),
+(15, 'Elemento 1', NULL, 15000, 7, 20),
+(16, 'Elemento 1', NULL, 7500, 8, 25);
 
 -- --------------------------------------------------------
 
@@ -318,9 +415,13 @@ INSERT INTO `sucursal` (`ID_Sucursal`, `Ubicacion`, `Telefono`, `Horario_Atencio
 CREATE TABLE `tarjetagrafica` (
   `ID_TarjetaGrafica` int(11) NOT NULL,
   `ID_Producto` int(11) DEFAULT NULL,
+  `Nombre` varchar(100) DEFAULT NULL,
+  `Fabricante` varchar(100) DEFAULT NULL,
   `TipoGrafica` varchar(30) DEFAULT NULL,
   `Memoria` varchar(15) DEFAULT NULL,
   `TipoMemoria` varchar(10) DEFAULT NULL,
+  `PotenciaW` varchar(10) DEFAULT NULL,
+  `Longitud` varchar(20) DEFAULT NULL,
   `ImagenURL` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -328,10 +429,10 @@ CREATE TABLE `tarjetagrafica` (
 -- Volcado de datos para la tabla `tarjetagrafica`
 --
 
-INSERT INTO `tarjetagrafica` (`ID_TarjetaGrafica`, `ID_Producto`, `TipoGrafica`, `Memoria`, `TipoMemoria`, `ImagenURL`) VALUES
-(1, 7, 'NVIDIA RTX 3080', '10GB', 'GDDR6X', 'url_imagen_7'),
-(2, 8, 'AMD Radeon RX 6800', '16GB', 'GDDR6', 'url_imagen_8'),
-(3, 9, 'NVIDIA GTX 1660', '6GB', 'GDDR5', 'url_imagen_9');
+INSERT INTO `tarjetagrafica` (`ID_TarjetaGrafica`, `ID_Producto`, `Nombre`, `Fabricante`, `TipoGrafica`, `Memoria`, `TipoMemoria`, `PotenciaW`, `Longitud`, `ImagenURL`) VALUES
+(1, 7, NULL, NULL, 'NVIDIA RTX 3080', '10GB', 'GDDR6X', NULL, NULL, 'url_imagen_7'),
+(2, 8, NULL, NULL, 'AMD Radeon RX 6800', '16GB', 'GDDR6', NULL, NULL, 'url_imagen_8'),
+(3, 9, NULL, NULL, 'NVIDIA GTX 1660', '6GB', 'GDDR5', NULL, NULL, 'url_imagen_9');
 
 -- --------------------------------------------------------
 
@@ -370,7 +471,13 @@ CREATE TABLE `vendedor` (
 --
 
 INSERT INTO `vendedor` (`ID_Vendedor`, `Nombre`, `Apellido`, `Correo_Electronico`, `Telefono`, `ID_Sucursal`, `Area_Especializacion`, `pass`) VALUES
-(1, 'Alfonso', 'Contreras', 'Orfhe@gmail.com', '+56911223344', 1, 'Armado', '123');
+(1, 'Marcos', 'Aurelio', 'MaAur@mail.com', '+5698877998', 2, 'Coliseo 150', '12345'),
+(2, 'Felipe', 'Muñoz', 'Pipe@mail.cl', '+5698877966', 1, 'Esparta 21', '12345'),
+(3, 'Alfonso', 'Contreras', 'Orfhe@mail.cl', '+5698877999', 1, 'Capadocia', '123'),
+(4, 'peipto', 'perez', 'ppipe@mail.com', '+5699999999', 2, 'lejos', '1234'),
+(5, 'Yoselyn', 'Bascuñan', 'yose@mail.cl', '+5695555555', 1, 'cerca', '321'),
+(6, 'rodrigo', 'matte', 'ro@mail.cl', '+569333333', 1, 'pay', '123'),
+(7, 'maite', 'lopez', 'maite@mail.com', '+569222255556', 1, 'casa 12', '123');
 
 --
 -- Índices para tablas volcadas
@@ -381,6 +488,13 @@ INSERT INTO `vendedor` (`ID_Vendedor`, `Nombre`, `Apellido`, `Correo_Electronico
 --
 ALTER TABLE `administrador`
   ADD PRIMARY KEY (`ID_Administrador`);
+
+--
+-- Indices de la tabla `almacenamiento`
+--
+ALTER TABLE `almacenamiento`
+  ADD PRIMARY KEY (`ID_Almacenamiento`),
+  ADD KEY `ID_Producto` (`ID_Producto`);
 
 --
 -- Indices de la tabla `categoria_producto`
@@ -395,12 +509,19 @@ ALTER TABLE `cliente`
   ADD PRIMARY KEY (`ID_Cliente`);
 
 --
+-- Indices de la tabla `cooler`
+--
+ALTER TABLE `cooler`
+  ADD PRIMARY KEY (`ID_Cooler`),
+  ADD KEY `ID_Producto` (`ID_Producto`);
+
+--
 -- Indices de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
   ADD PRIMARY KEY (`ID_Cotizacion`),
-  ADD KEY `ID_Vendedor` (`ID_Vendedor`),
-  ADD KEY `cotizacion_ibfk_1` (`ID_Cliente`);
+  ADD KEY `cotizacion_ibfk_1` (`ID_Cliente`),
+  ADD KEY `cotizacion_ibfk_2` (`ID_Vendedor`);
 
 --
 -- Indices de la tabla `detalle_venta`
@@ -408,9 +529,9 @@ ALTER TABLE `cotizacion`
 ALTER TABLE `detalle_venta`
   ADD PRIMARY KEY (`ID_DetalleVenta`),
   ADD KEY `ID_Transaccion` (`ID_Transaccion`),
-  ADD KEY `ID_Vendedor` (`ID_Vendedor`),
   ADD KEY `detalle_venta_ibfk_2` (`ID_Producto`),
-  ADD KEY `ID_Cotizacion` (`ID_Cotizacion`);
+  ADD KEY `ID_Cotizacion` (`ID_Cotizacion`),
+  ADD KEY `detalle_venta_ibfk_3` (`ID_Vendedor`);
 
 --
 -- Indices de la tabla `fuentepoder`
@@ -418,6 +539,20 @@ ALTER TABLE `detalle_venta`
 ALTER TABLE `fuentepoder`
   ADD PRIMARY KEY (`ID_FuentePoder`),
   ADD KEY `fuentepoder_ibfk_1` (`ID_Producto`);
+
+--
+-- Indices de la tabla `gabinete`
+--
+ALTER TABLE `gabinete`
+  ADD PRIMARY KEY (`ID_Gabinete`),
+  ADD KEY `ID_Producto` (`ID_Producto`);
+
+--
+-- Indices de la tabla `memoriaram`
+--
+ALTER TABLE `memoriaram`
+  ADD PRIMARY KEY (`ID_Ram`),
+  ADD KEY `ID_Producto` (`ID_Producto`);
 
 --
 -- Indices de la tabla `pedido`
@@ -479,34 +614,64 @@ ALTER TABLE `vendedor`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `administrador`
+--
+ALTER TABLE `administrador`
+  MODIFY `ID_Administrador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT de la tabla `almacenamiento`
+--
+ALTER TABLE `almacenamiento`
+  MODIFY `ID_Almacenamiento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT de la tabla `categoria_producto`
 --
 ALTER TABLE `categoria_producto`
-  MODIFY `ID_Categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `ID_Categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `ID_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `ID_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+
+--
+-- AUTO_INCREMENT de la tabla `cooler`
+--
+ALTER TABLE `cooler`
+  MODIFY `ID_Cooler` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
-  MODIFY `ID_Cotizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `ID_Cotizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `ID_DetalleVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
+  MODIFY `ID_DetalleVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT de la tabla `fuentepoder`
 --
 ALTER TABLE `fuentepoder`
   MODIFY `ID_FuentePoder` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `gabinete`
+--
+ALTER TABLE `gabinete`
+  MODIFY `ID_Gabinete` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `memoriaram`
+--
+ALTER TABLE `memoriaram`
+  MODIFY `ID_Ram` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `placamadre`
@@ -524,7 +689,7 @@ ALTER TABLE `procesador`
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `ID_Producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `ID_Producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT de la tabla `tarjetagrafica`
@@ -533,8 +698,26 @@ ALTER TABLE `tarjetagrafica`
   MODIFY `ID_TarjetaGrafica` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT de la tabla `vendedor`
+--
+ALTER TABLE `vendedor`
+  MODIFY `ID_Vendedor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `almacenamiento`
+--
+ALTER TABLE `almacenamiento`
+  ADD CONSTRAINT `almacenamiento_ibfk_1` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID_Producto`);
+
+--
+-- Filtros para la tabla `cooler`
+--
+ALTER TABLE `cooler`
+  ADD CONSTRAINT `cooler_ibfk_1` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID_Producto`);
 
 --
 -- Filtros para la tabla `cotizacion`
@@ -557,6 +740,18 @@ ALTER TABLE `detalle_venta`
 --
 ALTER TABLE `fuentepoder`
   ADD CONSTRAINT `fuentepoder_ibfk_1` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID_Producto`);
+
+--
+-- Filtros para la tabla `gabinete`
+--
+ALTER TABLE `gabinete`
+  ADD CONSTRAINT `gabinete_ibfk_1` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID_Producto`);
+
+--
+-- Filtros para la tabla `memoriaram`
+--
+ALTER TABLE `memoriaram`
+  ADD CONSTRAINT `memoriaram_ibfk_1` FOREIGN KEY (`ID_Producto`) REFERENCES `producto` (`ID_Producto`);
 
 --
 -- Filtros para la tabla `pedido`

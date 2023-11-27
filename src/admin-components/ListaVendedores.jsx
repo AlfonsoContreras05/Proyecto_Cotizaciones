@@ -1,18 +1,27 @@
-import React, { useState, useEffect , useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import NavBArAdm from "./navBarAmin";
 import DataTable from "react-data-table-component";
 import "../css/StyleHistorial.css"; // Asegúrate de tener este archivo CSS
 //import "bootstrap/dist/css/bootstrap.min.css";
 //import DataTable from "react-data-table-component";
 
-
-
-
 // Usar <GlobalStyle /> en la parte superior de tu componente o aplicación
 
 export function ListarVendedores() {
   const [vendedores, setVendedores] = useState([]);
   const [filterText, setFilterText] = useState("");
+
+  const handleEdit = (idVendedor) => {
+    console.log("Editar vendedor con ID:", idVendedor);
+    // Aquí puedes abrir un modal de edición o redirigir a una página de edición
+  };
+
+  const handleDelete = (idVendedor) => {
+    if (window.confirm("¿Estás seguro de querer eliminar este vendedor?")) {
+      console.log("Eliminar vendedor con ID:", idVendedor);
+      // Aquí puedes implementar la lógica para eliminar el vendedor
+    }
+  };
 
   useEffect(() => {
     const obtenerVendedores = async () => {
@@ -35,7 +44,7 @@ export function ListarVendedores() {
 
   const filteredItems = vendedores.filter(
     (item) =>
-      item.ID_Vendedor  && item.ID_Vendedor.toString().includes(filterText)
+      item.ID_Vendedor && item.ID_Vendedor.toString().includes(filterText)
   );
 
   const subHeaderComponent = useMemo(() => {
@@ -57,11 +66,6 @@ export function ListarVendedores() {
     headerElement.classList.remove("goZmTm");
   }
 
-
-
-
-
-   
   const columnas = [
     {
       name: "ID",
@@ -102,7 +106,7 @@ export function ListarVendedores() {
     {
       name: "Contraseña",
       sortable: true,
-      selector: (row) => "******",
+      selector: (row) => row.pass,
     },
     {
       name: "Total de Ventas",
@@ -119,7 +123,12 @@ export function ListarVendedores() {
       button: true,
       cell: (row) => (
         <div style={{ display: "flex", justifyContent: "center", gap: "5px" }}>
-          <button className="btn btn-primary btn-custom">Editar</button>
+          <button
+            className="btn btn-primary btn-custom"
+            onClick={() => handleEdit(row.ID_Vendedor)}
+          >
+            Editar
+          </button>
         </div>
       ),
     },
@@ -128,19 +137,22 @@ export function ListarVendedores() {
       button: true,
       cell: (row) => (
         <div style={{ display: "flex", justifyContent: "center", gap: "5px" }}>
-          <button className="btn btn-danger btn-custom">Eliminar</button>
+          <button
+            className="btn btn-danger btn-custom"
+            onClick={() => handleDelete(row.ID_Vendedor)}
+          >
+            Eliminar
+          </button>
         </div>
       ),
     },
   ];
   const paginacionopcion = {
-    rowsPerPageText: 'Filas por pagina',
-    rangeSeparatorText:'de',
+    rowsPerPageText: "Filas por pagina",
+    rangeSeparatorText: "de",
     selectAllRowsItem: true,
-    selectAllRowsItemText: 'Todos'
- }
-
-
+    selectAllRowsItemText: "Todos",
+  };
 
   return (
     <div className="container mt-5">
@@ -150,15 +162,14 @@ export function ListarVendedores() {
 
       <div className="table table-dark table-striped">
         <h2>Listado de Vendedores</h2>
- 
-        <DataTable 
+
+        <DataTable
           columns={columnas}
           data={filteredItems}
-          
           subHeader
           subHeaderComponent={subHeaderComponent}
           pagination
-          paginationComponentOptions={paginacionopcion }
+          paginationComponentOptions={paginacionopcion}
           fixedHeader
           fixedHeaderScrollHeight="600px"
           theme="dark"
