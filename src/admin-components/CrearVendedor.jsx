@@ -1,0 +1,173 @@
+import React, { useState , useEffect} from 'react';
+import NavBarAdmin from './navBarAmin';
+
+export function RegisterUser() {
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [direccion, setDireccion] = useState('');
+  const [celular, setCelular] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [sucursales, setSucursales] = useState([]);
+  const [idSucursal, setIdSucursal] = useState('');
+
+
+  useEffect(() => {
+    const cargarSucursales = async () => {
+      try {
+        const respuesta = await fetch('http://localhost:5000/api/sucursales');
+        if (respuesta.ok) {
+          const sucursales = await respuesta.json();
+          setSucursales(sucursales);
+        } else {
+          console.error('Error al cargar sucursales:', respuesta);
+        }
+      } catch (error) {
+        console.error('Error al conectar con el servidor:', error);
+      }
+    };
+    cargarSucursales();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    try {
+      const response = await fetch('http://localhost:5000/api/registerVendedor', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: nombre,
+          apellido: apellido,
+          correoElectronico: email,
+          telefono: celular,
+          idSucursal: idSucursal,
+          areaEspecializacion: direccion,
+          pass: password,
+        }),
+      });
+  
+      if (response.ok) {
+        alert('Vendedor registrado con éxito');
+      } else {
+        alert('Error en el registro');
+      }
+    } catch (error) {
+      console.error('Error al registrar el vendedor:', error);
+      alert('Error al conectar con el servidor');
+    }
+  };
+  
+
+  return (
+    <>
+    <NavBarAdmin/>
+    <div className="container">
+      <form className="row g-3 mt-2" onSubmit={handleSubmit}>
+        <div>
+          <h1 className="mt-5">Datos del Vendedor</h1>
+        </div>
+        <div className="col-md-6">
+          <label htmlFor="inputNombre" className="form-label">Nombre completo</label>
+          <input 
+            type="text" 
+            className="form-control bg-dark-x border-0 text-bg-dark" 
+            id="inputNombre" 
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
+        </div>
+        <div className="col-6">
+          <label htmlFor="inputRut" className="form-label">Apellido</label>
+          <input 
+            type="text" 
+            className="form-control bg-dark-x border-0 text-bg-dark" 
+            id="inputRut" 
+            value={apellido}
+            onChange={(e) => setApellido(e.target.value)}
+          />
+        </div>
+        <div className="col-md-4">
+          <label htmlFor="inputDireccion" className="form-label">Direccion</label>
+          <input 
+            type="text" 
+            className="form-control bg-dark-x border-0 text-bg-dark" 
+            id="inputDireccion" 
+            value={direccion}
+            onChange={(e) => setDireccion(e.target.value)}
+          />
+        </div>
+        <div className="col-md-4">
+          <label htmlFor="inputCelular" className="form-label">Celular</label>
+          <input 
+            type="text" 
+            className="form-control bg-dark-x border-0 text-bg-dark" 
+            id="inputCelular" 
+            value={celular}
+            onChange={(e) => setCelular(e.target.value)}
+          />
+        </div>
+        <div className="col-md-4">
+        <label htmlFor="inputSucursal" className="form-label">Sucursal</label>
+        <select 
+          className="form-control bg-dark-x border-0 text-bg-dark" 
+          id="inputSucursal"
+          value={idSucursal}
+          onChange={(e) => setIdSucursal(e.target.value)}
+        >
+          <option value="">Selecciona una sucursal</option>
+          {sucursales.map((sucursal) => (
+            <option key={sucursal.ID_Sucursal} value={sucursal.ID_Sucursal}>
+              {sucursal.Ubicacion}
+            </option>
+          ))}
+        </select>
+      </div>
+
+        <h1>Datos de Autentificación</h1>
+        <div className="col-md-4">
+          <label htmlFor="inputEmail" className="form-label font-weight-bold">Correo</label>
+          <input 
+            type="email" 
+            className="form-control bg-dark-x border-0 text-bg-dark" 
+            id="inputEmail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="col-md-4">
+          <label htmlFor="inputPassword" className="form-label font-weight-bold">Contraseña</label>
+          <input 
+            type="password" 
+            className="form-control bg-dark-x border-0 text-bg-dark" 
+            id="inputPassword"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+
+        <div className="col-5">
+          <button className="button" type="submit">
+            <span className="button_lg">
+              <span className="button_sl"></span>
+              <span className="button_text">Crear Vendedor</span>
+            </span>
+          </button>
+        </div>
+        <div className="col-5">
+          <button className="button" type="reset">
+            <span className="button_lg">
+              <span className="button_sl"></span>
+              <span className="button_text">Cancelar</span>
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+    </>
+  );
+}
+
+export default RegisterUser;

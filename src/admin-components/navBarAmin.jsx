@@ -53,17 +53,17 @@ const Navbar = () => {
           <div className="offcanvas-body d-flex flex-column justify-content-between px-0 bg-dark" />
           <ul className="navbar-nav fs-6 justify-content-evenly">
             <li className="nav-item p-3 py-md-1">
-              <a href="/" className="nav-link">
+              <a href="/InicioAdmin" className="nav-link">
                 INICIO
               </a>
             </li>
             <li className="nav-item p-3 py-md-1">
-              <a href="/" className="nav-link">
+              <a href="/LVendedores" className="nav-link">
                 VENDEDORES
               </a>
             </li>
             <li className="nav-item p-3 py-md-1">
-              <a href="/Admin/FormCrearVendedor.html" className="nav-link">
+              <a href="/RUsuario" className="nav-link">
                 NUEVO VENDEDOR{" "}
                 <img
                   src={image2}

@@ -80,6 +80,36 @@ app.post('/login', (req, res) => {
   );
 });
 
+app.post('/login-adm', (req, res) => {
+  const { usuario, password } = req.body;
+
+  // Primero, verifica si el intento de inicio de sesión es para un administrador
+  db.query(
+    'SELECT ID_Administrador, Nombre FROM administrador WHERE Nombre = ? AND pass = ?',
+    [usuario, password],
+    (err, adminResults) => {
+      if (err) {
+        console.error('Error en el servidor:', err);
+        return res.status(500).send('Error en el servidor');
+      }
+
+      if (adminResults.length > 0) {
+        // Las credenciales son del administrador
+        const adminData = {
+          ID_Administrador: adminResults[0].ID_Administrador,
+          Nombre: adminResults[0].Nombre,
+          // Otros campos necesarios para el administrador
+        };
+        return res.status(200).json({ administrador: adminData });
+      } else {
+        // Si las credenciales no son de administrador, envía un error
+        return res.status(401).send('Credenciales incorrectas para administrador');
+      }
+    }
+  );
+});
+
+
 
 // Nuevo endpoint para obtener todos los productos
 app.get("/api/productos", (req, res) => {
@@ -325,3 +355,112 @@ app.get("/api/productos-mas-cotizados/:idVendedor", async (req, res) => {
   }
 });
 
+
+
+app.get("/api/ventas-diarias", async (req, res) => {
+  try {
+      const query = `
+          SELECT SUM(d.Precio_Unitario * d.Cantidad) AS TotalVenta
+          FROM cotizacion c
+          JOIN detalle_venta d ON c.ID_Cotizacion = d.ID_Cotizacion
+          WHERE DATE(c.Fecha_Cotizacion) = CURDATE();
+      `;
+      const [ventasDiarias] = await db.promise().query(query);
+      res.json({ ventasDiarias: ventasDiarias[0].TotalVenta || 0 });
+  } catch (error) {
+      console.error("Error al obtener ventas diarias:", error);
+      res.status(500).send("Error en el servidor");
+  }
+});
+
+// API para obtener las ventas mensuales
+app.get("/api/ventas-mensuales", async (req, res) => {
+  try {
+      const query = `
+          SELECT SUM(d.Precio_Unitario * d.Cantidad) AS TotalVenta
+          FROM cotizacion c
+          JOIN detalle_venta d ON c.ID_Cotizacion = d.ID_Cotizacion
+          WHERE MONTH(c.Fecha_Cotizacion) = MONTH(CURDATE())
+          AND YEAR(c.Fecha_Cotizacion) = YEAR(CURDATE());
+      `;
+      const [ventasMensuales] = await db.promise().query(query);
+      res.json({ ventasMensuales: ventasMensuales[0].TotalVenta || 0 });
+  } catch (error) {
+      console.error("Error al obtener ventas mensuales:", error);
+      res.status(500).send("Error en el servidor");
+  }
+});
+
+
+// API para obtener las ventas anuales
+app.get("/api/ventas-anuales", async (req, res) => {
+  try {
+      const query = `
+          SELECT SUM(d.Precio_Unitario * d.Cantidad) AS TotalVenta
+          FROM cotizacion c
+          JOIN detalle_venta d ON c.ID_Cotizacion = d.ID_Cotizacion
+          WHERE YEAR(c.Fecha_Cotizacion) = YEAR(CURDATE());
+      `;
+      const [ventasAnuales] = await db.promise().query(query);
+      res.json({ ventasAnuales: ventasAnuales[0].TotalVenta || 0 });
+  } catch (error) {
+      console.error("Error al obtener ventas anuales:", error);
+      res.status(500).send("Error en el servidor");
+  }
+});
+
+
+//crear usuario vendedor 
+app.post('/api/registerVendedor', (req, res) => {
+  const { nombre, apellido, correoElectronico, telefono, idSucursal, areaEspecializacion, pass } = req.body;
+
+  const query = 'INSERT INTO vendedor (Nombre, Apellido, Correo_Electronico, Telefono, ID_Sucursal, Area_Especializacion, pass) VALUES (?, ?, ?, ?, ?, ?, ?)';
+
+  db.query(query, [nombre, apellido, correoElectronico, telefono, idSucursal, areaEspecializacion, pass], (err, results) => {
+    if (err) {
+      console.error('Error al insertar en la base de datos:', err);
+      return res.status(500).send('Error al registrar el vendedor');
+    }
+
+    res.status(201).send('Vendedor registrado con éxito');
+  });
+});
+
+
+app.get('/api/sucursales', (req, res) => {
+  const query = 'SELECT * FROM sucursal';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al consultar la base de datos:', err);
+      return res.status(500).send('Error al obtener las sucursales');
+    }
+    res.json(results);
+  });
+});
+
+
+// Endpoint para obtener los vendedores
+app.get('/api/vendedores-admin', (req, res) => {
+  const query = `
+  SELECT 
+  v.ID_Vendedor, 
+  v.Nombre, 
+  s.Ubicacion AS Sucursal,
+  v.pass,
+  SUM(CASE WHEN YEAR(c.Fecha_Cotizacion) = YEAR(CURRENT_DATE) AND MONTH(c.Fecha_Cotizacion) = MONTH(CURRENT_DATE) THEN c.Total ELSE 0 END) AS Ventas_Mensuales,
+  SUM(CASE WHEN YEAR(c.Fecha_Cotizacion) = YEAR(CURRENT_DATE) THEN c.Total ELSE 0 END) AS Ventas_Anuales,
+  SUM(CASE WHEN c.Fecha_Cotizacion = CURRENT_DATE THEN c.Total ELSE 0 END) AS Ventas_Diarias
+FROM vendedor v
+LEFT JOIN cotizacion c ON v.ID_Vendedor = c.ID_Vendedor
+LEFT JOIN sucursal s ON v.ID_Sucursal = s.ID_Sucursal
+GROUP BY v.ID_Vendedor;
+`;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error al consultar la base de datos:', err);
+      return res.status(500).send('Error al obtener los vendedores');
+    }
+    res.json(results);
+  });
+});

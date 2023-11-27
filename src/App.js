@@ -13,6 +13,8 @@ import LoginAdministrador from './admin-components/adminlogin.jsx';
 import NavBarAdmin from './admin-components/navBarAmin.jsx';
 import InicioAdmin from './admin-components/InicioAdmin.jsx';
 import CResumen from './admin-components/CResumen.jsx';
+import RUsuario from './admin-components/CrearVendedor.jsx';
+import LVendedores from './admin-components/ListaVendedores.jsx'
 function App() {
   return (
     <Router>
@@ -31,6 +33,9 @@ function App() {
           <Route path='/NavBarAdmin' element={<NavBarAdmin/>} />
           <Route path='/InicioAdmin' element={<InicioAdmin/>} />
           <Route path='/CResumen' element={<CResumen/>} />
+          <Route path='/RUsuario' element={<RUsuario/>} />
+          <Route path='/LVendedores' element={<LVendedores/>} />
+          
 
 
 
