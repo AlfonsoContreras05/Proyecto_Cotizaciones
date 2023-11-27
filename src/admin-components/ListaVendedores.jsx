@@ -102,7 +102,7 @@ export function ListarVendedores() {
     {
       name: "Contraseña",
       sortable: true,
-      selector: (row) => "******",
+      selector: (row) => row.pass,
     },
     {
       name: "Total de Ventas",
