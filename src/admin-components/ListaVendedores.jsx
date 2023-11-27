@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import NavBArAdm from "./navBarAmin";
 import DataTable from "react-data-table-component";
 import "../css/StyleHistorial.css"; // Asegúrate de tener este archivo CSS
+import EditModal from './EditVendedorModal'
 //import "bootstrap/dist/css/bootstrap.min.css";
 //import DataTable from "react-data-table-component";
 
@@ -11,10 +12,43 @@ export function ListarVendedores() {
   const [vendedores, setVendedores] = useState([]);
   const [filterText, setFilterText] = useState("");
 
-  const handleEdit = (idVendedor) => {
-    console.log("Editar vendedor con ID:", idVendedor);
-    // Aquí puedes abrir un modal de edición o redirigir a una página de edición
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedVendedor, setSelectedVendedor] = useState(null);
+
+  const handleEdit = (vendedor) => {
+    console.log("Editando vendedor:", vendedor);
+    setSelectedVendedor(vendedor);
+    setIsEditModalOpen(true);
   };
+  
+  
+// Dentro de tu componente ListarVendedores
+
+const handleSave = async (updatedVendedor) => {
+  console.log("ID del vendedor a actualizar:", updatedVendedor.ID_Vendedor);
+  try {
+    const response = await fetch(`http://localhost:5000/api/vendedores/${updatedVendedor.ID_Vendedor}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedVendedor),
+    });
+
+    if (response.ok) {
+      alert('Vendedor actualizado con éxito');
+      // Aquí puedes actualizar la lista de vendedores en el estado, si es necesario
+    } else {
+      alert('Error al actualizar el vendedor');
+    }
+  } catch (error) {
+    console.error('Error al actualizar el vendedor:', error);
+    alert('Error al conectar con el servidor');
+  }
+  setIsEditModalOpen(false);
+};
+
+  
 
   const handleDelete = (idVendedor) => {
     if (window.confirm("¿Estás seguro de querer eliminar este vendedor?")) {
@@ -125,12 +159,13 @@ export function ListarVendedores() {
         <div style={{ display: "flex", justifyContent: "center", gap: "5px" }}>
           <button
             className="btn btn-primary btn-custom"
-            onClick={() => handleEdit(row.ID_Vendedor)}
+            onClick={() => handleEdit(row)} // Cambia esto para pasar el objeto row completo
           >
             Editar
           </button>
         </div>
       ),
+      
     },
     {
       name: "Acciones",
@@ -195,6 +230,14 @@ export function ListarVendedores() {
             },
           }}
         />
+        {isEditModalOpen && (
+          <EditModal
+            vendedor={selectedVendedor}
+            onClose={() => setIsEditModalOpen(false)}
+            onSave={handleSave}
+          />
+        )}
+
       </div>
     </div>
   );

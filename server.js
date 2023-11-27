@@ -466,3 +466,32 @@ app.get('/api/vendedores-admin', (req, res) => {
   });
 });
 
+// Endpoint para actualizar un vendedor
+// Endpoint para actualizar un vendedor
+app.put('/api/vendedores/:id', (req, res) => {
+  console.log("Datos recibidos para actualizar:", req.body);
+  const { id } = req.params;
+  const { Nombre, Apellido, Correo_Electronico, Telefono, ID_Sucursal, Area_Especializacion, pass } = req.body;
+
+  const query = `
+    UPDATE vendedor 
+    SET 
+      Nombre = ?, 
+      Apellido = ?, 
+      Correo_Electronico = ?, 
+      Telefono = ?, 
+      ID_Sucursal = ?, 
+      Area_Especializacion = ?, 
+      pass = ?
+    WHERE ID_Vendedor = ?;
+  `;
+
+  db.query(query, [Nombre, Apellido, Correo_Electronico, Telefono, ID_Sucursal, Area_Especializacion, pass, id], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el vendedor:', err);
+      return res.status(500).send('Error al actualizar el vendedor');
+    }
+    res.status(200).send('Vendedor actualizado con éxito');
+  });
+});
+
