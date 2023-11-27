@@ -445,15 +445,14 @@ app.get('/api/vendedores-admin', (req, res) => {
   SELECT 
   v.ID_Vendedor, 
   v.Nombre, 
-  s.Ubicacion AS Sucursal,
-  v.pass,
-  SUM(CASE WHEN YEAR(c.Fecha_Cotizacion) = YEAR(CURRENT_DATE) AND MONTH(c.Fecha_Cotizacion) = MONTH(CURRENT_DATE) THEN c.Total ELSE 0 END) AS Ventas_Mensuales,
-  SUM(CASE WHEN YEAR(c.Fecha_Cotizacion) = YEAR(CURRENT_DATE) THEN c.Total ELSE 0 END) AS Ventas_Anuales,
-  SUM(CASE WHEN c.Fecha_Cotizacion = CURRENT_DATE THEN c.Total ELSE 0 END) AS Ventas_Diarias
-FROM vendedor v
-LEFT JOIN cotizacion c ON v.ID_Vendedor = c.ID_Vendedor
-LEFT JOIN sucursal s ON v.ID_Sucursal = s.ID_Sucursal
-GROUP BY v.ID_Vendedor;
+  v.Apellido,
+  v.Correo_Electronico,
+  v.Telefono,
+  v.ID_Sucursal,
+  v.Area_Especializacion,
+  v.pass
+FROM vendedor v;
+
 `;
 
   db.query(query, (err, results) => {
