@@ -14,7 +14,8 @@ import NavBarAdmin from './admin-components/navBarAmin.jsx';
 import InicioAdmin from './admin-components/InicioAdmin.jsx';
 import CResumen from './admin-components/CResumen.jsx';
 import RUsuario from './admin-components/CrearVendedor.jsx';
-import LVendedores from './admin-components/ListaVendedores.jsx'
+import LVendedores from './admin-components/ListaVendedores.jsx';
+//import LCotizaciones from './admin-components/ListarCoti.jsx';
 function App() {
   return (
     <Router>
@@ -35,6 +36,7 @@ function App() {
           <Route path='/CResumen' element={<CResumen/>} />
           <Route path='/RUsuario' element={<RUsuario/>} />
           <Route path='/LVendedores' element={<LVendedores/>} />
+          {/* <Route path='/LCotizaciones' element={<LCotizaciones/>} /> */}
           
 
 

@@ -50,6 +50,16 @@ export function RegisterUser() {
       });
   
       if (response.ok) {
+        // Limpiar los campos del formulario
+        setNombre('');
+        setApellido('');
+        setDireccion('');
+        setCelular('');
+        setEmail('');
+        setPassword('');
+        setIdSucursal('');
+  
+        // Mostrar mensaje de confirmación
         alert('Vendedor registrado con éxito');
       } else {
         alert('Error en el registro');
@@ -70,7 +80,7 @@ export function RegisterUser() {
           <h1 className="mt-5">Datos del Vendedor</h1>
         </div>
         <div className="col-md-6">
-          <label htmlFor="inputNombre" className="form-label">Nombre completo</label>
+          <label htmlFor="inputNombre" className="form-label">Nombre</label>
           <input 
             type="text" 
             className="form-control bg-dark-x border-0 text-bg-dark" 

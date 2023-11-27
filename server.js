@@ -439,21 +439,23 @@ app.get('/api/sucursales', (req, res) => {
 });
 
 
-// Endpoint para obtener los vendedores
 app.get('/api/vendedores-admin', (req, res) => {
   const query = `
-  SELECT 
-  v.ID_Vendedor, 
-  v.Nombre, 
-  v.Apellido,
-  v.Correo_Electronico,
-  v.Telefono,
-  v.ID_Sucursal,
-  v.Area_Especializacion,
-  v.pass
-FROM vendedor v;
-
-`;
+    SELECT 
+      v.ID_Vendedor, 
+      v.Nombre, 
+      v.Apellido,
+      v.Correo_Electronico,
+      v.Telefono,
+      v.ID_Sucursal,
+      v.Area_Especializacion,
+      v.pass,
+      SUM(dv.Cantidad * dv.Precio_Unitario) AS TotalVentas
+    FROM vendedor v
+    LEFT JOIN cotizacion c ON v.ID_Vendedor = c.ID_Vendedor
+    LEFT JOIN detalle_venta dv ON c.ID_Cotizacion = dv.ID_Cotizacion
+    GROUP BY v.ID_Vendedor;
+  `;
 
   db.query(query, (err, results) => {
     if (err) {
@@ -463,3 +465,4 @@ FROM vendedor v;
     res.json(results);
   });
 });
+
