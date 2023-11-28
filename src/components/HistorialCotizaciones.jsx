@@ -206,7 +206,7 @@ const HistorialCotizaciones = () => {
 
   return (
     <div className="bg-dark">
-      <div className="historial-container">
+      <div className="historial-container bg-black mt-5">
         <NavbarComponent />
         <div className="container historial-content">
           <h2>Historial de Cotizaciones</h2>
