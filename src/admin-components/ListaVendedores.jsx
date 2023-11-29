@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import NavBArAdm from "./navBarAmin";
 import DataTable from "react-data-table-component";
 import "../css/StyleHistorial.css";
-import EditModal from './EditVendedorModal';
+import EditModal from "./EditVendedorModal";
 import ConfirmDeleteModal from "./EliminarCotizacion";
 
 export function ListarVendedores() {
@@ -11,7 +11,8 @@ export function ListarVendedores() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedVendedor, setSelectedVendedor] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [selectedVendedorToDelete, setSelectedVendedorToDelete] = useState(null);
+  const [selectedVendedorToDelete, setSelectedVendedorToDelete] =
+    useState(null);
 
   useEffect(() => {
     cargarVendedores();
@@ -19,7 +20,9 @@ export function ListarVendedores() {
 
   const cargarVendedores = async () => {
     try {
-      const respuesta = await fetch("http://localhost:5000/api/vendedores-admin");
+      const respuesta = await fetch(
+        "http://localhost:5000/api/vendedores-admin"
+      );
       if (respuesta.ok) {
         const datos = await respuesta.json();
         setVendedores(datos);
@@ -38,21 +41,24 @@ export function ListarVendedores() {
 
   const handleSave = async (updatedVendedor) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/vendedores/${updatedVendedor.ID_Vendedor}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedVendedor),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/vendedores/${updatedVendedor.ID_Vendedor}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedVendedor),
+        }
+      );
 
       if (response.ok) {
-        alert('Vendedor actualizado con éxito');
+        alert("Vendedor actualizado con éxito");
         cargarVendedores();
       } else {
-        alert('Error al actualizar el vendedor');
+        alert("Error al actualizar el vendedor");
       }
     } catch (error) {
-      console.error('Error al actualizar el vendedor:', error);
-      alert('Error al conectar con el servidor');
+      console.error("Error al actualizar el vendedor:", error);
+      alert("Error al conectar con el servidor");
     }
     setIsEditModalOpen(false);
   };
@@ -64,41 +70,47 @@ export function ListarVendedores() {
 
   const handleConfirmDelete = async (idVendedor, adminPassword) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/vendedoresD/${idVendedor}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ adminPassword })
-      });
-  
+      const response = await fetch(
+        `http://localhost:5000/api/vendedoresD/${idVendedor}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ adminPassword }),
+        }
+      );
+
       if (response.ok) {
-        alert('Vendedor eliminado con éxito');
+        alert("Vendedor eliminado con éxito");
         cargarVendedores(); // Recargar la lista de vendedores
       } else {
         const errorText = await response.text();
         alert(errorText);
       }
     } catch (error) {
-      console.error('Error al eliminar el vendedor:', error);
-      alert('Error al conectar con el servidor');
+      console.error("Error al eliminar el vendedor:", error);
+      alert("Error al conectar con el servidor");
     }
-  
+
     setIsConfirmModalOpen(false);
   };
-  
 
   const filteredItems = vendedores.filter(
-    item => item.ID_Vendedor && item.ID_Vendedor.toString().includes(filterText)
+    (item) =>
+      item.ID_Vendedor && item.ID_Vendedor.toString().includes(filterText)
   );
 
-  const subHeaderComponent = useMemo(() => (
-    <input
-      type="text"
-      placeholder="Buscar Cotización"
-      className="dataTable-input"
-      value={filterText}
-      onChange={e => setFilterText(e.target.value)}
-    />
-  ), [filterText]);
+  const subHeaderComponent = useMemo(
+    () => (
+      <input
+        type="text"
+        placeholder="Buscar Cotización"
+        className="dataTable-input"
+        value={filterText}
+        onChange={(e) => setFilterText(e.target.value)}
+      />
+    ),
+    [filterText]
+  );
 
   const columnas = [
     {
@@ -165,14 +177,18 @@ export function ListarVendedores() {
           </button>
         </div>
       ),
-      
     },
     {
       name: "Acciones",
       button: true,
       cell: (row) => (
         <div style={{ display: "flex", justifyContent: "center", gap: "5px" }}>
-          <button className="btn btn-danger btn-custom" onClick={() => handleDeleteClick(row)}>Eliminar</button>
+          <button
+            className="btn btn-danger btn-custom"
+            onClick={() => handleDeleteClick(row)}
+          >
+            Eliminar
+          </button>
         </div>
       ),
     },
@@ -187,50 +203,53 @@ export function ListarVendedores() {
 
   return (
     <div className="container mt-5">
-      <NavBArAdm />
-      <div className="table table-dark table-striped">
-        <h2>Listado de Vendedores</h2>
-        <DataTable
-          columns={columnas}
-          data={filteredItems}
-          subHeader
-          subHeaderComponent={subHeaderComponent}
-          pagination
-          paginationComponentOptions={paginacionopcion}
-          fixedHeader
-          fixedHeaderScrollHeight="600px"
-          theme="dark"
-          customStyles={{
-            headRow: {
-              style: {
-                backgroundColor: "#16191c",
-                color: "#fff",
-                "&:hover": { backgroundColor: "#2c3038" },
+      <div className="">
+        <NavBArAdm />
+        <div className="table table-dark table-striped mt-5">
+
+          <h2>Listado de Vendedores</h2>
+          <DataTable
+            columns={columnas}
+            data={filteredItems}
+            subHeader
+            subHeaderComponent={subHeaderComponent}
+            pagination
+            paginationComponentOptions={paginacionopcion}
+            fixedHeader
+            fixedHeaderScrollHeight="600px"
+            theme="dark"
+            customStyles={{
+              headRow: {
+                style: {
+                  backgroundColor: "#16191c",
+                  color: "#fff",
+                  "&:hover": { backgroundColor: "#2c3038" },
+                },
               },
-            },
-            rows: {
-              style: {
-                backgroundColor: "#282c34",
-                color: "#fff",
-                "&:hover": { backgroundColor: "#2c3038" },
+              rows: {
+                style: {
+                  backgroundColor: "#282c34",
+                  color: "#fff",
+                  "&:hover": { backgroundColor: "#2c3038" },
+                },
               },
-            },
-          }}
-        />
-        {isEditModalOpen && (
-          <EditModal
-            vendedor={selectedVendedor}
-            onClose={() => setIsEditModalOpen(false)}
-            onSave={handleSave}
+            }}
           />
-        )}
-        {isConfirmModalOpen && (
-          <ConfirmDeleteModal
-            onClose={() => setIsConfirmModalOpen(false)}
-            onConfirm={handleConfirmDelete}
-            vendedor={selectedVendedorToDelete}
-          />
-        )}
+          {isEditModalOpen && (
+            <EditModal
+              vendedor={selectedVendedor}
+              onClose={() => setIsEditModalOpen(false)}
+              onSave={handleSave}
+            />
+          )}
+          {isConfirmModalOpen && (
+            <ConfirmDeleteModal
+              onClose={() => setIsConfirmModalOpen(false)}
+              onConfirm={handleConfirmDelete}
+              vendedor={selectedVendedorToDelete}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
