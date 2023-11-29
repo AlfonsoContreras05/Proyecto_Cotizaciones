@@ -38,6 +38,7 @@ function App() {
           <Route path='/RUsuario' element={<RUsuario/>} />
           <Route path='/LVendedores' element={<LVendedores/>} />
           <Route path='/ECategorias' element={<ECategorias/>} />
+          <Route path="/LoginVendedor" element={<LoginVendedor/>} />
           {/* <Route path='/LCotizaciones' element={<LCotizaciones/>} /> */}
           
 
