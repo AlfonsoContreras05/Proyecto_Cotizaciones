@@ -116,7 +116,7 @@ function CategoriaManager() {
   });
 
   return (
-    <div className='container mt-5'>
+    <div className='container mt-5 bg--dark'>
       <NavBarAdmin/>
 
       <div className='container mt-4'>
