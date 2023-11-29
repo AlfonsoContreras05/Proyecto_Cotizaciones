@@ -116,10 +116,10 @@ function CategoriaManager() {
   });
 
   return (
-    <div className='container mt-5 bg--dark'>
+    <div className='container mt-5 bg-dark-x'>
       <NavBarAdmin/>
 
-      <div className='container mt-4'>
+      <div className='container mt-4 bg-dark-x'>
       <h2>Administrar Categorías</h2>
       </div>
       <DataTable
