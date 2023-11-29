@@ -127,26 +127,7 @@ function CategoriaManager() {
         data={dataConInputs}
         pagination
         theme="dark"
-        customStyles={{
-              headRow: {
-                style: {
-                  backgroundColor: "#16191c", // Color de fondo de la cabecera
-                  color: "#fff", // Color de texto
-                  "&:hover": {
-                    backgroundColor: "#2c3038", // Color de fondo al pasar el mouse
-                  },
-                },
-              },
-              rows: {
-                style: {
-                  backgroundColor: "#282c34", // Color de fondo de las filas
-                  color: "#fff", // Color de texto
-                  "&:hover": {
-                    backgroundColor: "#2c3038", // Color de fondo al pasar el mouse
-                  },
-                },
-              },
-            }}
+
         // Agrega aquí más propiedades de DataTable si lo necesitas
       />
       <div>
