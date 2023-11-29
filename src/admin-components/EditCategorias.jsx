@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import NavBarAdmin from "./navBarAmin";
 import DataTable from 'react-data-table-component';
+import "../css/StyleHistorial.css";
 
 function CategoriaManager() {
   const [categorias, setCategorias] = useState([]);
