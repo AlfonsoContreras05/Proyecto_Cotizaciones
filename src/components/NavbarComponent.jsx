@@ -19,7 +19,7 @@ const NavbarComponent = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav className="navbar navbar-expand-lg navbar-dark bg--dark fixed-top">
       <div className="container-fluid">
         <button className="navbar-toggler" type="button" onClick={toggleNav}>
           <span className="navbar-toggler-icon"></span>
@@ -49,7 +49,7 @@ const NavbarComponent = () => {
             ></button>
           </div>
 
-          <div className="offcanvas-body d-flex flex-column justify-content-between px-0 bg-dark">
+          <div className="offcanvas-body d-flex flex-column justify-content-between px-0 bg--dark">
             <ul className="navbar-nav fs-6 justify-content-evenly">
               <li className="nav-item p-3 py-md-1">
                 <Link to="/Inicio" className="nav-link">

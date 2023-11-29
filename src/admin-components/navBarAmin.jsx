@@ -8,7 +8,7 @@ import image5 from '../img/pngegg (4).png';
 import image6 from '../img/GundamX.png';
 const Navbar = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
+    <nav className="navbar navbar-expand-lg navbar-dark bg--dark fixed-top ">
       <div className="container-fluid">
         <a className="navbar-brand" href="/">
           <img
