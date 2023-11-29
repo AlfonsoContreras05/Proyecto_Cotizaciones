@@ -241,7 +241,7 @@ const HistorialCotizaciones = () => {
 
   /*  const handleComprarCotizacion = (idCotizacion) => {
     console.log("Comprar cotización:", idCotizacion);
-    // Aquí puedes añadir la lógica para manejar la compra de la cotización
+    // Aquí añadir la lógica para manejar la compra de la cotización
   };*/
 
   return (
