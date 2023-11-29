@@ -126,6 +126,7 @@ function CategoriaManager() {
         columns={columnas}
         data={dataConInputs}
         pagination
+        theme="dark"
         customStyles={{
               headRow: {
                 style: {
