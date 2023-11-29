@@ -137,31 +137,68 @@ const HistorialCotizaciones = () => {
         throw new Error("Error al obtener los detalles de la cotización");
       }
       const detallesCotizacion = await response.json();
-
+  
       // Crear un nuevo documento PDF
       const doc = new jsPDF();
-
-      // Agregar contenido al PDF (por ejemplo, detalles de la cotización)
-      doc.text(`Cotización ID: ${idCotizacion}`, 10, 10);
-      // Más contenido...
-
-      // Usar jsPDF-AutoTable para agregar una tabla con los productos
+  
+      // Título e información de la factura
+      doc.setFontSize(20);
+      doc.text("COTIZACION", 150, 20, 'right');
+      doc.setFontSize(12);
+      doc.text(`Cotizacion Nro: ${idCotizacion}`, 150, 30, 'right');
+      // Agregar fecha, fecha de vencimiento, número de cuenta aquí...
+  
+      // Información del pagador
+      doc.text("Informacion De Pago", 20, 50);
+      // Agregar detalles de la cuenta aquí...
+  
+      // Información del destinatario
+      doc.text("Cobrar a:", 110, 50);
+      // Agregar nombre y dirección de la empresa aquí...
+  
+      // Tabla de productos
       doc.autoTable({
-        head: [["Producto", "Cantidad", "Precio Unitario"]],
-        body: detallesCotizacion.productos.map((producto) => [
-          producto.nombreProducto, // Cambio realizado aquí
-          producto.cantidad,
+        startY: 70,
+        head: [["NO", "PRODUCT DESCRIPTION", "UNIT PRICE", "QTY", "TOTAL"]],
+        body: detallesCotizacion.productos.map((producto, index) => [
+          index + 1,
+          producto.nombreProducto,
           `$${producto.precioUnitario}`,
+          producto.cantidad,
+          `$${producto.cantidad * producto.precioUnitario}`
         ]),
       });
+             // Calculando sub total
+    const subtotal = detallesCotizacion.productos.reduce((total, producto) => {
+      return total + (producto.cantidad * producto.precioUnitario);
+    }, 0);
 
+    // Calculando IVA (19%)
+    const iva = subtotal * 0.19;
+
+    // Calculando total final
+    const totalFinal = subtotal + iva;
+
+    // Mostrando los totales
+    let finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(12);
+    doc.text(`Sub Total: $${subtotal.toFixed(2)}`, 150, finalY, 'right');
+    doc.text(`IVA 19%: $${iva.toFixed(2)}`, 150, finalY + 10, 'right');
+    doc.setFontSize(14);
+    doc.text(`Total: $${totalFinal.toFixed(2)}`, 150, finalY + 20, 'right');
+  
+      // Totales y firma
+      // Agregar sub total, impuestos y total aquí...
+      doc.text("Gracias Por Su Cotizacion", 150, doc.lastAutoTable.finalY + 5, 'right');
+      doc.line(100, doc.lastAutoTable.finalY + 25, 200, doc.lastAutoTable.finalY + 25); // Línea para la firma
+  
       // Abrir el PDF en una nueva ventana o descargarlo
       doc.output("dataurlnewwindow"); // Para abrir en una nueva ventana
-      //doc.save(`cotizacion-${idCotizacion}.pdf`); // Para descargar
     } catch (error) {
       console.error("Error al generar el PDF:", error);
     }
   };
+  
 
   const handleDescargarCotizacion = async (idCotizacion) => {
     try {
@@ -182,14 +219,17 @@ const HistorialCotizaciones = () => {
       // Más contenido...
 
       // Usar jsPDF-AutoTable para agregar una tabla con los productos
-      doc.autoTable({
-        head: [["Producto", "Cantidad", "Precio Unitario"]],
-        body: detallesCotizacion.productos.map((producto) => [
-          producto.nombreProducto, // Cambio realizado aquí
-          producto.cantidad,
-          `$${producto.precioUnitario}`,
-        ]),
-      });
+    doc.autoTable({
+      startY: 70,
+      head: [["NO", "PRODUCT DESCRIPTION", "UNIT PRICE", "QTY", "TOTAL"]],
+      body: detallesCotizacion.productos.map((producto, index) => [
+        index + 1,
+        producto.nombreProducto,
+        `$${producto.precioUnitario}`,
+        producto.cantidad,
+        `$${producto.cantidad * producto.precioUnitario}`
+      ]),
+    });
 
       // Abrir el PDF en una nueva ventana o descargarlo
       //doc.output('dataurlnewwindow'); // Para abrir en una nueva ventana

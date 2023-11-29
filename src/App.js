@@ -16,7 +16,7 @@ import CResumen from './admin-components/CResumen.jsx';
 import RUsuario from './admin-components/CrearVendedor.jsx';
 import LVendedores from './admin-components/ListaVendedores.jsx';
 //import LCotizaciones from './admin-components/ListarCoti.jsx';
-import ECategorias from './admin-components/EditCategorias.jsx'
+import ECategorias from './admin-components/EditCategorias.jsx';
 function App() {
   return (
     <Router>
