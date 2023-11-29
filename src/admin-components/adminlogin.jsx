@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../css/styleLogin.css';
 import image from '../img/pngwing.com12.png';
+import { Link } from "react-router-dom";
 
 const LoginAdministrador = () => {
   const [usuario, setUsuario] = useState('');
@@ -34,14 +35,14 @@ const LoginAdministrador = () => {
   
 
   return (
-    <section className="bg-dark">
+    <section className="bg-dark-x">
       <div className="row g-0">
         <div className="col-lg-5 min-vh-100">
           <div className="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto">
             <img src={image} className="img-fluid" alt="Logo" />
           </div>
           <div className="px-lg-5 py-lg-4 p4 w-100 align-self-center">
-            <h1 className="font-weight-bold mb-4">Bienvenido</h1>
+            <h1 className="font-weight-bold mb-4">Bienvenido Administrador</h1>
             <form className="mb-5" onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="exampleInputEmail1" className="form-label font-weight-bold">
@@ -71,10 +72,20 @@ const LoginAdministrador = () => {
                 />
               </div>
               <button type="submit" className="btn btn-primary w-100">
-                Iniciar sesión como Administrador
+                Iniciar sesión
               </button>
             </form>
             {error && <p className="text-danger">{error}</p>}
+            <p className="form-label font-weight-bold text-center">
+                O inicia sesión como vendedor
+              </p>
+              <div className="d-flex justify-content-around">
+                <Link to="/LoginVendedor">
+                  <button type="button" className="btn btn-outline-light">
+                    Soy vendedor
+                  </button>
+                </Link>
+              </div>
           </div>
         </div>
         <div className="col-lg-7 d-none d-lg-block">
