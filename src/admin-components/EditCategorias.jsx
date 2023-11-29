@@ -119,13 +119,14 @@ function CategoriaManager() {
     <div className='container mt-5 bg--dark'>
       <NavBarAdmin/>
 
-      <div className='container mt-4'>
+      <div className='container mt-4 '>
       <h2>Administrar Categorías</h2>
       </div>
       <DataTable
         columns={columnas}
         data={dataConInputs}
         pagination
+        theme="dark"
         customStyles={{
               headRow: {
                 style: {
