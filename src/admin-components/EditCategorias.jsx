@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NavBarAdmin from "./navBarAmin";
+import DataTable from 'react-data-table-component';
 
 function CategoriaManager() {
   const [categorias, setCategorias] = useState([]);
@@ -16,12 +17,17 @@ function CategoriaManager() {
     fetchCategorias();
   }, []);
 
-  const handleEdit = (categoria) => {
-    setCategoriaEditando(categoria);
+  const handleChange = (e, categoria) => {
+    const { name, value } = e.target;
+    setCategoriaEditando({ ...categoria, [name]: value });
+  };
+
+  const handleNewChange = (e) => {
+    const { name, value } = e.target;
+    setNuevaCategoria({ ...nuevaCategoria, [name]: value });
   };
 
   const handleSave = async (categoria) => {
-    // Lógica para actualizar o crear una categoría
     const url = categoria.ID_Categoria
       ? `http://localhost:5000/api/categorias/${categoria.ID_Categoria}`
       : 'http://localhost:5000/api/categorias';
@@ -33,7 +39,20 @@ function CategoriaManager() {
       body: JSON.stringify(categoria),
     });
 
-    // Recargar categorías
+    recargarCategorias();
+  };
+
+  const handleDelete = async (idCategoria) => {
+    if (window.confirm('¿Estás seguro de querer eliminar esta categoría?')) {
+      await fetch(`http://localhost:5000/api/categorias/${idCategoria}`, {
+        method: 'DELETE',
+      });
+
+      recargarCategorias();
+    }
+  };
+
+  const recargarCategorias = async () => {
     const response = await fetch('http://localhost:5000/api/categorias');
     const data = await response.json();
     setCategorias(data);
@@ -41,43 +60,93 @@ function CategoriaManager() {
     setNuevaCategoria({ Nombre: '', Descripcion: '' });
   };
 
-  const handleChange = (e, categoria) => {
-    const { name, value } = e.target;
-    setCategoriaEditando({ ...categoria, [name]: value });
-  };
+  const columnas = [
+    {
+      name: 'Nombre',
+      selector: row => row.Nombre,
+      sortable: true,
+    },
+    {
+      name: 'Descripción',
+      selector: row => row.Descripcion,
+      sortable: true,
+    },
+    {
+      name: 'Acciones',
+      cell: (row) => (
+        <>
+          {categoriaEditando?.ID_Categoria === row.ID_Categoria ? (
+            <>
+              <button onClick={() => handleSave(categoriaEditando)}>Guardar</button>
+              <button onClick={() => setCategoriaEditando(null)}>Cancelar</button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => setCategoriaEditando(row)}>Editar</button>
+              <button onClick={() => handleDelete(row.ID_Categoria)}>Eliminar</button>
+            </>
+          )}
+        </>
+      )
+    }
+  ];
 
-  const handleNewChange = (e) => {
-    const { name, value } = e.target;
-    setNuevaCategoria({ ...nuevaCategoria, [name]: value });
-  };
+  const dataConInputs = categorias.map(categoria => {
+    if (categoriaEditando?.ID_Categoria === categoria.ID_Categoria) {
+      return {
+        ...categoria,
+        Nombre: (
+          <input
+            name="Nombre"
+            value={categoriaEditando.Nombre}
+            onChange={(e) => handleChange(e, categoriaEditando)}
+          />
+        ),
+        Descripcion: (
+          <input
+            name="Descripcion"
+            value={categoriaEditando.Descripcion}
+            onChange={(e) => handleChange(e, categoriaEditando)}
+          />
+        )
+      };
+    }
+    return categoria;
+  });
 
   return (
-    <div>
+    <div className='container mt-5'>
+      <NavBarAdmin/>
+
+      <div className='container mt-4'>
       <h2>Administrar Categorías</h2>
-      {categorias.map((categoria) => (
-        <div key={categoria.ID_Categoria}>
-          {categoriaEditando?.ID_Categoria === categoria.ID_Categoria ? (
-            <div>
-              <input
-                name="Nombre"
-                value={categoriaEditando.Nombre}
-                onChange={(e) => handleChange(e, categoriaEditando)}
-              />
-              <input
-                name="Descripcion"
-                value={categoriaEditando.Descripcion}
-                onChange={(e) => handleChange(e, categoriaEditando)}
-              />
-              <button onClick={() => handleSave(categoriaEditando)}>Guardar</button>
-            </div>
-          ) : (
-            <div>
-              <span>{categoria.Nombre}</span>
-              <button onClick={() => handleEdit(categoria)}>Editar</button>
-            </div>
-          )}
-        </div>
-      ))}
+      </div>
+      <DataTable
+        columns={columnas}
+        data={dataConInputs}
+        pagination
+        customStyles={{
+              headRow: {
+                style: {
+                  backgroundColor: "#16191c", // Color de fondo de la cabecera
+                  color: "#fff", // Color de texto
+                  "&:hover": {
+                    backgroundColor: "#2c3038", // Color de fondo al pasar el mouse
+                  },
+                },
+              },
+              rows: {
+                style: {
+                  backgroundColor: "#282c34", // Color de fondo de las filas
+                  color: "#fff", // Color de texto
+                  "&:hover": {
+                    backgroundColor: "#2c3038", // Color de fondo al pasar el mouse
+                  },
+                },
+              },
+            }}
+        // Agrega aquí más propiedades de DataTable si lo necesitas
+      />
       <div>
         <h3>Añadir nueva categoría</h3>
         <input

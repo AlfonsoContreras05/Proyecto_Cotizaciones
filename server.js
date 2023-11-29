@@ -522,30 +522,55 @@ app.delete('/api/vendedoresD/:id', async (req, res) => {
   });
 });
 
-app.post('/api/categorias', (req, res) => {
-  const { nombre, descripcion } = req.body;
-  const query = 'INSERT INTO categoria_producto (Nombre, Descripcion) VALUES (?, ?)';
+// Endpoint para obtener todas las categorías
+app.get('/api/categorias', async (req, res) => {
+  const query = 'SELECT * FROM categoria_producto';
+  try {
+    const [categorias] = await db.promise().query(query);
+    res.json(categorias);
+  } catch (error) {
+    res.status(500).send('Error al obtener categorías');
+  }
+});
 
-  db.query(query, [nombre, descripcion], (err, result) => {
-    if (err) {
-      console.error('Error al insertar categoría:', err);
-      return res.status(500).send('Error al crear categoría');
-    }
-    res.status(201).send({ ID_Categoria: result.insertId, Nombre: nombre, Descripcion: descripcion });
-  });
+// Endpoint para crear una nueva categoría
+app.post('/api/categorias', async (req, res) => {
+  const { Nombre, Descripcion } = req.body;
+  const query = 'INSERT INTO categoria_producto (Nombre, Descripcion) VALUES (?, ?)';
+  try {
+    await db.promise().query(query, [Nombre, Descripcion]);
+    res.status(201).send('Categoría creada con éxito');
+  } catch (error) {
+    res.status(500).send('Error al crear categoría');
+  }
 });
 
 // Endpoint para actualizar una categoría existente
-app.put('/api/categorias/:id', (req, res) => {
+app.put('/api/categorias/:id', async (req, res) => {
   const { id } = req.params;
-  const { nombre, descripcion } = req.body;
+  const { Nombre, Descripcion } = req.body;
   const query = 'UPDATE categoria_producto SET Nombre = ?, Descripcion = ? WHERE ID_Categoria = ?';
-
-  db.query(query, [nombre, descripcion, id], (err, result) => {
-    if (err) {
-      console.error('Error al actualizar categoría:', err);
-      return res.status(500).send('Error al actualizar categoría');
-    }
+  try {
+    await db.promise().query(query, [Nombre, Descripcion, id]);
     res.status(200).send('Categoría actualizada con éxito');
-  });
+  } catch (error) {
+    res.status(500).send('Error al actualizar categoría');
+  }
+});
+
+// Endpoint para eliminar una categoría
+app.delete('/api/categorias/:id', async (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM categoria_producto WHERE ID_Categoria = ?';
+
+  try {
+    const [result] = await db.promise().query(query, [id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).send('Categoría no encontrada');
+    }
+    res.status(200).send('Categoría eliminada con éxito');
+  } catch (error) {
+    console.error('Error al eliminar categoría:', error);
+    res.status(500).send('Error al eliminar categoría');
+  }
 });
