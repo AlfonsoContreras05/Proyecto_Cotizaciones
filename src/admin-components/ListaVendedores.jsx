@@ -1,104 +1,104 @@
 import React, { useState, useEffect, useMemo } from "react";
 import NavBArAdm from "./navBarAmin";
 import DataTable from "react-data-table-component";
-import "../css/StyleHistorial.css"; // Asegúrate de tener este archivo CSS
-import EditModal from './EditVendedorModal'
-//import "bootstrap/dist/css/bootstrap.min.css";
-//import DataTable from "react-data-table-component";
-
-// Usar <GlobalStyle /> en la parte superior de tu componente o aplicación
+import "../css/StyleHistorial.css";
+import EditModal from './EditVendedorModal';
+import ConfirmDeleteModal from "./EliminarCotizacion";
 
 export function ListarVendedores() {
   const [vendedores, setVendedores] = useState([]);
   const [filterText, setFilterText] = useState("");
-
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedVendedor, setSelectedVendedor] = useState(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [selectedVendedorToDelete, setSelectedVendedorToDelete] = useState(null);
+
+  useEffect(() => {
+    cargarVendedores();
+  }, []);
+
+  const cargarVendedores = async () => {
+    try {
+      const respuesta = await fetch("http://localhost:5000/api/vendedores-admin");
+      if (respuesta.ok) {
+        const datos = await respuesta.json();
+        setVendedores(datos);
+      } else {
+        console.error("Error al cargar vendedores:", respuesta);
+      }
+    } catch (error) {
+      console.error("Error al conectar con el servidor:", error);
+    }
+  };
 
   const handleEdit = (vendedor) => {
-    console.log("Editando vendedor:", vendedor);
     setSelectedVendedor(vendedor);
     setIsEditModalOpen(true);
   };
-  
-  
-// Dentro de tu componente ListarVendedores
 
-const handleSave = async (updatedVendedor) => {
-  console.log("ID del vendedor a actualizar:", updatedVendedor.ID_Vendedor);
-  try {
-    const response = await fetch(`http://localhost:5000/api/vendedores/${updatedVendedor.ID_Vendedor}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedVendedor),
-    });
+  const handleSave = async (updatedVendedor) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/vendedores/${updatedVendedor.ID_Vendedor}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedVendedor),
+      });
 
-    if (response.ok) {
-      alert('Vendedor actualizado con éxito');
-      // Aquí puedes actualizar la lista de vendedores en el estado, si es necesario
-    } else {
-      alert('Error al actualizar el vendedor');
+      if (response.ok) {
+        alert('Vendedor actualizado con éxito');
+        cargarVendedores();
+      } else {
+        alert('Error al actualizar el vendedor');
+      }
+    } catch (error) {
+      console.error('Error al actualizar el vendedor:', error);
+      alert('Error al conectar con el servidor');
     }
-  } catch (error) {
-    console.error('Error al actualizar el vendedor:', error);
-    alert('Error al conectar con el servidor');
-  }
-  setIsEditModalOpen(false);
-};
-
-  
-
-  const handleDelete = (idVendedor) => {
-    if (window.confirm("¿Estás seguro de querer eliminar este vendedor?")) {
-      console.log("Eliminar vendedor con ID:", idVendedor);
-      // Aquí puedes implementar la lógica para eliminar el vendedor
-    }
+    setIsEditModalOpen(false);
   };
 
-  useEffect(() => {
-    const obtenerVendedores = async () => {
-      try {
-        const respuesta = await fetch(
-          "http://localhost:5000/api/vendedores-admin"
-        );
-        if (respuesta.ok) {
-          const datos = await respuesta.json();
-          setVendedores(datos);
-        } else {
-          console.error("Error al cargar vendedores:", respuesta);
-        }
-      } catch (error) {
-        console.error("Error al conectar con el servidor:", error);
+  const handleDeleteClick = (vendedor) => {
+    setSelectedVendedorToDelete(vendedor);
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmDelete = async (idVendedor, adminPassword) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/vendedoresD/${idVendedor}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminPassword })
+      });
+  
+      if (response.ok) {
+        alert('Vendedor eliminado con éxito');
+        cargarVendedores(); // Recargar la lista de vendedores
+      } else {
+        const errorText = await response.text();
+        alert(errorText);
       }
-    };
-    obtenerVendedores();
-  }, []);
+    } catch (error) {
+      console.error('Error al eliminar el vendedor:', error);
+      alert('Error al conectar con el servidor');
+    }
+  
+    setIsConfirmModalOpen(false);
+  };
+  
 
   const filteredItems = vendedores.filter(
-    (item) =>
-      item.ID_Vendedor && item.ID_Vendedor.toString().includes(filterText)
+    item => item.ID_Vendedor && item.ID_Vendedor.toString().includes(filterText)
   );
 
-  const subHeaderComponent = useMemo(() => {
-    return (
-      <input
-        type="text"
-        placeholder="Buscar Cotización"
-        className="dataTable-input"
-        value={filterText}
-        onChange={(e) => setFilterText(e.target.value)}
-      />
-    );
-  }, [filterText]);
-  const headerElement = document.querySelector("header.sc-dIUfKc.goZmTm");
-
-  // Verifica si el elemento se encontró antes de intentar quitar la clase
-  if (headerElement) {
-    // Quita la clase "goZmTm"
-    headerElement.classList.remove("goZmTm");
-  }
+  const subHeaderComponent = useMemo(() => (
+    <input
+      type="text"
+      placeholder="Buscar Cotización"
+      className="dataTable-input"
+      value={filterText}
+      onChange={e => setFilterText(e.target.value)}
+    />
+  ), [filterText]);
 
   const columnas = [
     {
@@ -172,16 +172,12 @@ const handleSave = async (updatedVendedor) => {
       button: true,
       cell: (row) => (
         <div style={{ display: "flex", justifyContent: "center", gap: "5px" }}>
-          <button
-            className="btn btn-danger btn-custom"
-            onClick={() => handleDelete(row.ID_Vendedor)}
-          >
-            Eliminar
-          </button>
+          <button className="btn btn-danger btn-custom" onClick={() => handleDeleteClick(row)}>Eliminar</button>
         </div>
       ),
     },
   ];
+
   const paginacionopcion = {
     rowsPerPageText: "Filas por pagina",
     rangeSeparatorText: "de",
@@ -191,13 +187,9 @@ const handleSave = async (updatedVendedor) => {
 
   return (
     <div className="container mt-5">
-      <div className="container mt-5">
-        <NavBArAdm />
-      </div>
-
+      <NavBArAdm />
       <div className="table table-dark table-striped">
         <h2>Listado de Vendedores</h2>
-
         <DataTable
           columns={columnas}
           data={filteredItems}
@@ -211,21 +203,16 @@ const handleSave = async (updatedVendedor) => {
           customStyles={{
             headRow: {
               style: {
-                backgroundColor: "#16191c", // Color de fondo de la cabecera
-                color: "#fff", // Color de texto
-                "&:hover": {
-                  backgroundColor: "#2c3038", // Color de fondo al pasar el mouse
-                  margin: "auto",
-                },
+                backgroundColor: "#16191c",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#2c3038" },
               },
             },
             rows: {
               style: {
-                backgroundColor: "#282c34", // Color de fondo de las filas
-                color: "#fff", // Color de texto
-                "&:hover": {
-                  backgroundColor: "#2c3038", // Color de fondo al pasar el mouse
-                },
+                backgroundColor: "#282c34",
+                color: "#fff",
+                "&:hover": { backgroundColor: "#2c3038" },
               },
             },
           }}
@@ -237,7 +224,13 @@ const handleSave = async (updatedVendedor) => {
             onSave={handleSave}
           />
         )}
-
+        {isConfirmModalOpen && (
+          <ConfirmDeleteModal
+            onClose={() => setIsConfirmModalOpen(false)}
+            onConfirm={handleConfirmDelete}
+            vendedor={selectedVendedorToDelete}
+          />
+        )}
       </div>
     </div>
   );

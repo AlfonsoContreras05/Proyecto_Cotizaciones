@@ -495,3 +495,29 @@ app.put('/api/vendedores/:id', (req, res) => {
   });
 });
 
+
+app.delete('/api/vendedoresD/:id', async (req, res) => {
+  const { id } = req.params;
+  const { adminPassword } = req.body; // Recibir la contraseña del administrador
+
+  // Verificar la contraseña del administrador
+  const adminQuery = 'SELECT pass FROM administrador WHERE ID_Administrador = 1'; // Ajustar según sea necesario
+  const [admin] = await db.promise().query(adminQuery);
+
+  if (admin[0].pass !== adminPassword) {
+    return res.status(401).send('Contraseña de administrador incorrecta');
+  }
+
+  const deleteQuery = 'DELETE FROM vendedor WHERE ID_Vendedor = ?';
+
+  db.query(deleteQuery, [id], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar el vendedor:', err);
+      return res.status(500).send('Error al eliminar el vendedor');
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).send('Vendedor no encontrado');
+    }
+    res.status(200).send('Vendedor eliminado con éxito');
+  });
+});
