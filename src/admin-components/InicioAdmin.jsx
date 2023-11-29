@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import CResumen from "./CResumen";
 import NavBarAdmin from "./navBarAmin";
 import GraficoBarra from "./CGraficoBarra";
-
+import GraficoLineas from './GrafLineas';
 class MiComponente extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +24,7 @@ class MiComponente extends Component {
 
   render() {
     return (
-      <div>
+      <div className='container mt-5'>
         <div>
           <NavBarAdmin />
         </div>
@@ -33,6 +33,9 @@ class MiComponente extends Component {
         </div>
         <div>
           <GraficoBarra />
+        </div>
+        <div className='mt-3'>
+          <GraficoLineas/>
         </div>
       </div>
     );

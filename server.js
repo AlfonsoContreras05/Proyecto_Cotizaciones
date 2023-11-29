@@ -521,3 +521,31 @@ app.delete('/api/vendedoresD/:id', async (req, res) => {
     res.status(200).send('Vendedor eliminado con éxito');
   });
 });
+
+app.post('/api/categorias', (req, res) => {
+  const { nombre, descripcion } = req.body;
+  const query = 'INSERT INTO categoria_producto (Nombre, Descripcion) VALUES (?, ?)';
+
+  db.query(query, [nombre, descripcion], (err, result) => {
+    if (err) {
+      console.error('Error al insertar categoría:', err);
+      return res.status(500).send('Error al crear categoría');
+    }
+    res.status(201).send({ ID_Categoria: result.insertId, Nombre: nombre, Descripcion: descripcion });
+  });
+});
+
+// Endpoint para actualizar una categoría existente
+app.put('/api/categorias/:id', (req, res) => {
+  const { id } = req.params;
+  const { nombre, descripcion } = req.body;
+  const query = 'UPDATE categoria_producto SET Nombre = ?, Descripcion = ? WHERE ID_Categoria = ?';
+
+  db.query(query, [nombre, descripcion, id], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar categoría:', err);
+      return res.status(500).send('Error al actualizar categoría');
+    }
+    res.status(200).send('Categoría actualizada con éxito');
+  });
+});

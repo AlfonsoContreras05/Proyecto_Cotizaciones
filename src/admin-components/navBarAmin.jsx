@@ -2,6 +2,10 @@ import React from "react";
 import "../css/StyleMenu.css"; // Asegúrate de que la ruta al archivo CSS sea correcta
 import image from "../img/pngwing.com12.png";
 import image2 from '../img/klipartz.com.png';
+import image3 from '../img/pngwing.com (13).png';
+import image4 from '../img/pngegg (5).png';
+import image5 from '../img/pngegg (4).png';
+import image6 from '../img/GundamX.png';
 const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top ">
@@ -34,7 +38,7 @@ const Navbar = () => {
           <div className="offcanvas-header" data-bs-theme="dark">
             <a className="navbar-brand" href="/">
               <img
-                src="/img/pngwing.com (12).png"
+                src={image}
                 alt="Logo"
                 width="30"
                 height="24"
@@ -83,6 +87,19 @@ const Navbar = () => {
                 TOTALIZADOS
               </a>
             </li>
+
+            <li className="nav-item p-3 py-md-1">
+              <a href="/" className="nav-link">
+                PRODUCTOS
+              </a>
+            </li>
+
+            <li className="nav-item p-3 py-md-1">
+              <a href="/ECategorias" className="nav-link">
+                CATEGORIAS
+              </a>
+            </li>
+
             <li className="nav-item p-3 py-md-1">
               <a href="/" className="nav-link">
                 CERRAR SESION
@@ -92,11 +109,11 @@ const Navbar = () => {
 
           <div className="d-lg-none align-self-center py-3">
             <a className="navbar-brand" href="/">
-              <img src="/img/GundamX.png" alt="Logo" width="40" height="40" />
+              <img src={image6} alt="Logo" width="40" height="40" />
             </a>
             <a className="navbar-brand" href="/">
               <img
-                src="/img/pngegg (4).png"
+                src={image5}
                 alt="Logo"
                 width="40"
                 height="40"
@@ -104,7 +121,7 @@ const Navbar = () => {
             </a>
             <a className="navbar-brand" href="/">
               <img
-                src="/img/pngegg (5).png"
+                src={image4}
                 alt="Logo"
                 width="40"
                 height="40"
@@ -112,7 +129,7 @@ const Navbar = () => {
             </a>
             <a className="navbar-brand" href="/">
               <img
-                src="/img/pngwing.com (13).png"
+                src={image3}
                 alt="Logo"
                 width="40"
                 height="40"

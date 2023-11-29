@@ -21,7 +21,7 @@ const LoginAdministrador = () => {
   
       if (response.status === 200) {
         // Inicio de sesión exitoso, redirigir al administrador a la vista NavBarAdmin
-        window.location.href = '/NavBarAdmin';
+        window.location.href = '/InicioAdmin';
       } else {
         // Credenciales incorrectas
         setError('Credenciales incorrectas');

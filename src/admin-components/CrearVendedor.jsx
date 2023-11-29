@@ -74,7 +74,7 @@ export function RegisterUser() {
   return (
     <>
     <NavBarAdmin/>
-    <div className="container">
+    <div className="container mt-5">
       <form className="row g-3 mt-2" onSubmit={handleSubmit}>
         <div>
           <h1 className="mt-5">Datos del Vendedor</h1>
