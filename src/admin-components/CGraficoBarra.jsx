@@ -34,13 +34,13 @@ const data2 = {
       label: 'Meta ($)',
       data: [5000, 6000, 7000, 8000, 9000, 10000, 11000], // Metas
       borderColor: 'rgb(54, 162, 235)',
-      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      backgroundColor: 'rgba(255, 0, 0, 0.5)',
     },
     {
       type: 'bar',
       label: 'Ventas ($)',
       data: [4000, 7000, 3000, 6000, 8000, 9000, 12000], // Ventas
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      backgroundColor: 'rgba(255, 0, 0, 0.5)',
     },
   ],
 };
@@ -60,7 +60,7 @@ const dataTopProductos = {
     {
       label: 'Ventas',
       data: [12, 19, 3, 5, 2, 3, 7, 8, 9, 15], // Datos simulados de ventas
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      backgroundColor: 'rgba(255, 0, 0, 0.5)',
     },
   ],
 };

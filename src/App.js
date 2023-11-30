@@ -15,7 +15,7 @@ import InicioAdmin from './admin-components/InicioAdmin.jsx';
 import CResumen from './admin-components/CResumen.jsx';
 import RUsuario from './admin-components/CrearVendedor.jsx';
 import LVendedores from './admin-components/ListaVendedores.jsx';
-//import LCotizaciones from './admin-components/ListarCoti.jsx';
+import LCotizaciones from './admin-components/LCotizaciones.jsx';
 import ECategorias from './admin-components/EditCategorias.jsx';
 function App() {
   return (
@@ -39,9 +39,8 @@ function App() {
           <Route path='/LVendedores' element={<LVendedores/>} />
           <Route path='/ECategorias' element={<ECategorias/>} />
           <Route path="/LoginVendedor" element={<LoginVendedor/>} />
-          {/* <Route path='/LCotizaciones' element={<LCotizaciones/>} /> */}
+          <Route path="/LCotizaciones" element={<LCotizaciones/>} />
           
-
 
 
           {/* Puedes agregar más rutas aquí */}

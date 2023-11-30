@@ -574,3 +574,26 @@ app.delete('/api/categorias/:id', async (req, res) => {
     res.status(500).send('Error al eliminar categoría');
   }
 });
+
+app.get('/api/LCotizaciones', async (req, res) => {
+  try {
+    const query = `
+      SELECT 
+        c.ID_Cotizacion, 
+        c.Fecha_Cotizacion, 
+        c.Estado, 
+        v.ID_Vendedor, 
+        v.Nombre as NombreVendedor, 
+        v.Apellido as ApellidoVendedor
+      FROM 
+        cotizacion c
+      LEFT JOIN 
+        vendedor v ON c.ID_Vendedor = v.ID_Vendedor;
+    `;
+    const [cotizaciones] = await db.promise().query(query);
+    res.json(cotizaciones);
+  } catch (error) {
+    console.error('Error al obtener las cotizaciones:', error);
+    res.status(500).send('Error en el servidor');
+  }
+});

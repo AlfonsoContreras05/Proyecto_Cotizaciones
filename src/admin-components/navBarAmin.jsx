@@ -78,12 +78,12 @@ const Navbar = () => {
               </a>
             </li>
             <li className="nav-item p-3 py-md-1">
-              <a href="/" className="nav-link">
+              <a href="/LCotizaciones" className="nav-link">
                 COTIZACIONES
               </a>
             </li>
             <li className="nav-item p-3 py-md-1">
-              <a href="/" className="nav-link">
+              <a href="/LCotizaciones" className="nav-link">
                 TOTALIZADOS
               </a>
             </li>
