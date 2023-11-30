@@ -597,3 +597,28 @@ app.get('/api/LCotizaciones', async (req, res) => {
     res.status(500).send('Error en el servidor');
   }
 });
+
+// Obtener todos los productos
+app.get('/api/products', (req, res) => {
+  const query = "SELECT * FROM producto";
+  db.query(query, (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    res.json(results);
+  });
+});
+
+// Eliminar un producto
+app.delete('/api/products/:id', (req, res) => {
+  const query = "DELETE FROM producto WHERE ID_Producto = ?";
+  db.query(query, [req.params.id], (error, results) => {
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Producto no encontrado" });
+    }
+    res.status(204).send();
+  });
+});

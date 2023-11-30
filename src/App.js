@@ -17,6 +17,7 @@ import RUsuario from './admin-components/CrearVendedor.jsx';
 import LVendedores from './admin-components/ListaVendedores.jsx';
 import LCotizaciones from './admin-components/LCotizaciones.jsx';
 import ECategorias from './admin-components/EditCategorias.jsx';
+import ProductList from './admin-components/LProductos.jsx';
 function App() {
   return (
     <Router>
@@ -40,6 +41,7 @@ function App() {
           <Route path='/ECategorias' element={<ECategorias/>} />
           <Route path="/LoginVendedor" element={<LoginVendedor/>} />
           <Route path="/LCotizaciones" element={<LCotizaciones/>} />
+          <Route path="/ProductList" element={<ProductList/>} />
           
 
 

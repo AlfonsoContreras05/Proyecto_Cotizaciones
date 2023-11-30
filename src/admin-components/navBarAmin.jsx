@@ -89,7 +89,7 @@ const Navbar = () => {
             </li>
 
             <li className="nav-item p-3 py-md-1">
-              <a href="/" className="nav-link">
+              <a href="/ProductList" className="nav-link">
                 PRODUCTOS
               </a>
             </li>
