@@ -14,6 +14,26 @@ const HistorialCotizaciones = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedCotizacion, setSelectedCotizacion] = useState(null);
 
+  const actualizarCotizaciones = async () => {
+    try {
+      const url = `http://localhost:5000/api/cotizaciones-vendedor/${idVendedor}`;
+      const respuesta = await fetch(url);
+      if (respuesta.ok) {
+        const data = await respuesta.json();
+        const cotizacionesFiltradas = data.filter(cot => cot.Estado !== "Pagado");
+        setCotizaciones(cotizacionesFiltradas);
+      } else {
+        console.error("Error al recargar las cotizaciones");
+      }
+    } catch (error) {
+      console.error("Error al cargar las cotizaciones:", error);
+    }
+  };
+
+
+  
+  
+
   // Función para calcular el tiempo restante
   useEffect(() => {
     if (!idVendedor) {
@@ -27,7 +47,7 @@ const HistorialCotizaciones = () => {
         const respuesta = await fetch(url);
         if (respuesta.ok) {
           const data = await respuesta.json();
-          const cotizacionesActualizadas = data.map((cot) => {
+          const cotizacionesFiltradas = data.filter(cot => cot.Estado !== "Pagado").map((cot) => {
             // Utiliza el estado y las horas transcurridas de la API
             return {
               ...cot,
@@ -35,7 +55,7 @@ const HistorialCotizaciones = () => {
             };
           });
 
-          setCotizaciones(cotizacionesActualizadas);
+          setCotizaciones(cotizacionesFiltradas);
         }
       } catch (error) {
         console.error("Error al cargar las cotizaciones:", error);
@@ -53,6 +73,7 @@ const HistorialCotizaciones = () => {
     }
   }, [idVendedor]);
 
+  
   const columnas = [
     {
       name: "ID Cotización",
@@ -281,6 +302,7 @@ const HistorialCotizaciones = () => {
             <ModalVenta
               cotizacion={selectedCotizacion}
               onClose={() => setShowModal(false)}
+              onPAgoExitoso = {actualizarCotizaciones}
             />
           )}
         </div>

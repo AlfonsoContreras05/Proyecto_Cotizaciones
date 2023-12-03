@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-11-2023 a las 20:46:19
+-- Tiempo de generación: 04-12-2023 a las 00:39:25
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -115,9 +115,10 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`ID_Cliente`, `Nombre`, `Apellido`, `rut`, `Direccion`, `Correo_Electronico`, `Telefono`) VALUES
-(36, 'alfonso', 'contreras', '18.329.423-7', 'batallon maipo 02877', 'Adm@mail.com', '946317762'),
-(37, 'laura', 'soto', '12.232.333-8', 'psj 9', 'hola@mail.com', '946317762'),
-(38, 'mario', 'bros', '22.333.666-7', 'psj19', 'mail@mail.cl', '946317762');
+(55, 'alfonso', 'contreras', '9.582.258-9', 'batallon maipo 02877', 'Adm@mail.com', '946317762'),
+(56, 'alfonso', 'contreras', '20.321.123-8', 'batallon maipo 02877', 'Adm@mail.com', '946317762'),
+(57, 'alfonso', 'contreras', '7.369.369-8', 'batallon maipo 02877', 'Adm@mail.com', '946317762'),
+(58, 'alfonso', 'contreras', '12.810.455-0', 'batallon maipo 02877', 'Administrador@pene.com', '946317762');
 
 -- --------------------------------------------------------
 
@@ -163,9 +164,10 @@ CREATE TABLE `cotizacion` (
 --
 
 INSERT INTO `cotizacion` (`ID_Cotizacion`, `ID_Cliente`, `ID_Vendedor`, `Fecha_Cotizacion`, `Estado`) VALUES
-(42, 36, 3, '2022-11-27', 'Pendiente'),
-(43, 37, 5, '2023-10-27', 'Pendiente'),
-(44, 38, 3, '2023-11-27', 'Pendiente');
+(61, 55, 3, '2023-12-03', 'Pagado'),
+(62, 56, 3, '2023-12-03', 'Pendiente'),
+(63, 57, 3, '2023-12-03', 'Pendiente'),
+(64, 58, 3, '2023-12-03', 'Pagado');
 
 -- --------------------------------------------------------
 
@@ -189,31 +191,13 @@ CREATE TABLE `detalle_venta` (
 --
 
 INSERT INTO `detalle_venta` (`ID_DetalleVenta`, `ID_Transaccion`, `ID_Producto`, `Cantidad`, `Precio_Unitario`, `Descuento`, `ID_Vendedor`, `ID_Cotizacion`) VALUES
-(77, NULL, 2, 1, 100, NULL, NULL, 42),
-(78, NULL, 5, 1, 330, NULL, NULL, 42),
-(79, NULL, 8, 1, 650, NULL, NULL, 42),
-(80, NULL, 10, 1, 90, NULL, NULL, 42),
-(81, NULL, 13, 1, 10000, NULL, NULL, 42),
-(82, NULL, 14, 1, 15000, NULL, NULL, 42),
-(83, NULL, 15, 1, 15000, NULL, NULL, 42),
-(84, NULL, 16, 1, 7500, NULL, NULL, 42),
-(85, NULL, 4, 1, 450, NULL, NULL, 43),
-(86, NULL, 7, 1, 700, NULL, NULL, 43),
-(87, NULL, 10, 1, 90, NULL, NULL, 43),
-(88, NULL, 13, 1, 10000, NULL, NULL, 43),
-(89, NULL, 14, 1, 15000, NULL, NULL, 43),
-(90, NULL, 15, 1, 15000, NULL, NULL, 43),
-(91, NULL, 16, 1, 7500, NULL, NULL, 43),
-(92, NULL, 1, 1, 120, NULL, NULL, 44),
-(93, NULL, 2, 1, 100, NULL, NULL, 44),
-(94, NULL, 4, 1, 450, NULL, NULL, 44),
-(95, NULL, 5, 1, 330, NULL, NULL, 44),
-(96, NULL, 7, 1, 700, NULL, NULL, 44),
-(97, NULL, 10, 1, 90, NULL, NULL, 44),
-(98, NULL, 13, 1, 10000, NULL, NULL, 44),
-(99, NULL, 14, 1, 15000, NULL, NULL, 44),
-(100, NULL, 15, 1, 15000, NULL, NULL, 44),
-(101, NULL, 16, 1, 7500, NULL, NULL, 44);
+(132, 22, 7, 1, 700, NULL, 3, 61),
+(133, NULL, 11, 1, 60, NULL, 3, 62),
+(134, NULL, 5, 1, 330, NULL, 3, 63),
+(135, 23, 2, 1, 100, NULL, 3, 64),
+(136, 23, 5, 1, 330, NULL, 3, 64),
+(137, 23, 8, 1, 650, NULL, 3, 64),
+(138, 23, 11, 1, 60, NULL, 3, 64);
 
 -- --------------------------------------------------------
 
@@ -368,22 +352,22 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`ID_Producto`, `Nombre`, `Descripcion`, `Precio`, `ID_Categoria`, `Stock`) VALUES
-(1, 'Placa Madre Z490', 'Placa Madre para procesadores Intel con socket Z490, soporte DDR4', 120, 1, 20),
-(2, 'Placa Madre B550', 'Placa Madre para procesadores AMD con socket B550, soporte DDR4', 100, 1, 15),
+(1, 'Placa Madre Z490', 'Placa Madre para procesadores Intel con socket Z490, soporte DDR4', 120, 1, 18),
+(2, 'Placa Madre B550', 'Placa Madre para procesadores AMD con socket B550, soporte DDR4', 100, 1, 13),
 (3, 'Placa Madre X570', 'Placa Madre de alto rendimiento para AMD, socket X570, soporte DDR4', 180, 1, 10),
-(4, 'Intel Core i9', 'Procesador Intel Core i9, 10a generación, 3.7 GHz', 450, 2, 10),
-(5, 'AMD Ryzen 7', 'Procesador AMD Ryzen 7, 3.8 GHz, 8 núcleos', 330, 2, 12),
-(6, 'Intel Core i5', 'Procesador Intel Core i5, 10a generación, 2.9 GHz', 250, 2, 20),
-(7, 'NVIDIA RTX 3080', 'Tarjeta gráfica NVIDIA RTX 3080, 10GB GDDR6X', 700, 3, 8),
-(8, 'AMD Radeon RX 6800', 'Tarjeta gráfica AMD Radeon RX 6800, 16GB GDDR6', 650, 3, 6),
+(4, 'Intel Core i9', 'Procesador Intel Core i9, 10a generación, 3.7 GHz', 450, 2, 8),
+(5, 'AMD Ryzen 7', 'Procesador AMD Ryzen 7, 3.8 GHz, 8 núcleos', 330, 2, 10),
+(6, 'Intel Core i5', 'Procesador Intel Core i5, 10a generación, 2.9 GHz', 250, 2, 19),
+(7, 'NVIDIA RTX 3080', 'Tarjeta gráfica NVIDIA RTX 3080, 10GB GDDR6X', 700, 3, 6),
+(8, 'AMD Radeon RX 6800', 'Tarjeta gráfica AMD Radeon RX 6800, 16GB GDDR6', 650, 3, 4),
 (9, 'NVIDIA GTX 1660', 'Tarjeta gráfica NVIDIA GTX 1660, 6GB GDDR5', 300, 3, 15),
-(10, 'Corsair 750W', 'Fuente de poder Corsair, 750W, certificación 80 Plus Gold', 90, 4, 20),
-(11, 'EVGA 600W', 'Fuente de poder EVGA, 600W, certificación 80 Plus Bronze', 60, 4, 25),
+(10, 'Corsair 750W', 'Fuente de poder Corsair, 750W, certificación 80 Plus Gold', 90, 4, 18),
+(11, 'EVGA 600W', 'Fuente de poder EVGA, 600W, certificación 80 Plus Bronze', 60, 4, 20),
 (12, 'Thermaltake 500W', 'Fuente de poder Thermaltake, 500W, certificación 80 Plus White', 45, 4, 30),
-(13, 'elemento1', 'elemento de prueba', 10000, 5, 15),
-(14, 'caja chica', 'linda caja', 15000, 6, 30),
-(15, 'Elemento 1', NULL, 15000, 7, 20),
-(16, 'Elemento 1', NULL, 7500, 8, 25);
+(13, 'elemento1', 'elemento de prueba', 10000, 5, 14),
+(14, 'caja chica', 'linda caja', 15000, 6, 28),
+(15, 'Elemento 1', NULL, 15000, 7, 19),
+(16, 'Elemento 1', NULL, 7500, 8, 24);
 
 -- --------------------------------------------------------
 
@@ -446,8 +430,17 @@ CREATE TABLE `transaccion` (
   `Fecha` date DEFAULT NULL,
   `Total` decimal(10,2) DEFAULT NULL,
   `ID_Sucursal` int(11) DEFAULT NULL,
-  `Metodo_Pago` varchar(50) DEFAULT NULL
+  `Metodo_Pago` varchar(50) DEFAULT NULL,
+  `ID_Cotizacion` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `transaccion`
+--
+
+INSERT INTO `transaccion` (`ID_Transaccion`, `ID_Cliente`, `Fecha`, `Total`, `ID_Sucursal`, `Metodo_Pago`, `ID_Cotizacion`) VALUES
+(22, 55, '2023-12-03', 1000.00, 1, 'efectivo', 61),
+(23, 58, '2023-12-03', 2000.00, 1, 'efectivo', 64);
 
 -- --------------------------------------------------------
 
@@ -471,12 +464,9 @@ CREATE TABLE `vendedor` (
 --
 
 INSERT INTO `vendedor` (`ID_Vendedor`, `Nombre`, `Apellido`, `Correo_Electronico`, `Telefono`, `ID_Sucursal`, `Area_Especializacion`, `pass`) VALUES
-(1, 'Marcos', 'Aurelio', 'MaAur@mail.com', '+5698877998', 2, 'Coliseo 150', '12345'),
 (2, 'Felipe', 'Muñoz', 'Pipe@mail.cl', '+5698877966', 1, 'Esparta 21', '12345'),
 (3, 'Alfonso', 'Contreras', 'Orfhe@mail.cl', '+5698877999', 1, 'Capadocia', '123'),
-(4, 'peipto', 'perez', 'ppipe@mail.com', '+5699999999', 2, 'lejos', '1234'),
 (5, 'Yoselyn', 'Bascuñan', 'yose@mail.cl', '+5695555555', 1, 'cerca', '321'),
-(6, 'rodrigo', 'matte', 'ro@mail.cl', '+569333333', 1, 'pay', '123'),
 (7, 'maite', 'lopez', 'maite@mail.com', '+569222255556', 1, 'casa 12', '123');
 
 --
@@ -600,7 +590,8 @@ ALTER TABLE `tarjetagrafica`
 ALTER TABLE `transaccion`
   ADD PRIMARY KEY (`ID_Transaccion`),
   ADD KEY `ID_Sucursal` (`ID_Sucursal`),
-  ADD KEY `transaccion_ibfk_1` (`ID_Cliente`);
+  ADD KEY `transaccion_ibfk_1` (`ID_Cliente`),
+  ADD KEY `fk_cotizacion` (`ID_Cotizacion`);
 
 --
 -- Indices de la tabla `vendedor`
@@ -629,13 +620,13 @@ ALTER TABLE `almacenamiento`
 -- AUTO_INCREMENT de la tabla `categoria_producto`
 --
 ALTER TABLE `categoria_producto`
-  MODIFY `ID_Categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `ID_Categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `ID_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `ID_Cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT de la tabla `cooler`
@@ -647,13 +638,13 @@ ALTER TABLE `cooler`
 -- AUTO_INCREMENT de la tabla `cotizacion`
 --
 ALTER TABLE `cotizacion`
-  MODIFY `ID_Cotizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `ID_Cotizacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `ID_DetalleVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `ID_DetalleVenta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=139;
 
 --
 -- AUTO_INCREMENT de la tabla `fuentepoder`
@@ -696,6 +687,12 @@ ALTER TABLE `producto`
 --
 ALTER TABLE `tarjetagrafica`
   MODIFY `ID_TarjetaGrafica` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `transaccion`
+--
+ALTER TABLE `transaccion`
+  MODIFY `ID_Transaccion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `vendedor`
@@ -781,6 +778,7 @@ ALTER TABLE `tarjetagrafica`
 -- Filtros para la tabla `transaccion`
 --
 ALTER TABLE `transaccion`
+  ADD CONSTRAINT `fk_cotizacion` FOREIGN KEY (`ID_Cotizacion`) REFERENCES `cotizacion` (`ID_Cotizacion`),
   ADD CONSTRAINT `transaccion_ibfk_1` FOREIGN KEY (`ID_Cliente`) REFERENCES `cliente` (`ID_Cliente`),
   ADD CONSTRAINT `transaccion_ibfk_2` FOREIGN KEY (`ID_Sucursal`) REFERENCES `sucursal` (`ID_Sucursal`);
 
