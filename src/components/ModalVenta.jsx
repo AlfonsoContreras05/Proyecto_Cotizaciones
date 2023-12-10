@@ -42,24 +42,24 @@ const ModalVenta = ({ cotizacion, onClose, onPagoExitoso }) => {
     setVuelto(vueltoCalculado);
   };
 
+  
+
   const confirmarPagoEfectivo = async () => {
     try {
       const idCotizacionNumerico = parseInt(cotizacion.ID_Cotizacion);
-      //const idSucursal = ...; // Obtener ID_Sucursal según tu lógica de negocio
-      const metodoPagoEfectivo = "efectivo"; // O el método de pago que estés usando
+      const metodoPagoEfectivo = "efectivo";
       const response = await fetch('http://localhost:5000/api/pagarCotizacion', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          idCotizacion: idCotizacionNumerico,
-          montoPagado: montoPagado,
-         // idSucursal: idSucursal,
-          metodoPago: metodoPagoEfectivo
-        }),
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              idCotizacion: idCotizacionNumerico,
+              totalCotizacion: cotizacion.total, // Envía el total de la cotización
+              metodoPago: metodoPagoEfectivo
+          }),
       });
-
+  
       if (response.ok) {
         console.log("Pago en efectivo realizado con éxito");
         onClose(); // Cierra el modal
@@ -70,8 +70,10 @@ const ModalVenta = ({ cotizacion, onClose, onPagoExitoso }) => {
     } catch (error) {
       console.error("Error al realizar el pago:", error);
     }
-    
   };
+  
+  
+  
 
   return (
     <div className="modal-venta">

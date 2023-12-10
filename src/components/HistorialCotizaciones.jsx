@@ -144,9 +144,11 @@ const HistorialCotizaciones = () => {
   }, [filterText]);
 
   const handleComprarCotizacion = (cotizacion) => {
+    console.log("Total de la cotización:", cotizacion.total);
     setSelectedCotizacion(cotizacion);
     setShowModal(true);
   };
+  
 
   const handleVerCotizacion = async (idCotizacion) => {
     try {
@@ -302,7 +304,7 @@ const HistorialCotizaciones = () => {
             <ModalVenta
               cotizacion={selectedCotizacion}
               onClose={() => setShowModal(false)}
-              onPAgoExitoso = {actualizarCotizaciones}
+              onPagoExitoso = {actualizarCotizaciones}
             />
           )}
         </div>

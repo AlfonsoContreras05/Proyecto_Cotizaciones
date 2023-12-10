@@ -2,6 +2,7 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 
+
 const app = express();
 
 // Configuración de middleware
@@ -665,10 +666,13 @@ app.delete("/api/products/:id", (req, res) => {
 });
 
 app.post("/api/pagarCotizacion", (req, res) => {
-  const { idCotizacion, montoPagado, metodoPago } = req.body;
+  const { idCotizacion, totalCotizacion, metodoPago } = req.body; // Utiliza el totalCotizacion
 
   console.log("idCotizacion:", idCotizacion);
-  console.log("montoPagado:", montoPagado);
+  console.log("metodoPago:", metodoPago);
+
+  console.log("idCotizacion:", idCotizacion);
+  //console.log("montoPagado:", montoPagado); // Asegúrate de que se imprima este valor
   console.log("metodoPago:", metodoPago);
 
   db.beginTransaction((err) => {
@@ -693,13 +697,6 @@ app.post("/api/pagarCotizacion", (req, res) => {
 
       const cotizacion = cotizaciones[0];
 
-      if (montoPagado < cotizacion.total) {
-        db.rollback(() => {
-          return res.status(400).send("El monto pagado es insuficiente");
-        });
-      }
-
-      // Consultar ID_Sucursal del vendedor
       const sucursalQuery = "SELECT ID_Sucursal FROM vendedor WHERE ID_Vendedor = ?";
       db.query(sucursalQuery, [cotizacion.ID_Vendedor], (err, sucursales) => {
         if (err || sucursales.length === 0) {
@@ -721,34 +718,34 @@ app.post("/api/pagarCotizacion", (req, res) => {
           }
 
           const fechaActual = new Date().toISOString().slice(0, 10);
-          const insertTransaccion = "INSERT INTO transaccion (ID_Cliente, Fecha, Total, ID_Sucursal, Metodo_Pago, ID_Cotizacion) VALUES (?, ?, ?, ?, ?, ?)";
-          db.query(insertTransaccion, [cotizacion.ID_Cliente, fechaActual, montoPagado, idSucursal, metodoPago, idCotizacion], (err, result) => {
+  const insertTransaccion = "INSERT INTO transaccion (ID_Cliente, Fecha, Total, ID_Sucursal, Metodo_Pago, ID_Cotizacion) VALUES (?, ?, ?, ?, ?, ?)";
+    db.query(insertTransaccion, [cotizacion.ID_Cliente, fechaActual, totalCotizacion, idSucursal, metodoPago, idCotizacion], (err, result) => {            if (err) {
+              db.rollback(() => {
+                console.error("Error al crear la transacción:", err);
+                return res.status(500).send("Error al crear la transacción");
+              });
+            }
+
+            const idTransaccion = result.insertId;
+
+            const updateCotizacion = 'UPDATE cotizacion SET Estado = "Pagado" WHERE ID_Cotizacion = ?';
+            db.query(updateCotizacion, [idCotizacion], (err) => {
               if (err) {
                 db.rollback(() => {
-                  console.error("Error al crear la transacción:", err);
-                  return res.status(500).send("Error al crear la transacción");
+                  console.error("Error al actualizar el estado de la cotización:", err);
+                  return res.status(500).send("Error al actualizar el estado de la cotización");
                 });
+              } else {
+                actualizarDetallesYStock(detalles, idTransaccion, res, db);
               }
-
-              const idTransaccion = result.insertId;
-
-              const updateCotizacion = 'UPDATE cotizacion SET Estado = "Pagado" WHERE ID_Cotizacion = ?';
-              db.query(updateCotizacion, [idCotizacion], (err) => {
-                if (err) {
-                  db.rollback(() => {
-                    console.error("Error al actualizar el estado de la cotización:", err);
-                    return res.status(500).send("Error al actualizar el estado de la cotización");
-                  });
-                } else {
-                  actualizarDetallesYStock(detalles, idTransaccion, res, db);
-                }
-              });
+            });
           });
         });
       });
     });
   });
 });
+
 function actualizarDetallesYStock(detalles, idTransaccion, res, db) {
   let queriesCompletadas = 0;
 
