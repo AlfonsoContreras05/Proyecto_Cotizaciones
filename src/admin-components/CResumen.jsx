@@ -2,21 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartLine, faChartPie } from '@fortawesome/free-solid-svg-icons';
+import { faChartLine, faChartPie, faRankingStar, faMoneyBill } from '@fortawesome/free-solid-svg-icons';
 
 const redIconStyle = {
-  color: 'red',
+  color: '#EB1616',
 };
 
 const DashboardCard = ({ title, value, icon }) => (
-  <Card style={{ background: '#333', color: '#fff' }}>
-    <Card.Body>
-      <Card.Title>{title}</Card.Title>
-      <FontAwesomeIcon icon={icon} size="lg" style={redIconStyle} />
-      <Card.Text>{value}</Card.Text>
+  
+  <Card className="bg-secondary rounded text-white">
+    <Card.Body className="d-flex align-items-center justify-content-between p-4"  style={{ background: '#333', color: '#fff' }}>
+      <FontAwesomeIcon icon={icon} size="3x" style={redIconStyle}  />
+      <div className="ms-3">
+        <p className="mb-2">{title}</p>
+        <h6 className="mb-0">{value}</h6>
+      </div>
     </Card.Body>
   </Card>
 );
+
 
 const Dashboard = () => {
   const [ventasDiarias, setVentasDiarias] = useState(0);
@@ -57,7 +61,7 @@ const Dashboard = () => {
           <DashboardCard
             title="Venta Diaria"
             value={`$${ventasDiarias}`}
-            icon={faChartLine}
+            icon={faMoneyBill}
           />
         </Col>
         <Col>
@@ -79,7 +83,7 @@ const Dashboard = () => {
           <DashboardCard
             title="Meta"
             value="$1234"
-            icon={faChartPie}
+            icon={faRankingStar}
           />
         </Col>
       </Row>

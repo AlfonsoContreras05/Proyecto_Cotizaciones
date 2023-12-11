@@ -1,45 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 import { Line } from 'react-chartjs-2';
-import { Card, Col, Row, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function VentasMensualesVendedores() {
-  const dataVentasMensuales = {
-    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio','Agosto', 'Septiembre', 'Octubre', 'Noviembre'],
-    datasets: [
-      {
-        label: 'Vendedor 1',
-        data: [10, 20, 30, 40, 50, 60, 70,50,40,90,20], // Datos simulados para Vendedor 1
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-      {
-        label: 'Vendedor 2',
-        data: [20, 30, 10, 50, 60, 40, 70,30,90,80,40], // Datos simulados para Vendedor 2
-        borderColor: 'rgb(54, 162, 235)',
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-      },
-      // Agrega más vendedores aquí si es necesario
-    ],
-  };
+function TrafficChart() {
+  const [dataChart, setDataChart] = useState({
+    labels: [],
+    datasets: []
+  });
 
-  const optionsVentasMensuales = {
-    scales: {
-      y: {
-        beginAtZero: true,
-      },
-    },
-  };
+  useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    fetch(`http://localhost:5000/api/ventas-por-vendedor/${currentYear}`)
+      .then(response => response.json())
+      .then(data => {
+        // Transforma los datos para que se ajusten al formato necesario para el gráfico
+        const ventasPorVendedor = {}; // Objeto para almacenar las ventas por vendedor
+  
+        // Itera sobre cada registro y organiza las ventas por vendedor y mes
+        data.forEach(({ ID_Vendedor, Nombre, Mes, TotalVentas }) => {
+          if (!ventasPorVendedor[ID_Vendedor]) {
+            ventasPorVendedor[ID_Vendedor] = {
+              label: Nombre,
+              data: new Array(12).fill(0), // Inicializa un array para los 12 meses
+              fill: false,
+             // borderColor: /* asigna un color aquí */,
+              tension: 0.1
+            };
+          }
+          ventasPorVendedor[ID_Vendedor].data[Mes - 1] = TotalVentas; // Mes - 1 porque los meses en JS son 0-indexados
+        });
+  
+        setDataChart({
+          labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+          datasets: Object.values(ventasPorVendedor)
+        });
+      })
+      .catch(error => console.error('Error al obtener ventas por vendedor:', error));
+  }, []);
 
   return (
-    <Container>
+    <Container fluid>
       <Row className="justify-content-md-center">
-        <Col md={10} style={{ maxWidth: '90%' }}>
-          <Card className="mb-4">
+        <Col xs={12} md={10} lg={8}>
+          <Card>
             <Card.Body>
-              <Card.Title>Ventas Mensuales por Vendedor</Card.Title>
-              <div style={{ position: 'relative', height: '60vh', width: '100%' }}>
-                <Line data={dataVentasMensuales} options={optionsVentasMensuales} />
+              <Card.Title>Ventas por Vendedor - {new Date().getFullYear()}</Card.Title>
+              <Card.Subtitle className="mb-2 text-muted">Seguimiento Mensual</Card.Subtitle>
+              <div style={{ height: '300px', marginBottom: '20px' }}>
+                <Line data={dataChart} />
               </div>
             </Card.Body>
           </Card>
@@ -49,4 +58,4 @@ function VentasMensualesVendedores() {
   );
 }
 
-export default VentasMensualesVendedores;
+export default TrafficChart;

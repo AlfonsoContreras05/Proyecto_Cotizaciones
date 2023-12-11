@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Container, Row, Col } from 'react-bootstrap';
 import CResumen from "./CResumen";
 import NavBarAdmin from "./navBarAmin";
 import GraficoBarra from "./CGraficoBarra";
@@ -24,20 +25,32 @@ class MiComponente extends Component {
 
   render() {
     return (
-      <div className='container mt-5'>
-        <div>
-          <NavBarAdmin />
-        </div>
-        <div>
-          <CResumen />
-        </div>
-        <div>
-          <GraficoBarra />
-        </div>
-        <div className='mt-3'>
-          <GraficoLineas/>
-        </div>
-      </div>
+      <Container className='mt-5'>
+        <Row>
+          <Col>
+            <NavBarAdmin />
+          </Col>
+        </Row>
+
+        <Row className="my-4">
+          <Col>
+            <CResumen />
+          </Col>
+        </Row>
+
+        <Row className="my-4">
+          <Col lg={12}>
+            <GraficoBarra />
+          </Col>
+
+        </Row>
+        <Row className="my-4">
+
+        <Col lg={12}>
+            <GraficoLineas />
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }

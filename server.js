@@ -617,6 +617,27 @@ app.delete("/api/categorias/:id", async (req, res) => {
   }
 });
 
+app.get("/api/ventas-por-vendedor/:anio", async (req, res) => {
+  const anio = req.params.anio;
+
+  try {
+    const [ventas] = await db.promise().query(`
+      SELECT v.ID_Vendedor, v.Nombre, MONTH(c.Fecha_Cotizacion) as Mes, SUM(dv.Cantidad * dv.Precio_Unitario) as TotalVentas
+      FROM detalle_venta dv
+      JOIN cotizacion c ON dv.ID_Cotizacion = c.ID_Cotizacion
+      JOIN vendedor v ON dv.ID_Vendedor = v.ID_Vendedor
+      WHERE YEAR(c.Fecha_Cotizacion) = ?
+      GROUP BY v.ID_Vendedor, MONTH(c.Fecha_Cotizacion)
+      ORDER BY v.ID_Vendedor, Mes
+    `, [anio]);
+
+    res.json(ventas);
+  } catch (error) {
+    console.error("Error al obtener ventas por vendedor:", error);
+    res.status(500).send("Error al obtener ventas por vendedor");
+  }
+});
+
 app.get("/api/LCotizaciones", async (req, res) => {
   try {
     const query = `
@@ -806,3 +827,7 @@ function actualizarDetallesYStock(detalles, idTransaccion, res, db) {
     );
   });
   }
+
+
+
+    
