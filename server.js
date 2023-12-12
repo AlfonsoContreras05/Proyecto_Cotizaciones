@@ -826,8 +826,26 @@ function actualizarDetallesYStock(detalles, idTransaccion, res, db) {
       }
     );
   });
-  }
+  };
+  
 
 
+app.get("/api/ventas-globales", async (req, res) => {
+    try {
+      const [ventas] = await db.promise().query(`
+        SELECT YEAR(Fecha_Cotizacion) as year, SUM(Precio_Unitario * Cantidad) as totalSales
+        FROM detalle_venta
+        JOIN cotizacion ON detalle_venta.ID_Cotizacion = cotizacion.ID_Cotizacion
+        WHERE Fecha_Cotizacion >= NOW() - INTERVAL 5 YEAR
+        GROUP BY YEAR(Fecha_Cotizacion)
+        ORDER BY YEAR(Fecha_Cotizacion)
+      `);
+
+      res.json(ventas);
+    } catch (error) {
+      console.error("Error al obtener ventas globales:", error);
+      res.status(500).send("Error al obtener ventas globales");
+    }
+});
 
     
