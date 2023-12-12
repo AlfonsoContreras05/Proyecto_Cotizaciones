@@ -2,6 +2,9 @@ import React, { useState, useCallback, useEffect } from "react";
 import NavbarComponent from "./NavbarComponent";
 import ProductSelector from "./ProductSelector";
 import ClientDetailsForm from "./ClientDetailsForm";
+import { Tooltip } from "react-tooltip"; // Importar Tooltip/ Importar ReactTooltip
+import "../css/StyleForm.css";
+
 import "../css/StyleForm.css";
 
 const FormularioCotizacion = () => {
@@ -15,6 +18,7 @@ const FormularioCotizacion = () => {
   });
 
   const [componentesSeleccionados, setComponentesSeleccionados] = useState([]);
+  //const [tooltipContent, setTooltipContent] = useState("");
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" }); // Estado para manejar el mensaje
 
   useEffect(() => {
@@ -156,7 +160,20 @@ const FormularioCotizacion = () => {
               <tbody>
                 {componentesSeleccionados.map((componente, index) => (
                   <tr key={`componente-${componente.ID_Producto}-${index}`}>
-                    <td>{componente.Nombre}</td>
+                    <td data-tip data-for={`tooltip-${componente.ID_Producto}`}>
+                      {componente.Nombre}
+                      <Tooltip
+                        id={`tooltip-${componente.ID_Producto}`}
+                        effect="solid"
+                      >
+                        {/* Asegurarse de que la ruta de la imagen sea la correcta */}
+                        <img
+                          src={`/img-productos/tarjetagrafica/${componente.ImagenURL}`}
+                          alt={componente.Nombre}
+                          style={{ maxWidth: "150px" }}
+                        />
+                      </Tooltip>
+                    </td>
                     <td>
                       <input
                         type="number"
@@ -199,6 +216,7 @@ const FormularioCotizacion = () => {
                 ))}
               </tbody>
             </table>
+            <Tooltip />
             <h2>
               Total:{" "}
               {totalPrecio.toLocaleString("es-CL", {

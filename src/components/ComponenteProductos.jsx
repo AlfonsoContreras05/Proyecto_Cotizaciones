@@ -1,4 +1,3 @@
-// Dentro de ComponenteProductos.jsx
 import React, { useEffect, useState } from 'react';
 
 const ComponenteProductos = () => {
@@ -10,7 +9,14 @@ const ComponenteProductos = () => {
                 const response = await fetch('http://localhost:5000/api/productos');
                 if (response.ok) {
                     const data = await response.json();
-                    setProductos(data);
+                    setProductos(data.map(producto => {
+                        // Suponiendo que las tarjetas gráficas están en la categoría 3
+                        if (producto.ID_Categoria === 3) {
+                            // Aquí podrías asignar una URL de imagen específica basada en el nombre del producto
+                            return { ...producto, ImagenURL: `../img/img-productos/tarjetagrafica/${producto.Nombre}.jpg` };
+                        }
+                        return producto;
+                    }));
                 }
             } catch (error) {
                 console.error('Error al cargar los productos:', error);
@@ -29,7 +35,7 @@ const ComponenteProductos = () => {
                         <p>{producto.Descripcion}</p>
                         <p>Precio: ${producto.Precio}</p>
                         <p>Stock: {producto.Stock}</p>
-                        {/* Más información del producto que quieras mostrar */}
+                        {producto.ImagenURL && <img src={producto.ImagenURL} alt={producto.Nombre} />}
                     </div>
                 ))}
             </div>

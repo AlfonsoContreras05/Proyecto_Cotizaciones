@@ -114,12 +114,24 @@ app.post("/login-adm", (req, res) => {
 
 // Nuevo endpoint para obtener todos los productos
 app.get("/api/productos", (req, res) => {
-  // Asegúrate de tener una tabla 'categoria' con una columna 'Nombre'
   const query = `
-        SELECT p.ID_Producto, p.Nombre, p.Descripcion, p.Precio, p.ID_Categoria, p.Stock, c.Nombre AS NombreCategoria
-        FROM producto p
-        JOIN categoria_producto c ON p.ID_Categoria = c.ID_Categoria;
-    `;
+    SELECT 
+        p.ID_Producto, 
+        p.Nombre, 
+        p.Descripcion, 
+        p.Precio, 
+        p.ID_Categoria, 
+        p.Stock, 
+        c.Nombre AS NombreCategoria,
+        CASE 
+            WHEN p.ID_Categoria = 3 THEN t.ImagenURL 
+            ELSE NULL 
+        END AS ImagenURL
+    FROM 
+        producto p
+        JOIN categoria_producto c ON p.ID_Categoria = c.ID_Categoria
+        LEFT JOIN tarjetagrafica t ON p.ID_Producto = t.ID_Producto;
+  `;
 
   db.query(query, (err, results) => {
     if (err) {
@@ -129,6 +141,7 @@ app.get("/api/productos", (req, res) => {
     res.json(results);
   });
 });
+
 
 // Endpoint para guardar cotización
 app.post("/api/guardar-cotizacion", async (req, res) => {
@@ -830,34 +843,33 @@ function actualizarDetallesYStock(detalles, idTransaccion, res, db) {
   
 
 
-app.get("/api/ventas-globales", async (req, res) => {
+  app.get("/api/ventas-globales", async (req, res) => {
     try {
-      const [ventas] = await db.promise().query(`
-        SELECT YEAR(Fecha_Cotizacion) as year, SUM(Precio_Unitario * Cantidad) as totalSales
-        FROM detalle_venta
-        JOIN cotizacion ON detalle_venta.ID_Cotizacion = cotizacion.ID_Cotizacion
-        WHERE Fecha_Cotizacion >= NOW() - INTERVAL 5 YEAR
-        GROUP BY YEAR(Fecha_Cotizacion)
-        ORDER BY YEAR(Fecha_Cotizacion)
-      `);
-
-      res.json(ventas);
+        const [ventas] = await db.promise().query(`
+            SELECT YEAR(Fecha) as year, SUM(Precio_Unitario * Cantidad) as totalSales
+            FROM detalle_venta
+            JOIN transaccion ON detalle_venta.ID_Transaccion = transaccion.ID_Transaccion
+            WHERE Fecha >= NOW() - INTERVAL 5 YEAR
+            GROUP BY YEAR(Fecha)
+            ORDER BY YEAR(Fecha)
+        `);
+        res.json(ventas);
     } catch (error) {
-      console.error("Error al obtener ventas globales:", error);
-      res.status(500).send("Error al obtener ventas globales");
+        console.error("Error al obtener ventas globales:", error);
+        res.status(500).send("Error al obtener ventas globales");
     }
 });
-    
 
+    
 app.get("/api/ventas-anuales2", async (req, res) => {
   try {
       const [ventasAnuales] = await db.promise().query(`
-          SELECT YEAR(Fecha_Cotizacion) as year, SUM(Precio_Unitario * Cantidad) as totalSales
+          SELECT YEAR(Fecha) as year, SUM(Precio_Unitario * Cantidad) as totalSales
           FROM detalle_venta
-          JOIN cotizacion ON detalle_venta.ID_Cotizacion = cotizacion.ID_Cotizacion
-          WHERE Fecha_Cotizacion >= NOW() - INTERVAL 5 YEAR
-          GROUP BY YEAR(Fecha_Cotizacion)
-          ORDER BY YEAR(Fecha_Cotizacion)
+          JOIN transaccion ON detalle_venta.ID_Transaccion = transaccion.ID_Transaccion
+          WHERE Fecha >= NOW() - INTERVAL 5 YEAR
+          GROUP BY YEAR(Fecha)
+          ORDER BY YEAR(Fecha)
       `);
       res.json(ventasAnuales);
   } catch (error) {
@@ -865,15 +877,16 @@ app.get("/api/ventas-anuales2", async (req, res) => {
       res.status(500).send("Error al obtener ventas anuales");
   }
 });
+
 app.get("/api/ventas-mensuales2", async (req, res) => {
   const year = new Date().getFullYear();
   try {
       const [ventasMensuales] = await db.promise().query(`
-          SELECT MONTH(Fecha_Cotizacion) as month, SUM(Precio_Unitario * Cantidad) as totalSales
+          SELECT MONTH(Fecha) as month, SUM(Precio_Unitario * Cantidad) as totalSales
           FROM detalle_venta
-          JOIN cotizacion ON detalle_venta.ID_Cotizacion = cotizacion.ID_Cotizacion
-          WHERE YEAR(Fecha_Cotizacion) = ?
-          GROUP BY MONTH(Fecha_Cotizacion)
+          JOIN transaccion ON detalle_venta.ID_Transaccion = transaccion.ID_Transaccion
+          WHERE YEAR(Fecha) = ?
+          GROUP BY MONTH(Fecha)
       `, [year]);
       res.json(ventasMensuales);
   } catch (error) {
@@ -882,12 +895,14 @@ app.get("/api/ventas-mensuales2", async (req, res) => {
   }
 });
 
+
 app.get("/api/top-productos", async (req, res) => {
   try {
       const [topProductos] = await db.promise().query(`
           SELECT producto.Nombre, SUM(Cantidad) as totalVendido
           FROM detalle_venta
           JOIN producto ON detalle_venta.ID_Producto = producto.ID_Producto
+          JOIN transaccion ON detalle_venta.ID_Transaccion = transaccion.ID_Transaccion
           GROUP BY detalle_venta.ID_Producto
           ORDER BY totalVendido DESC
           LIMIT 10
@@ -899,3 +914,18 @@ app.get("/api/top-productos", async (req, res) => {
   }
 });
 
+
+app.get("/api/ventas-por-sucursal", async (req, res) => {
+  try {
+      const [ventas] = await db.promise().query(`
+      SELECT sucursal.Ubicacion as Sucursal, SUM(transaccion.Total) as TotalVentas
+      FROM transaccion
+      JOIN sucursal ON transaccion.ID_Sucursal = sucursal.ID_Sucursal
+      GROUP BY sucursal.Ubicacion
+      `);
+      res.json(ventas);
+  } catch (error) {
+      console.error("Error al obtener ventas por sucursal:", error);
+      res.status(500).send("Error al obtener ventas por sucursal");
+  }
+});
