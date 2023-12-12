@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Row, Col } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChartLine, faChartPie, faRankingStar, faMoneyBill } from '@fortawesome/free-solid-svg-icons';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+
 
 const redIconStyle = {
   color: '#EB1616',

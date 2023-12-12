@@ -847,5 +847,55 @@ app.get("/api/ventas-globales", async (req, res) => {
       res.status(500).send("Error al obtener ventas globales");
     }
 });
-
     
+
+app.get("/api/ventas-anuales2", async (req, res) => {
+  try {
+      const [ventasAnuales] = await db.promise().query(`
+          SELECT YEAR(Fecha_Cotizacion) as year, SUM(Precio_Unitario * Cantidad) as totalSales
+          FROM detalle_venta
+          JOIN cotizacion ON detalle_venta.ID_Cotizacion = cotizacion.ID_Cotizacion
+          WHERE Fecha_Cotizacion >= NOW() - INTERVAL 5 YEAR
+          GROUP BY YEAR(Fecha_Cotizacion)
+          ORDER BY YEAR(Fecha_Cotizacion)
+      `);
+      res.json(ventasAnuales);
+  } catch (error) {
+      console.error("Error al obtener ventas anuales:", error);
+      res.status(500).send("Error al obtener ventas anuales");
+  }
+});
+app.get("/api/ventas-mensuales2", async (req, res) => {
+  const year = new Date().getFullYear();
+  try {
+      const [ventasMensuales] = await db.promise().query(`
+          SELECT MONTH(Fecha_Cotizacion) as month, SUM(Precio_Unitario * Cantidad) as totalSales
+          FROM detalle_venta
+          JOIN cotizacion ON detalle_venta.ID_Cotizacion = cotizacion.ID_Cotizacion
+          WHERE YEAR(Fecha_Cotizacion) = ?
+          GROUP BY MONTH(Fecha_Cotizacion)
+      `, [year]);
+      res.json(ventasMensuales);
+  } catch (error) {
+      console.error("Error al obtener ventas mensuales:", error);
+      res.status(500).send("Error al obtener ventas mensuales");
+  }
+});
+
+app.get("/api/top-productos", async (req, res) => {
+  try {
+      const [topProductos] = await db.promise().query(`
+          SELECT producto.Nombre, SUM(Cantidad) as totalVendido
+          FROM detalle_venta
+          JOIN producto ON detalle_venta.ID_Producto = producto.ID_Producto
+          GROUP BY detalle_venta.ID_Producto
+          ORDER BY totalVendido DESC
+          LIMIT 10
+      `);
+      res.json(topProductos);
+  } catch (error) {
+      console.error("Error al obtener top de productos:", error);
+      res.status(500).send("Error al obtener top de productos");
+  }
+});
+

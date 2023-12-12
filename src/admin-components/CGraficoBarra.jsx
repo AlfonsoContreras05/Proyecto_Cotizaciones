@@ -1,131 +1,156 @@
-import React from 'react';
-import { Container, Row, Col, Button, Card } from 'react-bootstrap';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../css/StyleGrafBar.css';
+import * as XLSX from 'xlsx';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement } from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement);
 
 
 
-const data = {
-  labels: ['2016', '2017', '2018', '2019', '2020', '2021', '2022'],
-  datasets: [
-    {
-      label: 'Ventas Globales ($)',
-      data: [12000, 19000, 3000, 5000, 2000, 3000, 4000], // Reemplaza estos valores con tus datos reales
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-  ],
-};
+const DashboardCharts = () => {
 
-const options = {
-  scales: {
-    y: {
-      beginAtZero: true
+  const exportToExcel = (data, sheetName, fileName) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    XLSX.writeFile(workbook, `${fileName}.xlsx`);
+  };
+
+  const handleDownloadVentasAnuales = () => {
+    const dataToExport = dataVentasAnuales.datasets[0].data.map((value, index) => ({
+      Año: dataVentasAnuales.labels[index],
+      Ventas: value
+    }));
+    exportToExcel(dataToExport, 'Ventas Anuales', 'ventas_anuales');
+  };
+
+  const handleDownloadVentasMensuales = () => {
+    const dataToExport = dataVentasMensuales.datasets[0].data.map((value, index) => ({
+      Mes: dataVentasMensuales.labels[index],
+      Ventas: value
+    }));
+    exportToExcel(dataToExport, 'Ventas Mensuales', 'ventas_mensuales');
+  };
+
+  const handleDownloadTopProductos = () => {
+    const dataToExport = dataTopProductos.labels.map((label, index) => ({
+      Producto: label,
+      Ventas: dataTopProductos.datasets[0].data[index]
+    }));
+    exportToExcel(dataToExport, 'Top Productos', 'top_productos');
+  };
+
+  // Estados para los datos de los gráficos
+  const [dataVentasAnuales, setDataVentasAnuales] = useState({
+    labels: [],
+    datasets: [{ label: 'Ventas Anuales ($)', data: [], backgroundColor: 'rgba(255, 99, 132, 0.5)' }]
+  });
+
+  const [dataVentasMensuales, setDataVentasMensuales] = useState({
+    labels: ['Dic','Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', ],
+    datasets: [{ label: 'Ventas Mensuales ($)', data: [], backgroundColor: 'rgba(54, 162, 235, 0.5)' }]
+  });
+
+  const [dataTopProductos, setDataTopProductos] = useState({
+    labels: [],
+    datasets: [{ label: 'Ventas', data: [], backgroundColor: 'rgba(75, 192, 192, 0.5)' }]
+  });
+
+  const chartOptions = {
+    scales: { y: { beginAtZero: true } }
+  };
+
+  // Función para cargar ventas anuales
+  const loadVentasAnuales = useCallback(async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/ventas-anuales2");
+      const ventasAnuales = await response.json();
+      setDataVentasAnuales(prevData => ({
+        ...prevData,
+        labels: ventasAnuales.map(v => v.year),
+        datasets: [{ ...prevData.datasets[0], data: ventasAnuales.map(v => v.totalSales) }]
+      }));
+    } catch (error) {
+      console.error('Error al cargar ventas anuales:', error);
     }
-  }
-};
+  }, []); // Dependencias vacías
 
-const data2 = {
-  labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio'],
-  datasets: [
-    {
-      type: 'line',
-      label: 'Meta ($)',
-      data: [5000, 6000, 7000, 8000, 9000, 10000, 11000], // Metas
-      borderColor: 'rgb(54, 162, 235)',
-      backgroundColor: 'rgba(255, 0, 0, 0.5)',
-    },
-    {
-      type: 'bar',
-      label: 'Ventas ($)',
-      data: [4000, 7000, 3000, 6000, 8000, 9000, 12000], // Ventas
-      backgroundColor: 'rgba(255, 0, 0, 0.5)',
-    },
-  ],
-};
-
-const options2 = {
-  scales: {
-    y: {
-      beginAtZero: true
+  // Función para cargar ventas mensuales
+  const loadVentasMensuales = useCallback(async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/ventas-mensuales2");
+      const ventasMensuales = await response.json();
+      setDataVentasMensuales(prevData => ({
+        ...prevData,
+        datasets: [{ ...prevData.datasets[0], data: ventasMensuales.map(v => v.totalSales) }]
+      }));
+    } catch (error) {
+      console.error('Error al cargar ventas mensuales:', error);
     }
-  }
-};
+  }, []); // Dependencias vacías
 
-// Datos y opciones para el gráfico del Top 10 de Productos
-const dataTopProductos = {
-  labels: ['Producto 1', 'Producto 2', 'Producto 3', 'Producto 4', 'Producto 5', 'Producto 6', 'Producto 7', 'Producto 8', 'Producto 9', 'Producto 10'],
-  datasets: [
-    {
-      label: 'Ventas',
-      data: [12, 19, 3, 5, 2, 3, 7, 8, 9, 15], // Datos simulados de ventas
-      backgroundColor: 'rgba(255, 0, 0, 0.5)',
-    },
-  ],
-};
+  // Función para cargar top de productos
+  const loadTopProductos = useCallback(async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/top-productos");
+      const topProductos = await response.json();
+      setDataTopProductos(prevData => ({
+        ...prevData,
+        labels: topProductos.map(p => p.Nombre),
+        datasets: [{ ...prevData.datasets[0], data: topProductos.map(p => p.totalVendido) }]
+      }));
+    } catch (error) {
+      console.error('Error al cargar top productos:', error);
+    }
+  }, []); // Dependencias vacías
 
-const optionsTopProductos = {
-  scales: {
-    y: {
-      beginAtZero: true,
-    },
-  },
-  plugins: {
-    legend: {
-      display: false, // Ocultar leyenda si se prefiere
-    },
-  },
-};
+  useEffect(() => {
+    loadVentasAnuales();
+    loadVentasMensuales();
+    loadTopProductos();
+  }, [loadVentasAnuales, loadVentasMensuales, loadTopProductos]);
 
-
-function DashboardCharts() {
   return (
     <Container className="d-flex justify-content-center align-items-center max-width-xxl">
       <Row className="g-4">
+        {/* Gráfico de Ventas Anuales */}
         <Col md={4}>
           <Card className="text-white bg-dark h-100">
             <Card.Body>
-              <Card.Title className="d-flex justify-content-between align-items-center">
-                Venta Global
-                <Button variant="danger">Descargame</Button>
-              </Card.Title>
-              <Bar data={data} options={options} />
+              <Card.Title>Ventas Anuales</Card.Title>
+              <Button variant="danger" onClick={handleDownloadVentasAnuales}>Descargar</Button>
+              <Bar data={dataVentasAnuales} options={chartOptions} />
             </Card.Body>
           </Card>
         </Col>
 
+        {/* Gráfico de Ventas Mensuales */}
         <Col md={4}>
           <Card className="text-white bg-dark h-100">
             <Card.Body>
-              <Card.Title className="d-flex justify-content-between align-items-center">
-                Venta v/s Meta
-                <Button variant="danger">Descargame</Button>
-              </Card.Title>
-              <div className="chart-container" style={{ position: 'relative', height: '200px' }}>
-                <Bar data={data2} options={options2} />
-              </div>
+              <Card.Title>Ventas Mensuales</Card.Title>
+              <Button variant="danger" onClick={handleDownloadVentasMensuales}>Descargar</Button>
+              <Bar data={dataVentasMensuales} options={chartOptions} />
             </Card.Body>
           </Card>
         </Col>
 
+        {/* Gráfico Top 10 Productos */}
         <Col md={4}>
-  <Card className="text-white bg-dark h-100">
-    <Card.Body>
-      <Card.Title className="d-flex justify-content-between align-items-center">
-        Top 10 de Productos
-        <Button variant="danger">Descargame</Button>
-      </Card.Title>
-      <div className="chart-container" style={{ position: 'relative', height: '200px' }}>
-        {/* Asegúrate de tener el componente Bar y los datos correspondientes importados */}
-        <Bar data={dataTopProductos} options={optionsTopProductos} />
-      </div>
-    </Card.Body>
-  </Card>
-</Col>
-
+          <Card className="text-white bg-dark h-100">
+            <Card.Body>
+              <Card.Title>Top 10 Productos</Card.Title>
+              <Button variant="danger" onClick={handleDownloadTopProductos}>Descargar</Button>
+              <Bar data={dataTopProductos} options={chartOptions} />
+            </Card.Body>
+          </Card>
+        </Col>
       </Row>
     </Container>
   );
-}
+};
+
+
 export default DashboardCharts;

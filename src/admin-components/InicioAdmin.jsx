@@ -4,6 +4,9 @@ import CResumen from "./CResumen";
 import NavBarAdmin from "./navBarAmin";
 import GraficoBarra from "./CGraficoBarra";
 import GraficoLineas from './GrafLineas';
+
+
+
 class MiComponente extends Component {
   constructor(props) {
     super(props);

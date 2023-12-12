@@ -4,11 +4,25 @@ import { Line } from 'react-chartjs-2';
 import * as XLSX from 'xlsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+
 function TrafficChart() {
   const [dataChart, setDataChart] = useState({
     labels: [],
     datasets: []
   });
+  const lineColors = [
+    'rgba(255, 99, 132, 0.5)',   // Rosa
+    'rgba(54, 162, 235, 0.5)',   // Azul
+    'rgba(255, 206, 86, 0.5)',   // Amarillo
+    'rgba(75, 192, 192, 0.5)',   // Verde agua
+    'rgba(153, 102, 255, 0.5)',  // Púrpura
+    'rgba(255, 159, 64, 0.5)',   // Naranja
+    'rgba(199, 199, 199, 0.5)',  // Gris
+    'rgba(233, 30, 99, 0.5)',    // Rosa fuerte
+    'rgba(32, 201, 151, 0.5)',   // Turquesa
+    'rgba(255, 87, 34, 0.5)'     // Rojo quemado
+  ];
+  
 
   useEffect(() => {
     const currentYear = new Date().getFullYear();
@@ -16,22 +30,27 @@ function TrafficChart() {
       .then(response => response.json())
       .then(data => processData(data))
       .catch(error => console.error('Error al obtener ventas por vendedor:', error));
-  }, []);
+  });
 
   const processData = (data) => {
     const ventasPorVendedor = {};
-    data.forEach(({ ID_Vendedor, Nombre, Mes, TotalVentas }) => {
+    let colorIndex = 0; // Índice para asignar colores de la lista
+
+ data.forEach(({ ID_Vendedor, Nombre, Mes, TotalVentas }) => {
       if (!ventasPorVendedor[ID_Vendedor]) {
         ventasPorVendedor[ID_Vendedor] = {
           label: Nombre,
           data: new Array(12).fill(0),
           fill: false,
-          tension: 0.1
+          tension: 0.1,
+          borderColor: lineColors[colorIndex], // Asignar color desde la lista
+          backgroundColor: lineColors[colorIndex], // Color de fondo (para puntos)
         };
+        colorIndex = (colorIndex + 1) % lineColors.length; // Avanzar al siguiente color
       }
       ventasPorVendedor[ID_Vendedor].data[Mes - 1] = TotalVentas;
     });
-  
+
     setDataChart({
       labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
       datasets: Object.values(ventasPorVendedor)
