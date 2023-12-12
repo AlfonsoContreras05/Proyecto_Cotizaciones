@@ -116,21 +116,17 @@ app.post("/login-adm", (req, res) => {
 app.get("/api/productos", (req, res) => {
   const query = `
     SELECT 
-        p.ID_Producto, 
-        p.Nombre, 
-        p.Descripcion, 
-        p.Precio, 
-        p.ID_Categoria, 
-        p.Stock, 
-        c.Nombre AS NombreCategoria,
-        CASE 
-            WHEN p.ID_Categoria = 3 THEN t.ImagenURL 
-            ELSE NULL 
-        END AS ImagenURL
-    FROM 
-        producto p
-        JOIN categoria_producto c ON p.ID_Categoria = c.ID_Categoria
-        LEFT JOIN tarjetagrafica t ON p.ID_Producto = t.ID_Producto;
+      p.ID_Producto, 
+      p.Nombre, 
+      p.Descripcion, 
+      p.Precio, 
+      p.ID_Categoria, 
+      p.Stock, 
+      c.Nombre AS NombreCategoria, 
+      i.URL AS ImagenURL
+    FROM producto p
+    JOIN categoria_producto c ON p.ID_Categoria = c.ID_Categoria
+    LEFT JOIN imagenes i ON p.ID_Producto = i.ID_Producto;
   `;
 
   db.query(query, (err, results) => {
@@ -141,6 +137,7 @@ app.get("/api/productos", (req, res) => {
     res.json(results);
   });
 });
+
 
 
 // Endpoint para guardar cotización
