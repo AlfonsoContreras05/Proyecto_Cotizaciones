@@ -102,7 +102,7 @@ const ModalVenta = ({ cotizacion, onClose, onPagoExitoso }) => {
             value={montoPagado}
             onChange={handleEfectivoChange}
           />
-          <p>Vuelto a entregar: ${vuelto}</p>
+          <p>Vuelto a entregar: ${vuelto}.toFixed(0)</p>    
           <button onClick={confirmarPagoEfectivo}>Confirmar Pago en Efectivo</button>
         </div>
       )}
