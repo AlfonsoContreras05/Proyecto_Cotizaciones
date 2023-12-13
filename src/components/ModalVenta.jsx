@@ -38,7 +38,7 @@ const ModalVenta = ({ cotizacion, onClose, onPagoExitoso }) => {
   const handleEfectivoChange = (e) => {
     const monto = parseFloat(e.target.value);
     setMontoPagado(monto);
-    const vueltoCalculado = Math.max(0, monto - cotizacion.total).toFixed(2);
+    const vueltoCalculado = Math.max(0, monto - cotizacion.total).toFixed(0);
     setVuelto(vueltoCalculado);
   };
 
