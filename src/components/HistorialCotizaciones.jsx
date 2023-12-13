@@ -205,10 +205,10 @@ const HistorialCotizaciones = () => {
     // Mostrando los totales
     let finalY = doc.lastAutoTable.finalY + 10;
     doc.setFontSize(12);
-    doc.text(`Sub Total: $${subtotal.toFixed(2)}`, 150, finalY, 'right');
-    doc.text(`IVA 19%: $${iva.toFixed(2)}`, 150, finalY + 10, 'right');
+    doc.text(`Sub Total: $${subtotal.toFixed(0)}`, 150, finalY, 'right');
+    doc.text(`IVA 19%: $${iva.toFixed(0)}`, 150, finalY + 10, 'right');
     doc.setFontSize(14);
-    doc.text(`Total: $${totalFinal.toFixed(2)}`, 150, finalY + 20, 'right');
+    doc.text(`Total: $${totalFinal.toFixed(0)}`, 150, finalY + 20, 'right');
   
       // Totales y firma
       // Agregar sub total, impuestos y total aquí...
