@@ -42,24 +42,24 @@ const ModalVenta = ({ cotizacion, onClose, onPagoExitoso }) => {
     setVuelto(vueltoCalculado);
   };
 
-  
+
 
   const confirmarPagoEfectivo = async () => {
     try {
       const idCotizacionNumerico = parseInt(cotizacion.ID_Cotizacion);
       const metodoPagoEfectivo = "efectivo";
       const response = await fetch('http://localhost:5000/api/pagarCotizacion', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-              idCotizacion: idCotizacionNumerico,
-              totalCotizacion: cotizacion.total, // Envía el total de la cotización
-              metodoPago: metodoPagoEfectivo
-          }),
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          idCotizacion: idCotizacionNumerico,
+          totalCotizacion: cotizacion.total, // Envía el total de la cotización
+          metodoPago: metodoPagoEfectivo
+        }),
       });
-  
+
       if (response.ok) {
         console.log("Pago en efectivo realizado con éxito");
         onClose(); // Cierra el modal
@@ -71,16 +71,16 @@ const ModalVenta = ({ cotizacion, onClose, onPagoExitoso }) => {
       console.error("Error al realizar el pago:", error);
     }
   };
-  
-  
-  
+
+
+
 
   return (
-    <div className="modal-venta">
+    <div className="modal-venta container mt-5 justify-content-center align-items-center">
       <h2>Confirmar Compra</h2>
-      <div>
+      <div className="mt-2">
         <label>Método de pago:</label>
-        <select value={metodoPago} onChange={e => setMetodoPago(e.target.value)}>
+        <select className="form-control bg-dark-x border-0 text-bg-dark" value={metodoPago} onChange={e => setMetodoPago(e.target.value)}>
           <option value="efectivo">Efectivo</option>
           <option value="tarjeta">Tarjeta</option>
           <option value="paypal">PayPal</option>
@@ -95,19 +95,26 @@ const ModalVenta = ({ cotizacion, onClose, onPagoExitoso }) => {
       )}
 
       {metodoPago === "efectivo" && (
-        <div>
+        <div className="mt-3">
           <label>Monto Pagado:</label>
-          <input
+          <input className="form-control bg-dark-x border-0 text-bg-dark"
             type="number"
             value={montoPagado}
             onChange={handleEfectivoChange}
           />
           <p>Vuelto a entregar: ${vuelto}</p>
-          <button onClick={confirmarPagoEfectivo}>Confirmar Pago en Efectivo</button>
+          <button className="btn btn-danger" onClick={confirmarPagoEfectivo}>Confirmar Pago en Efectivo</button>
         </div>
       )}
 
-      <button onClick={onClose}>Cerrar</button>
+      <div className="col-5 mt-2">
+        <button className="button" type="submit" onClick={onClose}>
+          <span className="button_lg">
+            <span className="button_sl"></span>
+            <span className="button_text">Cancelar Pago</span>
+          </span>
+        </button>
+      </div>
     </div>
   );
 };
