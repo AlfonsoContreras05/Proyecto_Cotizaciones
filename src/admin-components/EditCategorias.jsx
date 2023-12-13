@@ -117,10 +117,10 @@ function CategoriaManager() {
 
   return (
     <div className='container mt-5 bg-dark-x'>
-      <NavBarAdmin/>
+      <NavBarAdmin />
 
       <div className='container mt-4 bg-dark-x'>
-      <h2>Administrar Categorías</h2>
+        <h2>Administrar Categorías</h2>
       </div>
       <DataTable
         columns={columnas}
@@ -128,21 +128,37 @@ function CategoriaManager() {
         pagination
         theme="dark"
 
-        // Agrega aquí más propiedades de DataTable si lo necesitas
+      // Agrega aquí más propiedades de DataTable si lo necesitas
       />
-      <div>
-        <h3>Añadir nueva categoría</h3>
-        <input
-          name="Nombre"
-          value={nuevaCategoria.Nombre}
-          onChange={handleNewChange}
+      <div className="mt-3">
+        <h2>Añadir nueva categoría</h2>
+        <div className="col-md-5">
+          <label>Nombre:</label>
+        <input className="form-control bg-dark-x border-0 text-bg-dark"
+            name="Nombre"
+            value={nuevaCategoria.Nombre}
+            onChange={handleNewChange}
         />
-        <input
+        </div>
+         
+        <div/>
+        <div className="col-md-5">
+          <label>Descripcion</label>
+        <input className="form-control bg-dark-x border-0 text-bg-dark"
           name="Descripcion"
           value={nuevaCategoria.Descripcion}
           onChange={handleNewChange}
         />
-        <button onClick={() => handleSave(nuevaCategoria)}>Crear</button>
+        </div>
+       
+        <div className="col-5 mt-2">
+          <button onClick={() => handleSave(nuevaCategoria)} className="button" type="submit">
+            <span className="button_lg">
+              <span className="button_sl"></span>
+              <span className="button_text">Agregar</span>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );
