@@ -38,7 +38,7 @@ const ModalVenta = ({ cotizacion, onClose, onPagoExitoso }) => {
   const handleEfectivoChange = (e) => {
     const monto = parseFloat(e.target.value);
     setMontoPagado(monto);
-    const vueltoCalculado = Math.max(0, monto - cotizacion.total).toFixed(2);
+    const vueltoCalculado = Math.max(0, monto - cotizacion.total).toFixed(0);
     setVuelto(vueltoCalculado);
   };
 
@@ -102,10 +102,8 @@ const ModalVenta = ({ cotizacion, onClose, onPagoExitoso }) => {
             value={montoPagado}
             onChange={handleEfectivoChange}
           />
-        <div className="mt-2">
-            <p>Vuelto a entregar: ${vuelto}</p>
-            <button className="btn btn-danger" onClick={confirmarPagoEfectivo}>Confirmar Pago en Efectivo</button>
-        </div>
+          <p>Vuelto a entregar: ${vuelto}</p>
+          <button onClick={confirmarPagoEfectivo}>Confirmar Pago en Efectivo</button>
         </div>
       )}
 
