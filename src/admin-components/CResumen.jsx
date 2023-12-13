@@ -93,30 +93,30 @@ const Dashboard = () => {
         </Col>
 
         <Col>
-  <Card className="bg-secondary rounded text-white">
-    <Card.Body
-      className="d-flex align-items-center justify-content-between p-4"
-      style={{ background: "#333", color: "#fff" }}
-    >
-      <FontAwesomeIcon
-        icon={faRankingStar}
-        size="3x"
-        style={{ color: "#EB1616" }}
-      />
-      <div className="ms-3">
-        <p className="mb-2">Ventas por Sucursal</p>
-        <div className="mb-0">
-          {ventasPorSucursal.map((sucursal, index) => (
-            <div key={index}>
-              {sucursal.Sucursal}: ${sucursal.TotalVentas}
-            </div>
-          ))}
-        </div>
-      </div>
-    </Card.Body>
-  </Card>
-</Col>
-
+          <Card className="bg-secondary rounded text-white">
+            <Card.Body
+              className="d-flex align-items-center justify-content-between p-4"
+              style={{ background: "#333", color: "#fff" }}
+            >
+              <FontAwesomeIcon
+                icon={faRankingStar}
+                size="3x"
+                style={{ color: "#EB1616" }}
+              />
+              <div className="ms-3">
+                {/* <p className="mb-2">Ventas por Sucursal</p> */}
+                <div className="mb-0">
+                  {ventasPorSucursal.map((sucursal, index) => (
+                    <div key={index}>
+                      {sucursal.Sucursal}: $
+                      {Number(sucursal.TotalVentas).toFixed(0)}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
       </Row>
     </div>
   );

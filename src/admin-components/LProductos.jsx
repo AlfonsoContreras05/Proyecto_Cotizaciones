@@ -86,6 +86,7 @@ const ProductList = () => {
         title="Lista de Productos"
         columns={columns}
         data={products}
+        persistTableHead
         pagination
         theme="dark"
             customStyles={{

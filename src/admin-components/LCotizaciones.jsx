@@ -37,14 +37,10 @@ const ListarCotizaciones = () => {
       name: "Acciones",
       cell: (row) => (
         <>
-          <button onClick={() => (row.ID_Cotizacion)}>
-            Editar
-          </button>
-          <button onClick={() => (row.ID_Cotizacion)}>
-            Eliminar
-          </button>
+          <button onClick={() => row.ID_Cotizacion}>Editar</button>
+          <button onClick={() => row.ID_Cotizacion}>Eliminar</button>
         </>
-      )
+      ),
     },
     // Agrega aquí más columnas si lo necesitas
   ];

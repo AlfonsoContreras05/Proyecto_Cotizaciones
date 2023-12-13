@@ -35,7 +35,7 @@ class MiComponente extends Component {
           </Col>
         </Row>
 
-        <Row className="my-4">
+        <Row className="my-0">
           <Col>
             <CResumen />
           </Col>
