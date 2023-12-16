@@ -9,12 +9,13 @@ app.use(cors());
 
 // Configurar conexión a la base de datos PostgreSQL
 const pool = new Pool({
-  host: "localhost",
-  user: "postgres",
-  password: "admin",
-  database: "sistemacotizaciones",
-  port: 5432 // Puerto por defecto de PostgreSQL
+  user: 'postgres', // Tu nombre de usuario de RDS
+  host: 'sistemacotizaciones.cfsgvkswacf5.us-east-2.rds.amazonaws.com', // Tu punto de enlace de RDS
+  database: 'sistemacotizaciones', // El nombre de tu base de datos
+  password: 'Alexa2020', // Tu contraseña de RDS
+  port: 5432, // El puerto, PostgreSQL usualmente usa 5432
 });
+
 
 // Iniciar el servidor
 const PORT = 5000;
