@@ -112,10 +112,12 @@ app.post("/login", (req, res) => {
   );
 });
 
+
+
 app.post("/login-adm", (req, res) => {
   const { usuario, password } = req.body;
 
-  // Primero, verifica si el intento de inicio de sesión es para un administrador
+  // Consulta para verificar las credenciales del administrador
   db.query(
     "SELECT ID_Administrador, Nombre FROM administrador WHERE Nombre = ? AND pass = ?",
     [usuario, password],
@@ -126,23 +128,27 @@ app.post("/login-adm", (req, res) => {
       }
 
       if (adminResults.length > 0) {
-        // Las credenciales son del administrador
+        // Las credenciales son correctas
         const adminData = {
           ID_Administrador: adminResults[0].ID_Administrador,
           Nombre: adminResults[0].Nombre,
           // Otros campos necesarios para el administrador
         };
-        return res.status(200).json({ administrador: adminData });
+
+        // Generar el token JWT
+        const token = jwt.sign({ administrador: adminData }, jwtConfig.secret, {
+          expiresIn: jwtConfig.expiresIn
+        });
+
+        // Enviar los datos del administrador y el token
+        return res.status(200).json({ administrador: adminData, token });
       } else {
-        // Si las credenciales no son de administrador, envía un error
-        return res
-          .status(401)
-          .send("Credenciales incorrectas para administrador");
+        // Credenciales incorrectas
+        return res.status(401).send("Credenciales incorrectas para administrador");
       }
     }
   );
 });
-
 // Nuevo endpoint para obtener todos los productos
 app.get("/api/productos", (req, res) => {
   const query = `
@@ -367,7 +373,7 @@ app.get("/api/detalles-cotizacion/:idCotizacion", async (req, res) => {
   }
 });
 
-app.get("/api/productos-mas-cotizados/:idVendedor",verifyToken, async (req, res) => {
+app.get("/api/productos-mas-cotizados/:idVendedor", async (req, res) => {
   const idVendedor = req.params.idVendedor;
 
   try {
@@ -400,7 +406,7 @@ app.get("/api/productos-mas-cotizados/:idVendedor",verifyToken, async (req, res)
   }
 });
 
-app.get("/api/ventas-diarias",verifyToken, async (req, res) => {
+app.get("/api/ventas-diarias", async (req, res) => {
   try {
     const query = `
           SELECT SUM(d.Precio_Unitario * d.Cantidad) AS TotalVenta
@@ -417,7 +423,7 @@ app.get("/api/ventas-diarias",verifyToken, async (req, res) => {
 });
 
 // API para obtener las ventas mensuales
-app.get("/api/ventas-mensuales",verifyToken, async (req, res) => {
+app.get("/api/ventas-mensuales", async (req, res) => {
   try {
     const query = `
           SELECT SUM(d.Precio_Unitario * d.Cantidad) AS TotalVenta
@@ -435,7 +441,7 @@ app.get("/api/ventas-mensuales",verifyToken, async (req, res) => {
 });
 
 // API para obtener las ventas anuales
-app.get("/api/ventas-anuales",verifyToken, async (req, res) => {
+app.get("/api/ventas-anuales", async (req, res) => {
   try {
     const query = `
           SELECT SUM(d.Precio_Unitario * d.Cantidad) AS TotalVenta
@@ -452,7 +458,7 @@ app.get("/api/ventas-anuales",verifyToken, async (req, res) => {
 });
 
 //crear usuario vendedor
-app.post("/api/registerVendedor",verifyToken, (req, res) => {
+app.post("/api/registerVendedor", (req, res) => {
   const {
     nombre,
     apellido,
@@ -488,7 +494,7 @@ app.post("/api/registerVendedor",verifyToken, (req, res) => {
   );
 });
 
-app.get("/api/sucursales",verifyToken, (req, res) => {
+app.get("/api/sucursales", (req, res) => {
   const query = "SELECT * FROM sucursal";
   db.query(query, (err, results) => {
     if (err) {
@@ -499,7 +505,7 @@ app.get("/api/sucursales",verifyToken, (req, res) => {
   });
 });
 
-app.get("/api/vendedores-admin",verifyToken, (req, res) => {
+app.get("/api/vendedores-admin", (req, res) => {
   const query = `
     SELECT 
       v.ID_Vendedor, 

@@ -7,6 +7,7 @@ import "jspdf-autotable";
 import ModalVenta from "./ModalVenta"; // Asegúrate de que la ruta sea correcta
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import TimeoutModal from './modalTime';
 
 const HistorialCotizaciones = () => {
   const [cotizaciones, setCotizaciones] = useState([]);
@@ -336,6 +337,7 @@ const HistorialCotizaciones = () => {
           )}
         </div>
       </div>
+      <TimeoutModal />
     </div>
   );
 };

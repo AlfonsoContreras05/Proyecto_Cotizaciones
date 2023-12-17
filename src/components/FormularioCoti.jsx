@@ -5,6 +5,7 @@ import ClientDetailsForm from "./ClientDetailsForm";
 import "../css/StyleForm.css";
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import TimeoutModal from './modalTime';
 
 
 const FormularioCotizacion = () => {
@@ -266,6 +267,7 @@ const FormularioCotizacion = () => {
           </form>
         </div>
       </div>
+      <TimeoutModal />
     </div>
   );
 };

@@ -1,11 +1,32 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import DataTable from "react-data-table-component";
 import NavBarAdmin from "./navBarAmin";
+import TimeoutModal from '../components/modalTime'   // Importa el componente de la modal de inactividad
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate para la redirección
+import { jwtDecode } from "jwt-decode"; // Importa jwt-decode para decodificar el token
 
 const ListarCotizaciones = () => {
   const [cotizaciones, setCotizaciones] = useState([]);
+  const navigate = useNavigate();
+
+  const verificarToken = useCallback(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp < currentTime) {
+        // Token ha expirado
+        localStorage.removeItem("token");
+        navigate('/LoginAdmin'); // Redirige al login del administrador
+      }
+    } else {
+      // No hay token
+      navigate('/LoginAdmin');
+    }
+  }, [navigate]);
 
   useEffect(() => {
+    verificarToken();
     const fetchCotizaciones = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/LCotizaciones");
@@ -17,7 +38,7 @@ const ListarCotizaciones = () => {
     };
 
     fetchCotizaciones();
-  }, []);
+  }, [verificarToken]);
 
   const columnas = [
     {
@@ -82,6 +103,7 @@ const ListarCotizaciones = () => {
           />
         </div>
       </div>
+      <TimeoutModal /> {/* Incluir la modal de inactividad */}
     </div>
   );
 };

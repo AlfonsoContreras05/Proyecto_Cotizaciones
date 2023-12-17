@@ -1,13 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import DataTable from "react-data-table-component";
 import NavBArAdm from "./navBarAmin";
+import TimeoutModal from '../components/modalTime'   // Importa el componente de la modal de inactividad
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate para la redirección
+import { jwtDecode } from "jwt-decode"; // Importa jwt-decode para decodificar el token
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
+
+  const verificarToken = useCallback(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp < currentTime) {
+        // Token ha expirado
+        localStorage.removeItem("token");
+        navigate('/LoginAdmin'); // Redirige al login del administrador
+      }
+    } else {
+      // No hay token
+      navigate('/LoginAdmin');
+    }
+  }, [navigate]);
 
   useEffect(() => {
+    verificarToken();
     fetchProducts();
-  }, []);
+  }, [verificarToken]);
 
   const fetchProducts = async () => {
     try {
@@ -106,6 +127,7 @@ const ProductList = () => {
               },
             }}
       />
+           <TimeoutModal /> {/* Incluir la modal de inactividad */}
     </div>
   );
 };

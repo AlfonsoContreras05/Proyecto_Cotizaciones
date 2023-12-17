@@ -4,6 +4,7 @@ import NavbarComponent from './NavbarComponent';
 import '../css/StyleInicio.css';
 import * as XLSX from 'xlsx';
 import { useNavigate } from 'react-router-dom';
+import TimeoutModal from './modalTime';
 
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
@@ -196,6 +197,7 @@ const GraficoVentasDiarias = () => {
                     </div>
                 </div>
             </div>
+            <TimeoutModal />
         </div>
     );
     

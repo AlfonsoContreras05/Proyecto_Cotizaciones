@@ -20,18 +20,22 @@ const LoginAdministrador = () => {
         body: JSON.stringify({ usuario, password }),
       });
   
+      const data = await response.json();
+  
       if (response.status === 200) {
-        // Inicio de sesión exitoso, redirigir al administrador a la vista NavBarAdmin
-        window.location.href = '/InicioAdmin';
+        console.log('Token recibido:', data.token); // Mostrar el token en la consola
+        localStorage.setItem('token', data.token); // Guardar el token en el almacenamiento local
+        window.location.href = '/InicioAdmin'; // Redirigir al administrador a la vista de inicio
       } else {
-        // Credenciales incorrectas
-        setError('Credenciales incorrectas');
+        console.error('Respuesta del servidor:', response.status, data); // Mostrar error de respuesta del servidor
+        setError('Credenciales incorrectas'); // Mostrar mensaje de error de credenciales incorrectas
       }
     } catch (error) {
-      console.error('Error en la solicitud fetch:', error);
-      // Puedes manejar el error de manera apropiada, como mostrar un mensaje de error en el formulario.
+      console.error('Error en la solicitud fetch:', error); // Mostrar error en la consola
+      setError('Ha ocurrido un error al intentar iniciar sesión'); // Mostrar mensaje de error genérico
     }
   };
+  
   
 
   return (

@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import NavBArAdm from "./navBarAmin";
 import DataTable from "react-data-table-component";
 import "../css/StyleHistorial.css";
 import EditModal from "./EditVendedorModal";
 import ConfirmDeleteModal from "./EliminarCotizacion";
+import TimeoutModal from '../components/modalTime'   // Importa el componente de la modal de inactividad
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate para la redirección
+import { jwtDecode } from "jwt-decode"; // Importa jwt-decode para decodificar el token
+
 
 export function ListarVendedores() {
   const [vendedores, setVendedores] = useState([]);
@@ -11,18 +15,39 @@ export function ListarVendedores() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedVendedor, setSelectedVendedor] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [selectedVendedorToDelete, setSelectedVendedorToDelete] =
-    useState(null);
+  const [selectedVendedorToDelete, setSelectedVendedorToDelete] = useState(null);
+
+  const navigate = useNavigate();
+
+  const verificarToken = useCallback(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp < currentTime) {
+        // Token ha expirado
+        localStorage.removeItem("token");
+        navigate('/login-admin'); // Redirige al login del administrador
+      }
+    } else {
+      // No hay token
+      navigate('/login-admin');
+    }
+  }, [navigate]); // Agrega navigate como dependencia
 
   useEffect(() => {
+    verificarToken();
     cargarVendedores();
-  }, []);
+  }, [verificarToken]); // Solo depende de verificarToken
+
+
 
   const cargarVendedores = async () => {
+    const token = localStorage.getItem("token");
     try {
-      const respuesta = await fetch(
-        "http://localhost:5000/api/vendedores-admin"
-      );
+      const respuesta = await fetch("http://localhost:5000/api/vendedores-admin", {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
       if (respuesta.ok) {
         const datos = await respuesta.json();
         setVendedores(datos);
@@ -251,6 +276,7 @@ export function ListarVendedores() {
           )}
         </div>
       </div>
+      <TimeoutModal /> {/* Incluye el componente de la modal de inactividad */}
     </div>
   );
 }

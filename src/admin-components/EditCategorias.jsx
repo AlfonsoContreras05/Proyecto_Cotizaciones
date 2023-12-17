@@ -1,12 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback } from 'react';
 import NavBarAdmin from "./navBarAmin";
 import DataTable from 'react-data-table-component';
 import "../css/StyleHistorial.css";
+import TimeoutModal from '../components/modalTime'   // Importa el componente de la modal de inactividad
+import { useNavigate } from 'react-router-dom'; // Importa useNavigate para la redirección
+import { jwtDecode } from "jwt-decode"; // Importa jwt-decode para decodificar el token
 
 function CategoriaManager() {
   const [categorias, setCategorias] = useState([]);
   const [categoriaEditando, setCategoriaEditando] = useState(null);
   const [nuevaCategoria, setNuevaCategoria] = useState({ Nombre: '', Descripcion: '' });
+  const navigate = useNavigate();
+
+
+   // Verificar token JWT
+   const verificarToken = useCallback(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp < currentTime) {
+        localStorage.removeItem("token");
+        navigate('/LoginAdmin');
+      }
+    } else {
+      navigate('/LoginAdmin');
+    }
+  }, [navigate]);
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -14,9 +34,9 @@ function CategoriaManager() {
       const data = await response.json();
       setCategorias(data);
     };
-
+    verificarToken();
     fetchCategorias();
-  }, []);
+  }, [verificarToken]);
 
   const handleChange = (e, categoria) => {
     const { name, value } = e.target;
@@ -160,6 +180,7 @@ function CategoriaManager() {
           </button>
         </div>
       </div>
+      <TimeoutModal /> {/* Incluir la modal de inactividad */}
     </div>
   );
 }
