@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Bar } from 'react-chartjs-2';
 import NavbarComponent from './NavbarComponent';
 import '../css/StyleInicio.css';
 import * as XLSX from 'xlsx';
+import { useNavigate } from 'react-router-dom';
 
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
@@ -12,11 +13,27 @@ const GraficoVentasDiarias = () => {
     const [ventasDiarias, setVentasDiarias] = useState([]);
     const [productosMasVendidos, setProductosMasVendidos] = useState([]);
     const idVendedor = localStorage.getItem("idVendedor");
+    const token = localStorage.getItem("token"); // Obtener el token del almacenamiento local
+
+    const navigate = useNavigate();
+
+    const handleUnauthorized = useCallback(() => {
+        localStorage.removeItem("token");
+        navigate('/');
+    }, [navigate]); 
 
     useEffect(() => {
         const cargarDatosVentas = async () => {
             try {
-                const respuesta = await fetch(`http://localhost:5000/api/ventas-vendedor/${idVendedor}`);
+                const respuesta = await fetch(`http://localhost:5000/api/ventas-vendedor/${idVendedor}`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                if (respuesta.status === 401) {
+                    handleUnauthorized();
+                    return;
+                }
                 if (respuesta.ok) {
                     const datos = await respuesta.json();
                     setVentasDiarias(datos);
@@ -31,17 +48,22 @@ const GraficoVentasDiarias = () => {
         if (idVendedor) {
             cargarDatosVentas();
         }
-    }, [idVendedor]);
+    }, [idVendedor, token, handleUnauthorized]);
 
     useEffect(() => {
-
-        // Cargar productos más vendidos
         const cargarProductosMasVendidos = async () => {
             try {
-                const respuesta = await fetch(`http://localhost:5000/api/productos-mas-cotizados/${idVendedor}`);
+                const respuesta = await fetch(`http://localhost:5000/api/productos-mas-cotizados/${idVendedor}`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                if (respuesta.status === 401) {
+                    handleUnauthorized();
+                    return;
+                }
                 if (respuesta.ok) {
                     const productos = await respuesta.json();
-                    console.log(productos); // Imprime los productos para verificar
                     setProductosMasVendidos(productos);
                 } else {
                     console.error("Error en la respuesta del servidor al obtener productos más vendidos");
@@ -50,12 +72,14 @@ const GraficoVentasDiarias = () => {
                 console.error("Error al cargar los productos más vendidos:", error);
             }
         };
-        
 
         if (idVendedor) {
             cargarProductosMasVendidos();
         }
-    }, [idVendedor]);
+    }, [idVendedor, token, handleUnauthorized]);
+
+
+
 
     useEffect(() => {
         console.log(productosMasVendidos); // Imprime el estado actualizado

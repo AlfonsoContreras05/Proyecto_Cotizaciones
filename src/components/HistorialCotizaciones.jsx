@@ -1,10 +1,12 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import NavbarComponent from "./NavbarComponent";
 import DataTable from "react-data-table-component";
 import "../css/StyleHistorial.css";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import ModalVenta from "./ModalVenta"; // Asegúrate de que la ruta sea correcta
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 const HistorialCotizaciones = () => {
   const [cotizaciones, setCotizaciones] = useState([]);
@@ -13,6 +15,35 @@ const HistorialCotizaciones = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedCotizacion, setSelectedCotizacion] = useState(null);
+
+  const navigate = useNavigate();
+
+  const verificarTokenYRedirigir = useCallback(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const currentTime = Date.now() / 1000;
+        if (decodedToken.exp < currentTime) {
+          // Token ha expirado
+          localStorage.removeItem('token');
+          navigate('/');
+        }
+      } catch (error) {
+        // En caso de un error (token inválido, etc.)
+        console.error('Error al decodificar el token:', error);
+        localStorage.removeItem('token');
+        navigate('/');
+      }
+    } else {
+      // No hay token
+      navigate('/');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    verificarTokenYRedirigir();
+  }, [verificarTokenYRedirigir]);
 
   const actualizarCotizaciones = async () => {
     try {
@@ -29,10 +60,6 @@ const HistorialCotizaciones = () => {
       console.error("Error al cargar las cotizaciones:", error);
     }
   };
-
-
-  
-  
 
   // Función para calcular el tiempo restante
   useEffect(() => {

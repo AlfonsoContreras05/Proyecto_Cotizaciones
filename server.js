@@ -1,7 +1,8 @@
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
-
+const jwt = require("jsonwebtoken");
+const jwtConfig = require("./jwtConfig"); // Asegúrate de que la ruta sea correcta
 
 const app = express();
 
@@ -29,6 +30,26 @@ app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
 
+const verifyToken = (req, res, next) => {
+  const bearerHeader = req.headers["authorization"];
+  if (!bearerHeader) {
+    return res.status(403).send("Se requiere un token para la autenticación");
+  }
+  const bearer = bearerHeader.split(' ');
+  const bearerToken = bearer[1];
+  req.token = bearerToken;
+
+  try {
+    const decoded = jwt.verify(req.token, jwtConfig.secret);
+    req.usuario = decoded;
+  } catch (error) {
+    return res.status(401).send("Token inválido o expirado");
+  }
+
+  next();
+};
+
+module.exports = verifyToken;
 //hola
 // Endpoint para el inicio de sesión
 app.post("/login", (req, res) => {
@@ -50,8 +71,17 @@ app.post("/login", (req, res) => {
           ID_Vendedor: vendedorResults[0].ID_Vendedor,
           Nombre: vendedorResults[0].Nombre,
           // Puedes añadir aquí otros campos que consideres necesarios para el vendedor
-        };
-        return res.status(200).json({ vendedor: vendedorData });
+        };   
+                     // Generar el token JWT
+        const token = jwt.sign({ vendedor: vendedorData }, jwtConfig.secret, {
+          expiresIn: jwtConfig.expiresIn
+        });  
+        
+
+      
+        
+
+        return res.status(200).json({ vendedor: vendedorData,token });
       } else {
         // Si las credenciales no son del vendedor, intenta con el administrador
         db.query(
@@ -142,7 +172,7 @@ app.get("/api/productos", (req, res) => {
 
 
 // Endpoint para guardar cotización
-app.post("/api/guardar-cotizacion", async (req, res) => {
+app.post("/api/guardar-cotizacion",verifyToken,async (req, res) => {
   const { cliente, productos, ID_Vendedor } = req.body;
   console.log("ID Vendedor recibido:", ID_Vendedor);
 
@@ -337,7 +367,7 @@ app.get("/api/detalles-cotizacion/:idCotizacion", async (req, res) => {
   }
 });
 
-app.get("/api/productos-mas-cotizados/:idVendedor", async (req, res) => {
+app.get("/api/productos-mas-cotizados/:idVendedor",verifyToken, async (req, res) => {
   const idVendedor = req.params.idVendedor;
 
   try {
@@ -370,7 +400,7 @@ app.get("/api/productos-mas-cotizados/:idVendedor", async (req, res) => {
   }
 });
 
-app.get("/api/ventas-diarias", async (req, res) => {
+app.get("/api/ventas-diarias",verifyToken, async (req, res) => {
   try {
     const query = `
           SELECT SUM(d.Precio_Unitario * d.Cantidad) AS TotalVenta
@@ -387,7 +417,7 @@ app.get("/api/ventas-diarias", async (req, res) => {
 });
 
 // API para obtener las ventas mensuales
-app.get("/api/ventas-mensuales", async (req, res) => {
+app.get("/api/ventas-mensuales",verifyToken, async (req, res) => {
   try {
     const query = `
           SELECT SUM(d.Precio_Unitario * d.Cantidad) AS TotalVenta
@@ -405,7 +435,7 @@ app.get("/api/ventas-mensuales", async (req, res) => {
 });
 
 // API para obtener las ventas anuales
-app.get("/api/ventas-anuales", async (req, res) => {
+app.get("/api/ventas-anuales",verifyToken, async (req, res) => {
   try {
     const query = `
           SELECT SUM(d.Precio_Unitario * d.Cantidad) AS TotalVenta
@@ -422,7 +452,7 @@ app.get("/api/ventas-anuales", async (req, res) => {
 });
 
 //crear usuario vendedor
-app.post("/api/registerVendedor", (req, res) => {
+app.post("/api/registerVendedor",verifyToken, (req, res) => {
   const {
     nombre,
     apellido,
@@ -458,7 +488,7 @@ app.post("/api/registerVendedor", (req, res) => {
   );
 });
 
-app.get("/api/sucursales", (req, res) => {
+app.get("/api/sucursales",verifyToken, (req, res) => {
   const query = "SELECT * FROM sucursal";
   db.query(query, (err, results) => {
     if (err) {
@@ -469,7 +499,7 @@ app.get("/api/sucursales", (req, res) => {
   });
 });
 
-app.get("/api/vendedores-admin", (req, res) => {
+app.get("/api/vendedores-admin",verifyToken, (req, res) => {
   const query = `
     SELECT 
       v.ID_Vendedor, 
@@ -496,7 +526,6 @@ app.get("/api/vendedores-admin", (req, res) => {
   });
 });
 
-// Endpoint para actualizar un vendedor
 // Endpoint para actualizar un vendedor
 app.put("/api/vendedores/:id", (req, res) => {
   console.log("Datos recibidos para actualizar:", req.body);

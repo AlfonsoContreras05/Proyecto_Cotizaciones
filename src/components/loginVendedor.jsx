@@ -28,18 +28,22 @@ const LoginVendedor = () => {
       });
   
       if (response.ok) {
-        const data = await response.json(); // Obtener datos de la respuesta, incluyendo el ID del vendedor
+        const data = await response.json(); // Obtener datos de la respuesta, incluyendo el token y el ID del vendedor
+        console.log("Token recibido:", data.token); // Verificar el token recibido
   
-        // Almacenar información de la sesión y del vendedor
+        // Almacenar el token JWT y la información del vendedor en el almacenamiento local
+        localStorage.setItem("token", data.token); // Asegúrate de que el servidor envía el token en esta respuesta
         localStorage.setItem("userSession", usuario);
-        localStorage.setItem("idVendedor", data.vendedor.ID_Vendedor); // Almacena el ID del vendedor
+        localStorage.setItem("idVendedor", data.vendedor.ID_Vendedor);
   
         setExitoMensaje("Inicio de sesión exitoso. Redirigiendo...");
   
         // Redirigir al usuario después de un breve retraso
         setTimeout(() => {
+          const storedToken = localStorage.getItem("token");
+          console.log("Token almacenado:", storedToken); // Verificar el token almacenado
           navigate("/Inicio");
-        }, 3000);
+        }, 2000);
       } else {
         setErrorMensaje("Error en el inicio de sesión. Por favor, intenta de nuevo.");
         setTimeout(() => setErrorMensaje(""), 3000); // Ocultar mensaje después de 3 segundos
@@ -50,6 +54,7 @@ const LoginVendedor = () => {
       setTimeout(() => setErrorMensaje(""), 3000); // Ocultar mensaje después de 3 segundos
     }
   };
+  
   
 
   return (

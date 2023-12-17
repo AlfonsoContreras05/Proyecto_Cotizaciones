@@ -3,6 +3,9 @@ import NavbarComponent from "./NavbarComponent";
 import ProductSelector from "./ProductSelector";
 import ClientDetailsForm from "./ClientDetailsForm";
 import "../css/StyleForm.css";
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
+
 
 const FormularioCotizacion = () => {
   const [cliente, setCliente] = useState({
@@ -22,6 +25,29 @@ const FormularioCotizacion = () => {
       return () => clearTimeout(timer);
     }
   }, [mensaje]);
+
+  const navigate = useNavigate();
+
+  const verificarToken = useCallback(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      if (decodedToken.exp < currentTime) {
+        // Token ha expirado
+        localStorage.removeItem("token");
+        navigate('/');
+      }
+    } else {
+      // No hay token
+      navigate('/');
+    }
+  }, [navigate]);
+
+  useEffect(() => {
+    verificarToken();
+  }, [verificarToken]);
+
 
   const handleClientChange = (e) => {
     setCliente({ ...cliente, [e.target.name]: e.target.value });
@@ -65,17 +91,23 @@ const FormularioCotizacion = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const idVendedor = localStorage.getItem("idVendedor");
-    if (!idVendedor) {
-      console.error("ID del vendedor no está disponible");
+    const token = localStorage.getItem("token");
+  
+    if (!idVendedor || !token) {
+      // No hay ID de vendedor o token, redirigir al login
+      navigate('/login');
       return;
     }
-
+  
     try {
       const response = await fetch(
         "http://localhost:5000/api/guardar-cotizacion",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + token
+          },
           body: JSON.stringify({
             cliente,
             productos: componentesSeleccionados.map(
@@ -89,8 +121,15 @@ const FormularioCotizacion = () => {
           }),
         }
       );
-
+  
+      if (response.status === 401) {
+        // Token expirado o inválido, redirigir al login
+        navigate('/');
+        return;
+      }
+  
       if (!response.ok) throw new Error("Error al guardar la cotización");
+
       setMensaje({ texto: "Cotización creada exitosamente", tipo: "success" });
       setCliente({
         nombre: "",
@@ -106,7 +145,6 @@ const FormularioCotizacion = () => {
       setMensaje({ texto: "Error al crear la cotización", tipo: "danger" });
     }
   };
-
   return (
     <div className="BD">
       <div className="bg-black">
