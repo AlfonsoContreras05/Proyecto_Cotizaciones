@@ -3,10 +3,11 @@ import NavbarComponent from "./NavbarComponent";
 import ProductSelector from "./ProductSelector";
 import ClientDetailsForm from "./ClientDetailsForm";
 import "../css/StyleForm.css";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import TimeoutModal from './modalTime';
+import TimeoutModal from "./modalTime";
 
+// Llama a startAnimation en el método handleSubmit justo después de enviar la cotización
 
 const FormularioCotizacion = () => {
   const [cliente, setCliente] = useState({
@@ -37,18 +38,17 @@ const FormularioCotizacion = () => {
       if (decodedToken.exp < currentTime) {
         // Token ha expirado
         localStorage.removeItem("token");
-        navigate('/');
+        navigate("/");
       }
     } else {
       // No hay token
-      navigate('/');
+      navigate("/");
     }
   }, [navigate]);
 
   useEffect(() => {
     verificarToken();
   }, [verificarToken]);
-
 
   const handleClientChange = (e) => {
     setCliente({ ...cliente, [e.target.name]: e.target.value });
@@ -93,13 +93,13 @@ const FormularioCotizacion = () => {
     e.preventDefault();
     const idVendedor = localStorage.getItem("idVendedor");
     const token = localStorage.getItem("token");
-  
+
     if (!idVendedor || !token) {
       // No hay ID de vendedor o token, redirigir al login
-      navigate('/login');
+      navigate("/login");
       return;
     }
-  
+
     try {
       const response = await fetch(
         "http://localhost:5000/api/guardar-cotizacion",
@@ -107,7 +107,7 @@ const FormularioCotizacion = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            'Authorization': 'Bearer ' + token
+            Authorization: "Bearer " + token,
           },
           body: JSON.stringify({
             cliente,
@@ -122,13 +122,13 @@ const FormularioCotizacion = () => {
           }),
         }
       );
-  
+
       if (response.status === 401) {
         // Token expirado o inválido, redirigir al login
-        navigate('/');
+        navigate("/");
         return;
       }
-  
+
       if (!response.ok) throw new Error("Error al guardar la cotización");
 
       setMensaje({ texto: "Cotización creada exitosamente", tipo: "success" });
@@ -141,11 +141,23 @@ const FormularioCotizacion = () => {
         celular: "",
       });
       setComponentesSeleccionados([]);
+
+      startAnimation();
     } catch (error) {
       console.error("Error al guardar la cotización:", error);
       setMensaje({ texto: "Error al crear la cotización", tipo: "danger" });
     }
   };
+
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const startAnimation = () => {
+    setIsAnimating(true);
+    setTimeout(() => {
+      window.location.reload();
+    }, 10000); // Ajusta este tiempo a la duración de tu animación
+  };
+
   return (
     <div className="BD">
       <div className="bg-black">
@@ -243,9 +255,26 @@ const FormularioCotizacion = () => {
               })}
             </h2>
             <div className="d-flex justify-content-center">
-              <button type="submit" className="btn btn-outline-light mx-2 mb-5">
-                Crear Cotización
+              <button className={`order ${isAnimating ? "animate" : ""}`}>
+                <span className="default">Crear Cotización</span>
+                <span className="success">
+                  Cotización Enviada
+                  <svg viewBox="0 0 12 10">
+                    <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
+                  </svg>
+                </span>
+                <div className="box"></div>
+                <div className="truck">
+                  <div className="back"></div>
+                  <div className="front">
+                    <div className="window"></div>
+                  </div>
+                  <div className="light top"></div>
+                  <div className="light bottom"></div>
+                </div>
+                <div className="lines"></div>
               </button>
+
               <button
                 type="button"
                 className="btn btn-outline-light mx-2 mb-5"
