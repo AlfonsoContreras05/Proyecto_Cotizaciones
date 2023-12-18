@@ -125,6 +125,7 @@ const DashboardCharts = () => {
             </Card.Body>
           </Card>
         </Col>
+        
 
         {/* Gráfico de Ventas Mensuales */}
         <Col md={4}>
