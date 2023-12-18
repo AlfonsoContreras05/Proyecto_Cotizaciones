@@ -258,7 +258,7 @@ const FormularioCotizacion = () => {
               <button className={`order ${isAnimating ? "animate" : ""}`}>
                 <span className="default">Crear Cotización</span>
                 <span className="success">
-                  Cotización Enviada
+                  Cotización Registrada
                   <svg viewBox="0 0 12 10">
                     <polyline points="1.5 6 4.5 9 10.5 1"></polyline>
                   </svg>
