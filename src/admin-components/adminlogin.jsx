@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../css/styleLogin.css";
-import image from "../img/pngwing.com12.png";
+import image from "../img/DR.png";
 import { Link } from "react-router-dom";
 
 const LoginAdministrador = () => {
@@ -45,7 +45,7 @@ const LoginAdministrador = () => {
       <div className="row g-0">
         <div className="col-lg-5 min-vh-100">
           <div className="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto">
-            <img src={image} className="img-fluid" alt="Logo" />
+          <img src={image} className="img-fluid mirrored-image" alt="Imagen descriptiva" width="70" height="" />
           </div>
           <div className="px-lg-5 py-lg-4 p4 w-100 align-self-center">
             <h1 className="font-weight-bold mb-4">Bienvenido Administrador</h1>

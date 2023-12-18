@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./styleLogin.css";
-import image from "../img/pngwing.com12.png"; // Asegúrate de que la ruta es correcta
+import image from "../img/DR.png"; // Asegúrate de que la ruta es correcta
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { Link } from "react-router-dom";
@@ -79,12 +79,13 @@ const LoginVendedor = () => {
               </div>
             </div>
           </div>
-          <div className="col-lg-5 min-vh-100">
-            <div className="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto">
-              <img src={image} className="img-fluid" alt="Imagen descriptiva" />
+          <div className="col-lg-5 min-vh-100 ">
+            <div className="px-lg-5 pt-lg-1 pb-lg-1 p-4 w-100 mb-1 ">
+              <img src={image} className="img-fluid" alt="Imagen descriptiva" width="90" height="" />
+              
             </div>
 
-            <div className="px-lg-5 py-lg-4 p-4 w-100 align-self-center">
+            <div className="px-lg-5 py-lg-1 p-4 w-100 align-self-center">
               <h1 className="form-label font-weight-bold mb-4">Bienvenido</h1>
               <form className="mb-5" onSubmit={handleSubmit}>
                 <div className="mb-4">

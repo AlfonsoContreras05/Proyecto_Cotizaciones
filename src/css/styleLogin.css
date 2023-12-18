@@ -35,7 +35,14 @@ body{
 
 
 .img-2{
-    background-image: url(../img/wallpaperflare.com_wallpaper.jpg);
+    background-image: url(../img/wallpaperbetter.com_3840x2160_2.jpg);
     background-size: cover;
     background-position: center;
 }
+
+
+
+.mirrored-image {
+    transform: scaleX(-1);
+  }
+  
