@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 const LoginVendedor = () => {
   const navigate = useNavigate();
 
-  const [usuario, setUsuario] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [errorMensaje, setErrorMensaje] = useState("");
@@ -17,27 +17,27 @@ const LoginVendedor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await fetch("http://localhost:5000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ usuario, password }),
+        body: JSON.stringify({ email, password }),
       });
-  
+
       if (response.ok) {
         const data = await response.json(); // Obtener datos de la respuesta, incluyendo el token y el ID del vendedor
         console.log("Token recibido:", data.token); // Verificar el token recibido
-  
+
         // Almacenar el token JWT y la información del vendedor en el almacenamiento local
         localStorage.setItem("token", data.token); // Asegúrate de que el servidor envía el token en esta respuesta
-        localStorage.setItem("userSession", usuario);
+        localStorage.setItem("userSession", email);
         localStorage.setItem("idVendedor", data.vendedor.ID_Vendedor);
-  
+
         setExitoMensaje("Inicio de sesión exitoso. Redirigiendo...");
-  
+
         // Redirigir al usuario después de un breve retraso
         setTimeout(() => {
           const storedToken = localStorage.getItem("token");
@@ -45,17 +45,19 @@ const LoginVendedor = () => {
           navigate("/Inicio");
         }, 2000);
       } else {
-        setErrorMensaje("Error en el inicio de sesión. Por favor, intenta de nuevo.");
+        setErrorMensaje(
+          "Error en el inicio de sesión. Por favor, intenta de nuevo."
+        );
         setTimeout(() => setErrorMensaje(""), 3000); // Ocultar mensaje después de 3 segundos
       }
     } catch (error) {
       console.error("Hubo un error al enviar la solicitud", error);
-      setErrorMensaje("Error en el inicio de sesión. Por favor, intenta de nuevo.");
+      setErrorMensaje(
+        "Error en el inicio de sesión. Por favor, intenta de nuevo."
+      );
       setTimeout(() => setErrorMensaje(""), 3000); // Ocultar mensaje después de 3 segundos
     }
   };
-  
-  
 
   return (
     <div className="bg-dark-x">
@@ -93,14 +95,14 @@ const LoginVendedor = () => {
                     Usuario
                   </label>
                   <input
-                    type="text"
+                    type="email"
                     className="form-control bg-dark-x border-0 text-bg-dark"
                     placeholder="Ingresa tu usuario"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
                     required
-                    value={usuario}
-                    onChange={(e) => setUsuario(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
                 <div className="mb-4">
@@ -113,7 +115,7 @@ const LoginVendedor = () => {
                   <input
                     type="password"
                     className="form-control bg-dark-x border-0 mb-2 text-bg-dark"
-                    placeholder="Ingresa tu contraseña"
+                    placeholder="Ingresa tu correo electrónico"
                     id="exampleInputPassword1"
                     required
                     value={password}

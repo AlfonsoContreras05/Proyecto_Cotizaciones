@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Modal, Button } from 'react-bootstrap'; // Asegúrate de tener Bootstrap
+import { Modal, Button } from 'react-bootstrap'; 
 import { useNavigate } from 'react-router-dom';
 
 const TimeoutModal = () => {
   const [showModal, setShowModal] = useState(false);
-  const [countdown, setCountdown] = useState(60); // 2 minutos = 120 segundos
+  const [countdown, setCountdown] = useState(60); // 1 minutos = 60 segundos
   const navigate = useNavigate();
 
   const handleInactivity = useCallback(() => {

@@ -14,6 +14,8 @@ export function RegisterUser() {
   const [sucursales, setSucursales] = useState([]);
   const [idSucursal, setIdSucursal] = useState('');
 
+  
+
   const navigate = useNavigate();
 
   const verificarToken = useCallback(() => {
@@ -51,8 +53,19 @@ export function RegisterUser() {
     cargarSucursales();
   }, [verificarToken]);
 
+  const validarPassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Validar la contraseña antes de enviar
+    if (!validarPassword(password)) {
+      alert('La contraseña debe tener al menos 8 caracteres, incluyendo una mayúscula, un número y un carácter especial.');
+      return;
+    }
   
     try {
       const response = await fetch('http://localhost:5000/api/registerVendedor', {

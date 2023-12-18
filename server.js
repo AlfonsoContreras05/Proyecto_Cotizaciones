@@ -35,7 +35,7 @@ const verifyToken = (req, res, next) => {
   if (!bearerHeader) {
     return res.status(403).send("Se requiere un token para la autenticación");
   }
-  const bearer = bearerHeader.split(' ');
+  const bearer = bearerHeader.split(" ");
   const bearerToken = bearer[1];
   req.token = bearerToken;
 
@@ -53,12 +53,12 @@ module.exports = verifyToken;
 //hola
 // Endpoint para el inicio de sesión
 app.post("/login", (req, res) => {
-  const { usuario, password } = req.body;
+  const { email, password } = req.body;
 
   // Consulta la base de datos para validar las credenciales del vendedor
   db.query(
-    "SELECT ID_Vendedor, Nombre FROM vendedor WHERE Nombre = ? AND pass = ?",
-    [usuario, password],
+    "SELECT ID_Vendedor, Nombre FROM vendedor WHERE Correo_Electronico = ? AND pass = ?",
+    [email, password],
     (err, vendedorResults) => {
       if (err) {
         console.error("Error en el servidor:", err);
@@ -71,22 +71,18 @@ app.post("/login", (req, res) => {
           ID_Vendedor: vendedorResults[0].ID_Vendedor,
           Nombre: vendedorResults[0].Nombre,
           // Puedes añadir aquí otros campos que consideres necesarios para el vendedor
-        };   
-                     // Generar el token JWT
+        };
+        // Generar el token JWT
         const token = jwt.sign({ vendedor: vendedorData }, jwtConfig.secret, {
-          expiresIn: jwtConfig.expiresIn
-        });  
-        
+          expiresIn: jwtConfig.expiresIn,
+        });
 
-      
-        
-
-        return res.status(200).json({ vendedor: vendedorData,token });
+        return res.status(200).json({ vendedor: vendedorData, token });
       } else {
         // Si las credenciales no son del vendedor, intenta con el administrador
         db.query(
-          "SELECT ID_Administrador, Nombre FROM administrador WHERE Nombre = ? AND pass = ?",
-          [usuario, password],
+          "SELECT ID_Administrador, Nombre FROM administrador WHERE Correo_Electronicoe = ? AND pass = ?",
+          [email, password],
           (err, adminResults) => {
             if (err) {
               console.error("Error en el servidor:", err);
@@ -97,7 +93,7 @@ app.post("/login", (req, res) => {
               // Las credenciales son del administrador
               const adminData = {
                 ID_Administrador: adminResults[0].ID_Administrador,
-                Nombre: adminResults[0].Nombre,
+                email: adminResults[0].Correo_Electronico,
                 // Puedes añadir aquí otros campos que consideres necesarios para el administrador
               };
               return res.status(200).json({ administrador: adminData });
@@ -112,15 +108,13 @@ app.post("/login", (req, res) => {
   );
 });
 
-
-
 app.post("/login-adm", (req, res) => {
-  const { usuario, password } = req.body;
+  const { email, password } = req.body;
 
   // Consulta para verificar las credenciales del administrador
   db.query(
-    "SELECT ID_Administrador, Nombre FROM administrador WHERE Nombre = ? AND pass = ?",
-    [usuario, password],
+    "SELECT ID_Administrador, Nombre FROM administrador WHERE Correo_Electronico = ? AND pass = ?",
+    [email, password],
     (err, adminResults) => {
       if (err) {
         console.error("Error en el servidor:", err);
@@ -137,14 +131,16 @@ app.post("/login-adm", (req, res) => {
 
         // Generar el token JWT
         const token = jwt.sign({ administrador: adminData }, jwtConfig.secret, {
-          expiresIn: jwtConfig.expiresIn
+          expiresIn: jwtConfig.expiresIn,
         });
 
         // Enviar los datos del administrador y el token
         return res.status(200).json({ administrador: adminData, token });
       } else {
         // Credenciales incorrectas
-        return res.status(401).send("Credenciales incorrectas para administrador");
+        return res
+          .status(401)
+          .send("Credenciales incorrectas para administrador");
       }
     }
   );
@@ -175,10 +171,8 @@ app.get("/api/productos", (req, res) => {
   });
 });
 
-
-
 // Endpoint para guardar cotización
-app.post("/api/guardar-cotizacion",verifyToken,async (req, res) => {
+app.post("/api/guardar-cotizacion", verifyToken, async (req, res) => {
   const { cliente, productos, ID_Vendedor } = req.body;
   console.log("ID Vendedor recibido:", ID_Vendedor);
 
@@ -469,6 +463,12 @@ app.post("/api/registerVendedor", (req, res) => {
     pass,
   } = req.body;
 
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  if (!regex.test(pass)) {
+    return res.status(400).send('La contraseña no cumple con los requisitos.');
+  }
+
   const query =
     "INSERT INTO vendedor (Nombre, Apellido, Correo_Electronico, Telefono, ID_Sucursal, Area_Especializacion, pass) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -667,7 +667,8 @@ app.get("/api/ventas-por-vendedor/:anio", async (req, res) => {
   const anio = req.params.anio;
 
   try {
-    const [ventas] = await db.promise().query(`
+    const [ventas] = await db.promise().query(
+      `
       SELECT v.ID_Vendedor, v.Nombre, MONTH(c.Fecha_Cotizacion) as Mes, SUM(dv.Cantidad * dv.Precio_Unitario) as TotalVentas
       FROM detalle_venta dv
       JOIN cotizacion c ON dv.ID_Cotizacion = c.ID_Cotizacion
@@ -675,7 +676,9 @@ app.get("/api/ventas-por-vendedor/:anio", async (req, res) => {
       WHERE YEAR(c.Fecha_Cotizacion) = ?
       GROUP BY v.ID_Vendedor, MONTH(c.Fecha_Cotizacion)
       ORDER BY v.ID_Vendedor, Mes
-    `, [anio]);
+    `,
+      [anio]
+    );
 
     res.json(ventas);
   } catch (error) {
@@ -764,18 +767,22 @@ app.post("/api/pagarCotizacion", (req, res) => {
 
       const cotizacion = cotizaciones[0];
 
-      const sucursalQuery = "SELECT ID_Sucursal FROM vendedor WHERE ID_Vendedor = ?";
+      const sucursalQuery =
+        "SELECT ID_Sucursal FROM vendedor WHERE ID_Vendedor = ?";
       db.query(sucursalQuery, [cotizacion.ID_Vendedor], (err, sucursales) => {
         if (err || sucursales.length === 0) {
           db.rollback(() => {
             console.error("Error al obtener la sucursal:", err);
-            return res.status(500).send("Error en el servidor al obtener la sucursal");
+            return res
+              .status(500)
+              .send("Error en el servidor al obtener la sucursal");
           });
         }
 
         const idSucursal = sucursales[0].ID_Sucursal;
 
-        const detallesCotizacionQuery = "SELECT * FROM detalle_venta WHERE ID_Cotizacion = ?";
+        const detallesCotizacionQuery =
+          "SELECT * FROM detalle_venta WHERE ID_Cotizacion = ?";
         db.query(detallesCotizacionQuery, [idCotizacion], (err, detalles) => {
           if (err) {
             db.rollback(() => {
@@ -785,28 +792,47 @@ app.post("/api/pagarCotizacion", (req, res) => {
           }
 
           const fechaActual = new Date().toISOString().slice(0, 10);
-  const insertTransaccion = "INSERT INTO transaccion (ID_Cliente, Fecha, Total, ID_Sucursal, Metodo_Pago, ID_Cotizacion) VALUES (?, ?, ?, ?, ?, ?)";
-    db.query(insertTransaccion, [cotizacion.ID_Cliente, fechaActual, totalCotizacion, idSucursal, metodoPago, idCotizacion], (err, result) => {            if (err) {
-              db.rollback(() => {
-                console.error("Error al crear la transacción:", err);
-                return res.status(500).send("Error al crear la transacción");
-              });
-            }
-
-            const idTransaccion = result.insertId;
-
-            const updateCotizacion = 'UPDATE cotizacion SET Estado = "Pagado" WHERE ID_Cotizacion = ?';
-            db.query(updateCotizacion, [idCotizacion], (err) => {
+          const insertTransaccion =
+            "INSERT INTO transaccion (ID_Cliente, Fecha, Total, ID_Sucursal, Metodo_Pago, ID_Cotizacion) VALUES (?, ?, ?, ?, ?, ?)";
+          db.query(
+            insertTransaccion,
+            [
+              cotizacion.ID_Cliente,
+              fechaActual,
+              totalCotizacion,
+              idSucursal,
+              metodoPago,
+              idCotizacion,
+            ],
+            (err, result) => {
               if (err) {
                 db.rollback(() => {
-                  console.error("Error al actualizar el estado de la cotización:", err);
-                  return res.status(500).send("Error al actualizar el estado de la cotización");
+                  console.error("Error al crear la transacción:", err);
+                  return res.status(500).send("Error al crear la transacción");
                 });
-              } else {
-                actualizarDetallesYStock(detalles, idTransaccion, res, db);
               }
-            });
-          });
+
+              const idTransaccion = result.insertId;
+
+              const updateCotizacion =
+                'UPDATE cotizacion SET Estado = "Pagado" WHERE ID_Cotizacion = ?';
+              db.query(updateCotizacion, [idCotizacion], (err) => {
+                if (err) {
+                  db.rollback(() => {
+                    console.error(
+                      "Error al actualizar el estado de la cotización:",
+                      err
+                    );
+                    return res
+                      .status(500)
+                      .send("Error al actualizar el estado de la cotización");
+                  });
+                } else {
+                  actualizarDetallesYStock(detalles, idTransaccion, res, db);
+                }
+              });
+            }
+          );
         });
       });
     });
@@ -872,13 +898,11 @@ function actualizarDetallesYStock(detalles, idTransaccion, res, db) {
       }
     );
   });
-  };
-  
+}
 
-
-  app.get("/api/ventas-globales", async (req, res) => {
-    try {
-        const [ventas] = await db.promise().query(`
+app.get("/api/ventas-globales", async (req, res) => {
+  try {
+    const [ventas] = await db.promise().query(`
             SELECT YEAR(Fecha) as year, SUM(Precio_Unitario * Cantidad) as totalSales
             FROM detalle_venta
             JOIN transaccion ON detalle_venta.ID_Transaccion = transaccion.ID_Transaccion
@@ -886,17 +910,16 @@ function actualizarDetallesYStock(detalles, idTransaccion, res, db) {
             GROUP BY YEAR(Fecha)
             ORDER BY YEAR(Fecha)
         `);
-        res.json(ventas);
-    } catch (error) {
-        console.error("Error al obtener ventas globales:", error);
-        res.status(500).send("Error al obtener ventas globales");
-    }
+    res.json(ventas);
+  } catch (error) {
+    console.error("Error al obtener ventas globales:", error);
+    res.status(500).send("Error al obtener ventas globales");
+  }
 });
 
-    
 app.get("/api/ventas-anuales2", async (req, res) => {
   try {
-      const [ventasAnuales] = await db.promise().query(`
+    const [ventasAnuales] = await db.promise().query(`
           SELECT YEAR(Fecha) as year, SUM(Precio_Unitario * Cantidad) as totalSales
           FROM detalle_venta
           JOIN transaccion ON detalle_venta.ID_Transaccion = transaccion.ID_Transaccion
@@ -904,34 +927,36 @@ app.get("/api/ventas-anuales2", async (req, res) => {
           GROUP BY YEAR(Fecha)
           ORDER BY YEAR(Fecha)
       `);
-      res.json(ventasAnuales);
+    res.json(ventasAnuales);
   } catch (error) {
-      console.error("Error al obtener ventas anuales:", error);
-      res.status(500).send("Error al obtener ventas anuales");
+    console.error("Error al obtener ventas anuales:", error);
+    res.status(500).send("Error al obtener ventas anuales");
   }
 });
 
 app.get("/api/ventas-mensuales2", async (req, res) => {
   const year = new Date().getFullYear();
   try {
-      const [ventasMensuales] = await db.promise().query(`
+    const [ventasMensuales] = await db.promise().query(
+      `
           SELECT MONTH(Fecha) as month, SUM(Precio_Unitario * Cantidad) as totalSales
           FROM detalle_venta
           JOIN transaccion ON detalle_venta.ID_Transaccion = transaccion.ID_Transaccion
           WHERE YEAR(Fecha) = ?
           GROUP BY MONTH(Fecha)
-      `, [year]);
-      res.json(ventasMensuales);
+      `,
+      [year]
+    );
+    res.json(ventasMensuales);
   } catch (error) {
-      console.error("Error al obtener ventas mensuales:", error);
-      res.status(500).send("Error al obtener ventas mensuales");
+    console.error("Error al obtener ventas mensuales:", error);
+    res.status(500).send("Error al obtener ventas mensuales");
   }
 });
 
-
 app.get("/api/top-productos", async (req, res) => {
   try {
-      const [topProductos] = await db.promise().query(`
+    const [topProductos] = await db.promise().query(`
           SELECT producto.Nombre, SUM(Cantidad) as totalVendido
           FROM detalle_venta
           JOIN producto ON detalle_venta.ID_Producto = producto.ID_Producto
@@ -940,25 +965,24 @@ app.get("/api/top-productos", async (req, res) => {
           ORDER BY totalVendido DESC
           LIMIT 10
       `);
-      res.json(topProductos);
+    res.json(topProductos);
   } catch (error) {
-      console.error("Error al obtener top de productos:", error);
-      res.status(500).send("Error al obtener top de productos");
+    console.error("Error al obtener top de productos:", error);
+    res.status(500).send("Error al obtener top de productos");
   }
 });
 
-
 app.get("/api/ventas-por-sucursal", async (req, res) => {
   try {
-      const [ventas] = await db.promise().query(`
+    const [ventas] = await db.promise().query(`
       SELECT sucursal.Ubicacion as Sucursal, SUM(transaccion.Total) as TotalVentas
       FROM transaccion
       JOIN sucursal ON transaccion.ID_Sucursal = sucursal.ID_Sucursal
       GROUP BY sucursal.Ubicacion
       `);
-      res.json(ventas);
+    res.json(ventas);
   } catch (error) {
-      console.error("Error al obtener ventas por sucursal:", error);
-      res.status(500).send("Error al obtener ventas por sucursal");
+    console.error("Error al obtener ventas por sucursal:", error);
+    res.status(500).send("Error al obtener ventas por sucursal");
   }
 });
