@@ -58,8 +58,19 @@ export function RegisterUser() {
     return regex.test(password);
   };
   
+  const validarTelefono = (celular) => {
+    const regex = /^\+56 9\d{8}$/;
+    return regex.test(celular);
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Validar el número de teléfono
+    if (!validarTelefono(celular)) {
+      alert('El número de teléfono debe seguir el formato +56 9XXXXXXXX.');
+      return;
+    }
   
     // Validar la contraseña antes de enviar
     if (!validarPassword(password)) {
@@ -150,6 +161,7 @@ export function RegisterUser() {
             type="text" 
             className="form-control bg-dark-x border-0 text-bg-dark" 
             id="inputCelular" 
+            placeholder="+56 9XXXXXXX" 
             value={celular}
             onChange={(e) => setCelular(e.target.value)}
           />
