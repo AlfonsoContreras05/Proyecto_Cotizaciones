@@ -76,12 +76,13 @@ const LoginVendedor = () => {
               <div className="carousel-inner">
                 <div className="carousel-item img-1 min-vh-100 active"></div>
                 <div className="carousel-item img-2 min-vh-100 "></div>
+                <div className="carousel-item img-3 min-vh-100 "></div>
               </div>
             </div>
           </div>
           <div className="col-lg-5 min-vh-100 ">
             <div className="px-lg-5 pt-lg-1 pb-lg-1 p-4 w-100 mb-1 ">
-              <img src={image} className="img-fluid" alt="Imagen descriptiva" width="90" height="" />
+              <img src={image} className="img-fluid" alt="Imagen descriptiva" width="70" height="" />
               
             </div>
 

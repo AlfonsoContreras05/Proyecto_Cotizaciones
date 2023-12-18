@@ -39,3 +39,9 @@ body{
     background-size: cover;
     background-position: center;
 }
+
+.img-3{
+    background-image: url(../img/wallpaperbetter.com_3840x2160.jpg);
+    background-size: cover;
+    background-position: center;
+}

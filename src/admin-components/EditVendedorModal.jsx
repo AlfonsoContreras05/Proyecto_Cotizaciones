@@ -7,57 +7,48 @@ const EditVendedorModal = ({ vendedor, onClose, onSave }) => {
     vendedor.Correo_Electronico
   );
   const [Telefono, setTelefono] = useState(vendedor.Telefono);
-  // Añade más campos según sea necesario...
-  const [sucursales, setSucursales] = useState([]);
   const [idSucursal, setIdSucursal] = useState(vendedor.ID_Sucursal || "");
   const [Area_Especializacion, setAreaEspecializacion] = useState(
     vendedor.Area_Especializacion
   );
-  const [pass, setPass] = useState(vendedor.pass);
+  const [newPassword, setNewPassword] = useState(""); // Nuevo campo para nueva contraseña
+  const [sucursales, setSucursales] = useState([]);
+
+  useEffect(() => {
+    const cargarSucursales = async () => {
+      try {
+        const respuesta = await fetch("http://localhost:5000/api/sucursales");
+        if (respuesta.ok) {
+          const datosSucursales = await respuesta.json();
+          setSucursales(datosSucursales);
+        } else {
+          console.error("Error al cargar sucursales:", respuesta);
+        }
+      } catch (error) {
+        console.error("Error al conectar con el servidor:", error);
+      }
+    };
+
+    cargarSucursales();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Crear un objeto con los datos actualizados del vendedor
+
     const updatedVendedor = {
-      ...vendedor,
+      ID_Vendedor: vendedor.ID_Vendedor, // Asegúrate de incluir el ID del vendedor
       Nombre: nombre,
       Apellido: apellido,
       Correo_Electronico: Correo_Electronico,
       Telefono: Telefono,
       ID_Sucursal: idSucursal,
       Area_Especializacion: Area_Especializacion,
-      pass: pass,
+      pass: newPassword ? newPassword : undefined,
     };
-  
-    // Imprimir los datos actualizados para depuración
-    console.log("Datos a enviar:", updatedVendedor);
-  
-    // Llamar a la función onSave pasándole los datos actualizados
+
     onSave(updatedVendedor);
+    setNewPassword(""); // Limpia el campo de la nueva contraseña
   };
-  
-
-
-  
-
-  useEffect(() => {
-    const cargarSucursales = async () => {
-      try {
-        const respuesta = await fetch('http://localhost:5000/api/sucursales');
-        if (respuesta.ok) {
-          const datosSucursales = await respuesta.json();
-          setSucursales(datosSucursales);
-        } else {
-          console.error('Error al cargar sucursales:', respuesta);
-        }
-      } catch (error) {
-        console.error('Error al conectar con el servidor:', error);
-      }
-    };
-
-    cargarSucursales();
-  }, []);
 
   return (
     <div className="modal show" style={{ display: "block" }}>
@@ -108,25 +99,27 @@ const EditVendedorModal = ({ vendedor, onClose, onSave }) => {
                 />
               </div>
               <div className="form-group">
-  <label>Sucursal</label>
-  {sucursales.length > 0 ? (
-    <select 
-      className="form-control" 
-      value={idSucursal} 
-      onChange={(e) => setIdSucursal(e.target.value)}
-    >
-      {sucursales.map((sucursal) => (
-        <option key={sucursal.ID_Sucursal} value={sucursal.ID_Sucursal}>
-          {sucursal.Ubicacion}
-        </option>
-      ))}
-    </select>
-  ) : (
-    <p>Cargando sucursales...</p>
-  )}
-</div>
+                <label>Sucursal</label>
+                {sucursales.length > 0 ? (
+                  <select
+                    className="form-control"
+                    value={idSucursal}
+                    onChange={(e) => setIdSucursal(e.target.value)}
+                  >
+                    {sucursales.map((sucursal) => (
+                      <option
+                        key={sucursal.ID_Sucursal}
+                        value={sucursal.ID_Sucursal}
+                      >
+                        {sucursal.Ubicacion}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <p>Cargando sucursales...</p>
+                )}
+              </div>
 
-              
               <div className="form-group">
                 <label>Direccion</label>
                 <input
@@ -137,12 +130,13 @@ const EditVendedorModal = ({ vendedor, onClose, onSave }) => {
                 />
               </div>
               <div className="form-group">
-                <label>Contraseña</label>
+                <label>Nueva Contraseña</label>
                 <input
-                  type="text"
+                  type="password"
                   className="form-control"
-                  value={pass}
-                  onChange={(e) => setPass(e.target.value)}
+                  placeholder="Ingresa una nueva contraseña"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                 />
               </div>
               {/* Agrega más campos aquí... */}

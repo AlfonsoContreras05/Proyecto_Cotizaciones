@@ -5,7 +5,8 @@ const jwt = require("jsonwebtoken");
 const jwtConfig = require("./jwtConfig"); // Asegúrate de que la ruta sea correcta
 
 const app = express();
-
+const bcrypt = require('bcrypt');
+const saltRounds = 10; 
 // Configuración de middleware
 app.use(express.json());
 app.use(cors());
@@ -52,13 +53,15 @@ const verifyToken = (req, res, next) => {
 module.exports = verifyToken;
 //hola
 // Endpoint para el inicio de sesión
+
+
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
-  // Consulta la base de datos para validar las credenciales del vendedor
+  // Primero, obtén el hash de la contraseña de la base de datos
   db.query(
-    "SELECT ID_Vendedor, Nombre FROM vendedor WHERE Correo_Electronico = ? AND pass = ?",
-    [email, password],
+    "SELECT ID_Vendedor, Nombre, pass FROM vendedor WHERE Correo_Electronico = ?",
+    [email],
     (err, vendedorResults) => {
       if (err) {
         console.error("Error en el servidor:", err);
@@ -66,47 +69,33 @@ app.post("/login", (req, res) => {
       }
 
       if (vendedorResults.length > 0) {
-        // Las credenciales son del vendedor
-        const vendedorData = {
-          ID_Vendedor: vendedorResults[0].ID_Vendedor,
-          Nombre: vendedorResults[0].Nombre,
-          // Puedes añadir aquí otros campos que consideres necesarios para el vendedor
-        };
-        // Generar el token JWT
-        const token = jwt.sign({ vendedor: vendedorData }, jwtConfig.secret, {
-          expiresIn: jwtConfig.expiresIn,
-        });
-
-        return res.status(200).json({ vendedor: vendedorData, token });
-      } else {
-        // Si las credenciales no son del vendedor, intenta con el administrador
-        db.query(
-          "SELECT ID_Administrador, Nombre FROM administrador WHERE Correo_Electronicoe = ? AND pass = ?",
-          [email, password],
-          (err, adminResults) => {
-            if (err) {
-              console.error("Error en el servidor:", err);
-              return res.status(500).send("Error en el servidor");
-            }
-
-            if (adminResults.length > 0) {
-              // Las credenciales son del administrador
-              const adminData = {
-                ID_Administrador: adminResults[0].ID_Administrador,
-                email: adminResults[0].Correo_Electronico,
-                // Puedes añadir aquí otros campos que consideres necesarios para el administrador
-              };
-              return res.status(200).json({ administrador: adminData });
-            } else {
-              // Credenciales incorrectas para vendedor y administrador
-              return res.status(401).send("Credenciales incorrectas");
-            }
+        // Compara la contraseña ingresada con el hash almacenado
+        bcrypt.compare(password, vendedorResults[0].pass, (err, result) => {
+          if (err) {
+            return res.status(500).send("Error al verificar la contraseña");
           }
-        );
+
+          if (result) {
+            // Si la contraseña es correcta
+            const vendedorData = {
+              ID_Vendedor: vendedorResults[0].ID_Vendedor,
+              Nombre: vendedorResults[0].Nombre,
+            };
+            const token = jwt.sign({ vendedor: vendedorData }, jwtConfig.secret, { expiresIn: jwtConfig.expiresIn });
+            return res.status(200).json({ vendedor: vendedorData, token });
+          } else {
+            // Contraseña incorrecta
+            return res.status(401).send("Credenciales incorrectas");
+          }
+        });
+      } else {
+        // Usuario no encontrado, maneja según lo necesario
+        return res.status(401).send("Credenciales incorrectas");
       }
     }
   );
 });
+
 
 app.post("/login-adm", (req, res) => {
   const { email, password } = req.body;
@@ -452,7 +441,9 @@ app.get("/api/ventas-anuales", async (req, res) => {
 });
 
 //crear usuario vendedor
-app.post("/api/registerVendedor", (req, res) => {
+// Puedes ajustar esto según las necesidades de seguridad
+
+app.post("/api/registerVendedor", async (req, res) => {
   const {
     nombre,
     apellido,
@@ -469,30 +460,38 @@ app.post("/api/registerVendedor", (req, res) => {
     return res.status(400).send('La contraseña no cumple con los requisitos.');
   }
 
-  const query =
-    "INSERT INTO vendedor (Nombre, Apellido, Correo_Electronico, Telefono, ID_Sucursal, Area_Especializacion, pass) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  try {
+    // Genera el hash de la contraseña
+    const hashedPassword = await bcrypt.hash(pass, saltRounds);
 
-  db.query(
-    query,
-    [
-      nombre,
-      apellido,
-      correoElectronico,
-      telefono,
-      idSucursal,
-      areaEspecializacion,
-      pass,
-    ],
-    (err, results) => {
-      if (err) {
-        console.error("Error al insertar en la base de datos:", err);
-        return res.status(500).send("Error al registrar el vendedor");
+    const query =
+      "INSERT INTO vendedor (Nombre, Apellido, Correo_Electronico, Telefono, ID_Sucursal, Area_Especializacion, pass) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    db.query(
+      query,
+      [
+        nombre,
+        apellido,
+        correoElectronico,
+        telefono,
+        idSucursal,
+        areaEspecializacion,
+        hashedPassword, // Usa la contraseña hasheada
+      ],
+      (err, results) => {
+        if (err) {
+          console.error("Error al insertar en la base de datos:", err);
+          return res.status(500).send("Error al registrar el vendedor");
+        }
+        res.status(201).send("Vendedor registrado con éxito");
       }
-
-      res.status(201).send("Vendedor registrado con éxito");
-    }
-  );
+    );
+  } catch (err) {
+    console.error("Error al hashear la contraseña:", err);
+    return res.status(500).send("Error al procesar la solicitud");
+  }
 });
+
 
 app.get("/api/sucursales", (req, res) => {
   const query = "SELECT * FROM sucursal";
@@ -533,8 +532,9 @@ app.get("/api/vendedores-admin", (req, res) => {
 });
 
 // Endpoint para actualizar un vendedor
-app.put("/api/vendedores/:id", (req, res) => {
-  console.log("Datos recibidos para actualizar:", req.body);
+
+
+app.put("/api/vendedores/:id", async (req, res) => {
   const { id } = req.params;
   const {
     Nombre,
@@ -546,6 +546,17 @@ app.put("/api/vendedores/:id", (req, res) => {
     pass,
   } = req.body;
 
+  let hashedPass;
+  if (pass) {
+    try {
+      // Si se proporciona una nueva contraseña, hashearla
+      hashedPass = await bcrypt.hash(pass, saltRounds);
+    } catch (err) {
+      console.error("Error al hashear la contraseña:", err);
+      return res.status(500).send("Error al procesar la solicitud");
+    }
+  }
+
   const query = `
     UPDATE vendedor 
     SET 
@@ -555,7 +566,7 @@ app.put("/api/vendedores/:id", (req, res) => {
       Telefono = ?, 
       ID_Sucursal = ?, 
       Area_Especializacion = ?, 
-      pass = ?
+      pass = COALESCE(?, pass)  
     WHERE ID_Vendedor = ?;
   `;
 
@@ -568,7 +579,7 @@ app.put("/api/vendedores/:id", (req, res) => {
       Telefono,
       ID_Sucursal,
       Area_Especializacion,
-      pass,
+      hashedPass, // Usar la contraseña hasheada
       id,
     ],
     (err, result) => {
@@ -580,6 +591,7 @@ app.put("/api/vendedores/:id", (req, res) => {
     }
   );
 });
+
 
 app.delete("/api/vendedoresD/:id", async (req, res) => {
   const { id } = req.params;

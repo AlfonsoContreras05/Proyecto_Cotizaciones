@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "../css/styleLogin.css";
 import image from "../img/DR.png";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
 import { Link } from "react-router-dom";
 
 const LoginAdministrador = () => {
@@ -43,9 +45,15 @@ const LoginAdministrador = () => {
         rel="stylesheet"
       />
       <div className="row g-0">
-        <div className="col-lg-5 min-vh-100">
-          <div className="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto">
-          <img src={image} className="img-fluid mirrored-image" alt="Imagen descriptiva" width="70" height="" />
+        <div className="col-lg-5 min-vh-100 ">
+          <div className="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto  ">
+            <img
+              src={image}
+              className="img-fluid mirrored-image "
+              alt="Imagen descriptiva"
+              width="70"
+              height=""
+            />
           </div>
           <div className="px-lg-5 py-lg-4 p4 w-100 align-self-center">
             <h1 className="font-weight-bold mb-4">Bienvenido Administrador</h1>
@@ -109,6 +117,7 @@ const LoginAdministrador = () => {
             <div className="carousel-inner">
               <div className="carousel-item img-1 min-vh-100 active"></div>
               <div className="carousel-item img-2 min-vh-100"></div>
+              <div className="carousel-item img-3 min-vh-100"></div>
             </div>
           </div>
         </div>
